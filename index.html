@@ -933,4 +933,20 @@
             legalBlackMoves.sort((a, b) => b.score - a.score);
             let topScoreValue = legalBlackMoves[0].score;
             
-            // Filter out all moves that yield this
+            // Filter out all moves that yield this exact top score
+            let matchingTopMoves = legalBlackMoves.filter(m => m.score === topScoreValue);
+            
+            // Pick randomly among identical score options to prevent repeating traps
+            let selectedAIMove = matchingTopMoves[Math.floor(Math.random() * matchingTopMoves.length)];
+
+            boardState[selectedAIMove.to.y][selectedAIMove.to.x] = boardState[selectedAIMove.from.y][selectedAIMove.from.x];
+            boardState[selectedAIMove.from.y][selectedAIMove.from.x] = '';
+            
+            pushLog(`[ENGINE] Wykonano ruch AI: (${selectedAIMove.from.x},${selectedAIMove.from.y}) -> (${selectedAIMove.to.x},${selectedAIMove.to.y}) [Score: ${selectedAIMove.score}]`);
+            drawBoard();
+        }
+
+        drawBoard();
+    </script>
+</body>
+</html>
