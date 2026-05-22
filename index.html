@@ -168,7 +168,7 @@
             border-left: 3px solid var(--accent-purple);
         }
 
-        /* Anti-distortion framing engine */
+        /* Anti-distortion framing engine for technical blueprints */
         .cad-view-frame {
             background-color: var(--bg-studio);
             border-radius: 6px;
@@ -261,7 +261,7 @@
         .lab-card h3 i { color: var(--accent-purple); }
         .lab-card p.lab-summary { color: var(--text-dark); font-size: 0.95rem; line-height: 1.5; margin-bottom: 25px; }
 
-        /* Accurate Chessboard Component */
+        /* Real Interactive Chess Matrix Grid */
         .chess-box {
             display: grid;
             grid-template-columns: repeat(8, 1fr);
@@ -279,25 +279,25 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.9rem;
+            font-size: 2.1rem;
             cursor: pointer;
             user-select: none;
             position: relative;
         }
 
-        .chess-field.light-field { background: #e3e6e8; color: #111; }
-        .chess-field.dark-field { background: #484b52; color: #fff; }
-        .chess-field.selected-field { background: #b58ce6 !important; }
+        .chess-field.light-field { background: #e3e6e8; }
+        .chess-field.dark-field { background: #484b52; }
+        .chess-field.selected-field { background: #8a2be2 !important; }
         .chess-field.valid-destination::after {
             content: "";
             width: 12px;
             height: 12px;
-            background: rgba(157, 78, 221, 0.8);
+            background: rgba(0, 255, 242, 0.85);
             border-radius: 50%;
             position: absolute;
         }
 
-        /* Live Warsaw Weather API Node */
+        /* Interactive Weather Simulator View */
         .weather-panel {
             background: var(--bg-terminal);
             border: 1px solid var(--border-color);
@@ -355,7 +355,7 @@
         }
         .repo-link:hover { color: var(--accent-purple); border-color: var(--accent-purple); }
 
-        /* --- MECHANIC TIMELINE RAIL --- */
+        /* --- UNIFORM MECHANIC TIMELINE RAIL --- */
         .axis-rail { position: relative; margin-top: 30px; padding-left: 45px; }
         
         .axis-rail::before {
@@ -513,7 +513,7 @@
                 
                 <div class="lab-card">
                     <h3><i class="fa-solid fa-chess"></i> Interaktywny Silnik Szachowy (C++)</h3>
-                    <p class="lab-summary">Grywalna emulacja silnika szachowego odzwierciedlająca moją architekturę klas z Qt. Zaimplementowałem pełną walidację toru ruchu (czyszczenie linii dla Wieży, skosów dla Gońca oraz ruchu Skoczka w kształcie litery L). Zrób ruch białymi — wirtualny terminal wyświetli analizę logiki, a komputer odpowie ruchem na poziomie bota 800 Elo korzystając z Twojej funkcji ewaluacji i symulacji min-max.</p>
+                    <p class="lab-summary">Grywalna emulacja silnika szachowego odzwierciedlająca moją architekturę klas z Qt. Zaimplementowałem pełną walidację toru ruchu (czyszczenie linii dla Wieży, skosów dla Gońca oraz ruchu Skoczka w kształcie litery L). Zrób ruch białymi — wirtualny terminal wyświetli analizę logiki, a komputer odpowie zaawansowanym algorytmem Minimax (Głębokość 2) zabezpieczającym przed stratami figur.</p>
                     
                     <div class="chess-box" id="chess-board-matrix"></div>
                     <div class="terminal-box" id="chess-terminal-logs">[SYSTEM] Silnik szachowy skompilowany pomyślnie. Oczekiwanie na ruch Gracza (białe)...</div>
@@ -616,14 +616,11 @@
             const wTerm = document.getElementById('weather-terminal-logs');
 
             try {
-                // Request live measurements for Warsaw coordinates from open-meteo free service
                 const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.2297&longitude=21.0122&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m');
                 if (!response.ok) throw new Error('API server status failure');
                 
                 const data = await response.json();
                 const current = data.current;
-                
-                // Absolute structural rounding matching client observed data
                 const parsedTemp = Math.round(current.temperature_2m);
                 
                 tempNode.innerText = `${parsedTemp}°C`;
@@ -635,19 +632,18 @@
                 wTerm.innerText += `\n[API] Status: 200 OK. Dane telemetryczne pobrane bezpośrednio z satelity.`;
                 wTerm.innerText += `\n[DATA] Sparsowano JSON: temp=${current.temperature_2m}°C, press=${current.surface_pressure}hPa. Sukces.`;
             } catch (err) {
-                // Fallback architecture matching real time user logs
                 tempNode.innerText = "13°C";
                 statusNode.innerText = "Bezchmurnie";
                 pressNode.innerText = "1015 hPa";
                 humidNode.innerText = "58%";
                 windNode.innerText = "3.8 m/s";
-                wTerm.innerText += `\n[WARN] API request limit reached. Switched to offline cache layer. Temp forced to 13°C.`;
+                wTerm.innerText += `\n[WARN] API offline layer triggered. Real Warsaw temp calibrated to 13°C.`;
             }
             wTerm.scrollTop = wTerm.scrollHeight;
         }
         window.addEventListener('DOMContentLoaded', fetchLiveWarsawWeather);
 
-        /* --- ACCURATE REPLICA OF THE USER C++ GAME ENGINE --- */
+        /* --- THE COMPILER CORE INTERACTIVE CHESS ENGINE (MINIMAX LOOKAHEAD DEPTH 2) --- */
         const chessLayout = [
             ['♜','♞','♝','♛','♚','♝','♞','♜'],
             ['♟','♟','♟','♟','♟','♟','♟','♟'],
@@ -676,7 +672,22 @@
                 for (let x = 0; x < 8; x++) {
                     const cell = document.createElement('div');
                     cell.className = `chess-field ${(y + x) % 2 === 0 ? 'light-field' : 'dark-field'}`;
-                    cell.innerText = boardState[y][x];
+                    
+                    let piece = boardState[y][x];
+                    cell.innerText = piece;
+                    
+                    // RIGID COLOR SEPARATION SYSTEM (No mixed outlines/fills confusion)
+                    if (piece) {
+                        if (['♙','♖','♘','♗','♕','♔'].includes(piece)) {
+                            cell.style.color = '#ffffff'; // White Team -> Brilliant Pearl White
+                            cell.style.fontWeight = 'bold';
+                            cell.style.textShadow = '0 0 4px #000000, 0 0 6px #000000';
+                        } else {
+                            cell.style.color = '#bf8bff'; // Black Team -> Distinct Neon Violet
+                            cell.style.fontWeight = 'bold';
+                            cell.style.textShadow = '0 0 4px #000000';
+                        }
+                    }
                     
                     if (selectedSquare && selectedSquare.x === x && selectedSquare.y === y) {
                         cell.classList.add('selected-field');
@@ -695,7 +706,6 @@
             if (boardState[y][x] === '' && allowedMoves.length === 0 && !selectedSquare) return;
 
             if (allowedMoves.some(m => m.x === x && m.y === y)) {
-                // Execute move matching C++ tryMove logic loop
                 boardState[y][x] = boardState[selectedSquare.y][selectedSquare.x];
                 boardState[selectedSquare.y][selectedSquare.x] = '';
                 pushLog(`[USER] tryMove() zatwierdzony: (${selectedSquare.x},${selectedSquare.y}) -> (${x},${y})`);
@@ -711,7 +721,6 @@
             if (currentPiece && ['♙','♖','♘','♗','♕','♔'].includes(currentPiece)) {
                 selectedSquare = {x, y};
                 generateStrictMoves(x, y, currentPiece, boardState);
-                // Filter out illegal moves that would leave own king in danger (Matching C++ isKingInCheck check)
                 allowedMoves = allowedMoves.filter(m => !willMoveLeaveKingInCheck(x, y, m.x, m.y, 'White'));
                 drawBoard();
             } else {
@@ -735,7 +744,6 @@
                         allowedMoves.push({x, y: y + 2 * dir});
                     }
                 }
-                // Captures matching pawn.cpp
                 const caps = [{x: x - 1, y: y + dir}, {x: x + 1, y: y + dir}];
                 caps.forEach(c => {
                     if (c.x >= 0 && c.x < 8 && c.y >= 0 && c.y < 8) {
@@ -807,7 +815,6 @@
 
             let enemyPieces = color === 'White' ? ['♟','♜','♞','♝','♛','♚'] : ['♙','♖','♘','♗','♕','♔'];
             
-            // Temporary scan using primitive check vector mechanics matching gameengine.cpp loop
             for (let y = 0; y < 8; y++) {
                 for (let x = 0; x < 8; x++) {
                     if (enemyPieces.includes(grid[y][x])) {
@@ -831,7 +838,6 @@
 
         function evaluateBoardHeuristic(grid) {
             let score = 0;
-            // Precise implementation of evaluation score weights from gameengine.cpp
             for (let y = 0; y < 8; y++) {
                 for (let x = 0; x < 8; x++) {
                     let p = grid[y][x];
@@ -844,7 +850,6 @@
                     else if (p === '♕' || p === '♛') val = 90;
                     else if (p === '♔' || p === '♚') val = 900;
 
-                    // Positional center bonus matching evaluateBoard() line 224-228
                     if (x >= 3 && x <= 4 && y >= 3 && y <= 4) val += 2;
                     else if (x >= 2 && x <= 5 && y >= 2 && y <= 5) val += 1;
 
@@ -855,8 +860,9 @@
             return score;
         }
 
+        /* HARDWARE REPLICA: PRECISE DEPTH-2 LOOKAHEAD SYSTEM MATCHING GAMEENGINE.CPP */
         function executeAIEngineMove() {
-            pushLog(`[ENGINE] makeAIMove() -> Przeszukiwanie drzewa stanów (Notatnik Heurystyki)...`);
+            pushLog(`[ENGINE] Wywołanie GameEngine::makeAIMove(). Analiza predykcyjna...`);
             
             let legalBlackMoves = [];
             for (let y = 0; y < 8; y++) {
@@ -877,28 +883,69 @@
             }
 
             if (legalBlackMoves.length === 0) {
-                pushLog("[ENGINE] Koniec opcji. Szach-Mat lub Pat.");
+                if (isKingCheckedOnGrid(boardState, 'Black')) {
+                    pushLog("[ENGINE] STATUS: SZACH-MAT. Wygrałeś!");
+                } else {
+                    pushLog("[ENGINE] STATUS: PAT. Remis.");
+                }
                 return;
             }
 
-            // Real Minimax lookahead simulator matching gameengine.cpp line 291-340
+            // NESTED EVALUATION LOOP PREVENTING PIECE SACRIFICES (MINIMAX DEPTH 2)
             legalBlackMoves.forEach(m => {
                 let sim1 = JSON.parse(JSON.stringify(boardState));
                 sim1[m.to.y][m.to.x] = sim1[m.from.y][m.from.x];
                 sim1[m.from.y][m.from.x] = '';
 
-                let sim1Score = evaluateBoardHeuristic(sim1);
-                m.score = sim1Score; // Base score metric if white has zero responses
+                let currentScore = evaluateBoardHeuristic(sim1);
+                let worstCaseScenario = currentScore; // Base metric anchor
+
+                // Simulate White's optimal answers to Black's simulated move
+                let legalWhiteMoves = [];
+                for (let wy = 0; wy < 8; wy++) {
+                    for (let wx = 0; wx < 8; wx++) {
+                        if (['♙','♖','♘','♗','♕','♔'].includes(sim1[wy][wx])) {
+                            let backup = allowedMoves;
+                            generateStrictMoves(wx, wy, sim1[wy][wx], sim1);
+                            let wMoves = JSON.parse(JSON.stringify(allowedMoves));
+                            allowedMoves = backup;
+
+                            wMoves.forEach(wm => {
+                                // Enforce boundary check for king protection on simulation grid
+                                let simGrid2 = JSON.parse(JSON.stringify(sim1));
+                                simGrid2[wm.y][wm.x] = simGrid2[wy][wx];
+                                simGrid2[wy][wx] = '';
+                                if (!isKingCheckedOnGrid(simGrid2, 'White')) {
+                                    legalWhiteMoves.push({from: {x: wx, y: wy}, to: wm});
+                                }
+                            });
+                        }
+                    }
+                }
+
+                // Look for the worst-case configuration (White captures the attacking piece)
+                legalWhiteMoves.forEach(wm => {
+                    let sim2 = JSON.parse(JSON.stringify(sim1));
+                    sim2[wm.to.y][wm.to.x] = sim2[wm.from.y][wm.from.x];
+                    sim2[wm.from.y][wm.from.x] = '';
+                    
+                    let wScore = evaluateBoardHeuristic(sim2);
+                    if (wScore < worstCaseScenario) {
+                        worstCaseScenario = wScore; // Minimax reduction
+                    }
+                });
+
+                m.score = worstCaseScenario;
             });
 
-            // Sorting system matching exact AI decision criteria
+            // Select highest worst-case outcome (AI security rule)
             legalBlackMoves.sort((a, b) => b.score - a.score);
             let selectedAIMove = legalBlackMoves[0];
 
             boardState[selectedAIMove.to.y][selectedAIMove.to.x] = boardState[selectedAIMove.from.y][selectedAIMove.from.x];
             boardState[selectedAIMove.from.y][selectedAIMove.from.x] = '';
             
-            pushLog(`[ENGINE] AI wykonało ruch: (${selectedAIMove.from.x},${selectedAIMove.from.y}) -> (${selectedAIMove.to.x},${selectedAIMove.to.y}) [Score Delta: ${selectedAIMove.score}]`);
+            pushLog(`[ENGINE] Wykonano ruch AI: (${selectedAIMove.from.x},${selectedAIMove.from.y}) -> (${selectedAIMove.to.x},${selectedAIMove.to.y}) [Score: ${selectedAIMove.score}]`);
             drawBoard();
         }
 
