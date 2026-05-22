@@ -3,24 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Michał Antkowiak | Portfolio Inżynierskie</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Michał Antkowiak | Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 
     <style>
         :root {
-            --bg-base: #050508;
-            --bg-surface: #0b0c16;
-            --bg-card: #121424;
-            --accent-purple: #9d4edd;
-            --accent-glow: #bd7eff;
-            --tech-blue: #1f2d5a;
+            --bg-base: #0a0a0c;
+            --bg-surface: #111115;
+            --bg-card: #16161f;
+            --accent: #9d4edd;
             --text-main: #f0f1f5;
             --text-muted: #9499b3;
-            --border-neon: rgba(157, 78, 221, 0.25);
+            --tech-blue: #1f2d5a;
         }
 
         * {
@@ -35,424 +31,251 @@
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
             line-height: 1.6;
-            overflow-x: hidden;
         }
 
-        /* --- NAVBAR --- */
         nav {
             position: fixed;
             top: 0;
             width: 100%;
             z-index: 1000;
-            background: rgba(5, 5, 8, 0.75);
-            backdrop-filter: blur(12px);
+            background: rgba(10, 10, 12, 0.8);
+            backdrop-filter: blur(8px);
             border-bottom: 1px solid rgba(157, 78, 221, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 18px 8%;
+            padding: 15px 5%;
         }
 
-        .nav-logo {
-            font-size: 1.2rem;
-            font-weight: 700;
-            letter-spacing: 1px;
+        nav a {
             color: var(--text-main);
             text-decoration: none;
-        }
-
-        .nav-logo span {
-            color: var(--accent-purple);
-            text-shadow: 0 0 10px var(--accent-purple);
+            font-weight: 700;
         }
 
         .nav-links {
             display: flex;
+            gap: 20px;
             list-style: none;
-            gap: 30px;
         }
 
         .nav-links a {
             color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 600;
-            transition: color 0.3s ease;
+            font-size: 0.9rem;
+            transition: color 0.3s;
         }
 
         .nav-links a:hover {
-            color: var(--accent-purple);
+            color: var(--accent);
         }
 
-        /* --- HERO SECTION --- */
         header {
-            min-height: 100vh;
+            min-height: 70vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
+            background: radial-gradient(circle at 50% 50%, var(--tech-blue) 0%, var(--bg-base) 80%);
             padding: 0 20px;
-            background: radial-gradient(circle at 50% 40%, var(--tech-blue) 0%, var(--bg-base) 70%);
-            position: relative;
+            margin-top: 60px;
         }
 
         header h1 {
-            font-size: 4rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            letter-spacing: -1px;
+            font-size: 3.5rem;
+            margin-bottom: 10px;
         }
 
-        header p.subtitle {
-            font-size: 1.5rem;
+        header p {
+            font-size: 1.3rem;
             color: var(--text-muted);
-            margin-bottom: 40px;
-            font-weight: 300;
         }
 
-        header p.subtitle span {
-            color: var(--accent-purple);
+        header p span {
+            color: var(--accent);
             font-weight: 600;
         }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: transparent;
-            color: var(--text-main);
-            border: 2px solid var(--accent-purple);
-            padding: 12px 28px;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(157, 78, 221, 0.2);
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
-        .btn:hover {
-            background: var(--accent-purple);
-            box-shadow: 0 0 25px var(--accent-glow);
-            transform: translateY(-2px);
-        }
-
-        /* --- SECTION STRUCTURE --- */
         section {
-            padding: 100px 8%;
-        }
-
-        section:nth-of-type(even) {
-            background-color: var(--bg-surface);
+            padding: 80px 0;
+            border-bottom: 1px solid rgba(240, 241, 245, 0.05);
         }
 
         .section-title {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 50px;
-            position: relative;
-            display: inline-block;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            border-left: 4px solid var(--accent);
+            padding-left: 15px;
         }
 
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 50px;
-            height: 4px;
-            background: var(--accent-purple);
-            box-shadow: 0 0 10px var(--accent-purple);
-        }
-
-        /* --- GRID AND CARDS --- */
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-        }
-
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: start;
-        }
-
-        .about-text p {
-            color: var(--text-muted);
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-            text-align: justify;
-        }
-
-        /* --- SKILLS WORKBENCH --- */
-        .skills-display {
-            background: var(--bg-card);
-            border: 1px solid var(--border-neon);
-            border-radius: 6px;
+        .about-box {
+            background: var(--bg-surface);
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 6px;
+            border: 1px solid rgba(157, 78, 221, 0.1);
         }
 
-        .skills-grid {
+        .about-box p {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+        }
+
+        /* --- INTERACTIVE CAD WORKBENCH --- */
+        .cad-container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 250px 1fr;
             gap: 20px;
-            margin-bottom: 30px;
+            background: var(--bg-surface);
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid rgba(157, 78, 221, 0.1);
         }
 
-        .skill-node {
-            background: rgba(5, 5, 8, 0.4);
-            border-left: 3px solid var(--accent-purple);
-            padding: 15px;
-            border-radius: 0 4px 4px 0;
-            transition: all 0.3s ease;
-        }
-
-        .skill-node:hover {
-            background: rgba(157, 78, 221, 0.1);
-            transform: translateX(5px);
-        }
-
-        .skill-node h4 {
-            font-size: 1.1rem;
-            margin-bottom: 4px;
-        }
-
-        .skill-node p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .other-skills {
-            border-top: 1px solid rgba(240, 241, 245, 0.1);
-            padding-top: 20px;
-        }
-
-        .other-skills h5 {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-        }
-
-        .tag-cloud {
+        .cad-tabs {
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
             gap: 10px;
         }
 
-        .tag {
-            background: var(--tech-blue);
-            color: var(--text-main);
-            padding: 6px 14px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            border-radius: 4px;
-        }
-
-        /* --- CAD INTERACTIVE WORKBENCH --- */
-        .cad-workbench {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 30px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-neon);
-            border-radius: 6px;
-            padding: 25px;
-            margin-top: 40px;
-            min-height: 550px;
-        }
-
-        .cad-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .cad-btn {
-            background: rgba(5, 5, 8, 0.5);
+        .cad-tab-btn {
+            background: var(--bg-base);
             border: 1px solid rgba(240, 241, 245, 0.1);
             color: var(--text-muted);
-            padding: 14px 18px;
+            padding: 12px;
             border-radius: 4px;
             text-align: left;
-            font-family: inherit;
-            font-weight: 600;
-            font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s;
         }
 
-        .cad-btn:hover, .cad-btn.active {
-            border-color: var(--accent-purple);
+        .cad-tab-btn:hover, .cad-tab-btn.active {
+            border-color: var(--accent);
             color: var(--text-main);
-            background: rgba(157, 78, 221, 0.15);
+            background: rgba(157, 78, 221, 0.1);
         }
 
-        .cad-viewport {
-            background: #020204;
-            border: 1px solid rgba(240, 241, 245, 0.05);
+        .cad-screen {
+            background: #000;
             border-radius: 4px;
+            height: 480px;
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
         }
 
-        .cad-view {
+        .cad-content {
+            display: none;
             width: 100%;
             height: 100%;
-            display: none;
-            position: absolute;
         }
 
-        .cad-view.active {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .cad-content.active {
+            display: block;
+        }
+
+        .cad-content img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 10px;
         }
 
         model-viewer {
             width: 100%;
             height: 100%;
-            --poster-color: transparent;
-        }
-
-        .cad-view img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            padding: 15px;
         }
 
         /* --- PROJECTS SECTION --- */
-        .project-row {
-            background: var(--bg-card);
-            border: 1px solid rgba(157, 78, 221, 0.1);
+        .project-block {
+            background: var(--bg-surface);
             border-radius: 6px;
-            padding: 40px;
-            margin-bottom: 50px;
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 50px;
-            align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(240, 241, 245, 0.05);
         }
 
-        .project-media {
+        .project-block h3 {
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .project-gallery {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
+            margin-bottom: 20px;
         }
 
-        .project-media img {
+        .project-gallery img {
             width: 100%;
+            height: 250px;
+            object-fit: cover;
             border-radius: 4px;
             border: 1px solid rgba(240, 241, 245, 0.05);
-            object-fit: cover;
-            height: 220px;
         }
 
-        .project-info h3 {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-        }
-
-        .project-info p {
+        .project-block p {
             color: var(--text-muted);
-            margin-bottom: 25px;
-            text-align: justify;
+            margin-bottom: 15px;
         }
 
-        .project-info ul {
-            list-style: none;
-            margin-bottom: 30px;
-        }
-
-        .project-info ul li {
-            position: relative;
-            padding-left: 20px;
-            margin-bottom: 8px;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        .project-info ul li::before {
-            content: '▹';
-            position: absolute;
-            left: 0;
-            color: var(--accent-purple);
-        }
-
-        /* --- CODE REPOSITORIES (SOFTWARE) --- */
-        .code-grid {
+        /* --- CODE / REPOS SECTION --- */
+        .repo-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 40px;
+            gap: 25px;
         }
 
-        .code-card {
-            background: var(--bg-card);
-            border: 1px solid rgba(157, 78, 221, 0.1);
+        .repo-card {
+            background: var(--bg-surface);
             border-radius: 6px;
-            padding: 30px;
+            padding: 25px;
+            border: 1px solid rgba(240, 241, 245, 0.05);
             display: flex;
             flex-direction: column;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .code-card h3 {
-            font-size: 1.4rem;
+        .repo-card h3 {
             margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            font-size: 1.25rem;
         }
 
-        .code-card h3 i {
-            color: var(--accent-purple);
-        }
-
-        .code-card p {
+        .repo-card p {
             color: var(--text-muted);
-            margin-bottom: 25px;
             font-size: 0.95rem;
+            margin-bottom: 20px;
             flex-grow: 1;
         }
 
-        /* Code Workspace Emulation */
-        .code-window {
+        pre {
             background: #020204;
-            border: 1px solid rgba(240, 241, 245, 0.1);
+            padding: 15px;
             border-radius: 4px;
             font-family: 'Fira Code', monospace;
-            font-size: 0.85rem;
-            padding: 20px;
-            margin-bottom: 25px;
+            font-size: 0.8rem;
             overflow-x: auto;
-            white-space: pre;
             color: #a9b1d6;
-            height: 250px;
+            border: 1px solid rgba(240, 241, 245, 0.05);
+            margin-bottom: 20px;
+            height: 220px;
         }
 
-        .keyword { color: #bb9af7; }
-        .function { color: #7aa2f7; }
-        .string { color: #9ece6a; }
-        .comment { color: #565f89; font-style: italic; }
-        .number { color: #ff9e64; }
-
-        /* Python Live Canvas Simulation */
-        .canvas-container {
+        .py-simulation {
             background: #020204;
             border: 1px solid rgba(157, 78, 221, 0.2);
             border-radius: 4px;
-            height: 250px;
-            margin-bottom: 25px;
+            height: 220px;
+            margin-bottom: 20px;
             position: relative;
             display: flex;
             flex-direction: column;
@@ -460,438 +283,328 @@
             align-items: center;
         }
 
-        #algo-canvas {
+        .py-simulation canvas {
             background: #050508;
-            border: 1px solid rgba(240, 241, 245, 0.05);
         }
 
-        .canvas-stats {
+        .sim-controls {
             position: absolute;
-            bottom: 10px;
-            left: 15px;
-            right: 15px;
+            bottom: 8px;
+            left: 12px;
+            right: 12px;
             display: flex;
             justify-content: space-between;
             font-family: 'Fira Code', monospace;
             font-size: 0.75rem;
-            color: var(--accent-purple);
+            color: var(--accent);
         }
 
-        .sim-btn {
+        .sim-trigger {
+            position: absolute;
+            top: 8px;
+            right: 8px;
             background: var(--tech-blue);
-            color: var(--text-main);
+            color: #fff;
             border: none;
-            padding: 6px 12px;
+            padding: 4px 8px;
             font-family: 'Fira Code', monospace;
-            font-size: 0.75rem;
-            font-weight: 600;
+            font-size: 0.7rem;
             border-radius: 3px;
             cursor: pointer;
-            position: absolute;
-            top: 10px;
-            right: 10px;
+        }
+
+        .repo-btn {
+            display: block;
+            text-align: center;
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
             transition: background 0.3s;
         }
 
-        .sim-btn:hover {
-            background: var(--accent-purple);
+        .repo-btn:hover {
+            background: var(--accent);
         }
 
-        /* --- TIMELINE (EXPERIENCE) --- */
-        .timeline {
+        /* --- EXPERIENCE TIMELINE --- */
+        .tl-wrap {
             position: relative;
-            max-width: 900px;
-            margin: 40px auto 0 auto;
+            margin-top: 20px;
         }
 
-        .timeline::after {
+        .tl-wrap::before {
             content: '';
             position: absolute;
-            width: 3px;
-            background-color: var(--accent-purple);
-            box-shadow: 0 0 10px var(--accent-purple);
+            left: 20px;
             top: 0;
             bottom: 0;
-            left: 50%;
-            margin-left: -1.5px;
+            width: 2px;
+            background: var(--accent);
         }
 
-        .time-node {
-            padding: 10px 40px;
+        .tl-item {
             position: relative;
-            background-color: transparent;
-            width: 50%;
+            padding-left: 50px;
+            margin-bottom: 30px;
         }
 
-        .time-node::after {
+        .tl-item::before {
             content: '';
             position: absolute;
-            width: 16px;
-            height: 16px;
-            right: -8px;
-            background-color: var(--bg-base);
-            border: 3px solid var(--accent-purple);
-            box-shadow: 0 0 8px var(--accent-glow);
-            top: 15px;
+            left: 13px;
+            top: 6px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
-            z-index: 1;
+            background: var(--bg-base);
+            border: 3px solid var(--accent);
         }
 
-        .left-node { left: 0; text-align: right; }
-        .right-node { left: 50%; text-align: left; }
-        .right-node::after { left: -8px; }
-
-        .time-content {
-            padding: 20px 30px;
-            background: var(--bg-card);
-            position: relative;
-            border-radius: 4px;
-            border: 1px solid rgba(240, 241, 245, 0.05);
+        .tl-content h3 {
+            font-size: 1.15rem;
+            margin-bottom: 2px;
         }
 
-        .time-content h3 {
-            font-size: 1.2rem;
-            color: var(--text-main);
-            margin-bottom: 4px;
+        .tl-content h4 {
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 8px;
+            text-transform: uppercase;
         }
 
-        .time-content h4 {
-            font-size: 0.95rem;
-            color: var(--accent-purple);
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .time-content p {
-            font-size: 0.9rem;
+        .tl-content p {
             color: var(--text-muted);
+            font-size: 0.95rem;
         }
 
-        /* --- FOOTER --- */
         footer {
             background: #020204;
-            padding: 40px 20px;
+            padding: 30px;
             text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
             border-top: 1px solid rgba(240, 241, 245, 0.05);
+            margin-top: 60px;
         }
 
-        .footer-socials {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin-bottom: 20px;
-        }
-
-        .footer-socials a {
-            color: var(--text-muted);
-            font-size: 1.5rem;
-            transition: color 0.3s;
-        }
-
-        .footer-socials a:hover {
-            color: var(--accent-purple);
-        }
-
-        footer p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        /* --- RESPONSIVENESS --- */
-        @media (max-width: 1024px) {
-            .about-grid, .project-row, .code-grid, .cad-workbench {
+        @media (max-width: 800px) {
+            .cad-container, .repo-grid {
                 grid-template-columns: 1fr;
             }
-            .cad-workbench { min-height: auto; }
-            .cad-viewport { height: 450px; }
-            .timeline::after { left: 31px; }
-            .time-node { width: 100%; padding-left: 70px; padding-right: 25px; }
-            .time-node::after { left: 23px; }
-            .left-node { text-align: left; }
-            .right-node { left: 0; }
+            .project-gallery {
+                grid-template-columns: 1fr;
+            }
+            .cad-screen {
+                height: 350px;
+            }
         }
     </style>
 </head>
 <body>
 
     <nav>
-        <a href="#" class="nav-logo">M.ANTKOWIAK<span>_</span></a>
+        <a href="#">M.ANTKOWIAK</a>
         <ul class="nav-links">
-            <li><a href="#about">O mnie</a></li>
-            <li><a href="#cad">Dokumentacja CAD</a></li>
+            <li><a href="#about">Profil</a></li>
+            <li><a href="#cad">CAD</a></li>
             <li><a href="#projects">Projekty</a></li>
-            <li><a href="#software">Repozytoria</a></li>
+            <li><a href="#software">Kody</a></li>
             <li><a href="#experience">Doświadczenie</a></li>
         </ul>
     </nav>
 
     <header>
         <h1>Michał Antkowiak</h1>
-        <p class="subtitle">Student Wydziału Mechatroniki PW | <span>Inżynieria Hardware & Software</span></p>
-        <a href="#projects" class="btn">Eksploruj projekty <i class="fa-solid fa-arrow-down"></i></a>
+        <p>Wydział Mechatroniki PW | <span>Portfolio Inżynierskie</span></p>
     </header>
 
     <div class="container">
 
         <section id="about">
-            <div class="about-grid">
-                <div class="about-text">
-                    <h2 class="section-title">Profil Inżynierski</h2>
-                    <p>Jestem studentem pierwszego roku Wydziału Mechatroniki Politechniki Warszawskiej oraz aktywnym członkiem Koła Naukowego ONYKS. Moja pasja inżynierska obejmuje interdyscyplinarne łączenie precyzyjnej mechaniki, elektroniki pomiarowej oraz zaawansowanego oprogramowania.</p>
-                    <p>W pracy projektowej koncentruję się na paradygmatach programowania obiektowego w C++, optymalizacji algorytmicznej w środowisku Python oraz profesjonalnym modelowaniu systemów i mechanizmów CAD. Posiadam praktyczne doświadczenie w realizacji projektów typu PBL (Project-Based Learning), łącząc wiedzę teoretyczną z rzeczywistym montażem prototypów, analizą metrologiczną i wykonawstwem inżynierskim.</p>
-                </div>
-                
-                <div class="skills-display">
-                    <div class="skills-grid">
-                        <div class="skill-node">
-                            <h4>Autodesk Inventor</h4>
-                            <p>Zaawansowane modelowanie części, parametryzacja konstrukcji, zaawansowane analizy złożeń oraz profesjonalne generowanie dokumentacji płaskiej (2D).</p>
-                        </div>
-                        <div class="skill-node">
-                            <h4>C++ / Qt Creator</h4>
-                            <p>Programowanie obiektowe (OOP), implementacja struktur danych, projektowanie interfejsów graficznych (GUI) oraz silników logicznych.</p>
-                        </div>
-                        <div class="skill-node">
-                            <h4>Python / Skrypty</h4>
-                            <p>Przetwarzanie danych macierzowych (NumPy), manipulacja obrazami (Pillow/PIL), programowanie algorytmiczne i automatyzacja procesów.</p>
-                        </div>
-                        <div class="skill-node">
-                            <h4>AutoCAD / Metrologia</h4>
-                            <p>Rysunek techniczny zgodny z normami ISO, wymiarowanie, analizy pasowań i tolerancji pomiarowych, obsługa aparatury laboratoryjnej.</p>
-                        </div>
-                    </div>
-                    <div class="other-skills">
-                        <h5>Narzędzia poboczne i akademickie</h5>
-                        <div class="tag-cloud">
-                            <span class="tag">MATLAB</span>
-                            <span class="tag">LICAD</span>
-                            <span class="tag">Arduino</span>
-                            <span class="tag">MicroPython</span>
-                            <span class="tag">Język Angielski (B2+)</span>
-                        </div>
-                    </div>
-                </div>
+            <h2 class="section-title">Profil Zawodowy</h2>
+            <div class="about-box">
+                <p>Jestem studentem pierwszego roku Wydziału Mechatroniki Politechniki Warszawskiej oraz członkiem Koła Naukowego ONYKS. Moje zainteresowania inżynierskie skupiają się na styku mechaniki konstrukcyjnej, systemów mikroprocesorowych oraz programowania użytkowego.</p>
+                <p>W sferze software rozwijam aplikacje obiektowe w środowisku C++ (Qt) oraz skrypty algorytmiczne w języku Python (NumPy, Pillow). W obszarze hardware zajmuję się parametryzacją i projektowaniem mechanicznym maszyn w Autodesk Inventor oraz AutoCAD.</p>
             </div>
         </section>
 
         <section id="cad">
-            <h2 class="section-title">Dokumentacja CAD i Modelowanie 3D</h2>
-            <p style="color: var(--text-muted); margin-bottom: 25px;">Poniższy interaktywny pulpit inżynierski prezentuje pełne, trójwymiarowe złożenie mechanizmu wspornika oraz kompletną dokumentację wykonawczą części 2D, wygenerowaną przeze mnie w programie Autodesk Inventor. Możesz obracać model myszką lub przełączać się na rysunki techniczne.</p>
-            
-            <div class="cad-workbench">
-                <div class="cad-menu">
-                    <button class="cad-btn active" onclick="switchCadView('view-3d', this)"><i class="fa-solid fa-cube"></i> Złożenie mechanizmu (3D)</button>
-                    <button class="cad-btn" onclick="switchCadView('view-wspornik', this)"><i class="fa-solid fa-file-lines"></i> ZP 01: Wspornik (2D)</button>
-                    <button class="cad-btn" onclick="switchCadView('view-plytka', this)"><i class="fa-solid fa-file-lines"></i> ZP 02: Płytka / Rolka (2D)</button>
-                    <button class="cad-btn" onclick="switchCadView('view-koło', this)"><i class="fa-solid fa-file-lines"></i> ZP 03: Koło pasowe (2D)</button>
-                    <button class="cad-btn" onclick="switchCadView('view-walek', this)"><i class="fa-solid fa-file-lines"></i> ZP 04: Wałek stopniowany (2D)</button>
+            <h2 class="section-title">Konstrukcje i Dokumentacja CAD</h2>
+            <div class="cad-container">
+                <div class="cad-tabs">
+                    <button class="cad-tab-btn active" onclick="tabCAD('cad-3d', this)">Złożenie mechanizmu (3D)</button>
+                    <button class="cad-tab-btn" onclick="tabCAD('cad-wspornik', this)">ZP 01: Wspornik (2D)</button>
+                    <button class="cad-tab-btn" onclick="tabCAD('cad-plytka', this)">ZP 02: Płytka / Rolka (2D)</button>
+                    <button class="cad-tab-btn" onclick="tabCAD('cad-kolo', this)">ZP 03: Koło pasowe (2D)</button>
+                    <button class="cad-tab-btn" onclick="tabCAD('cad-walek', this)">ZP 04: Wałek stopniowany (2D)</button>
                 </div>
-                <div class="cad-viewport">
-                    <div id="view-3d" class="cad-view active">
-                        <model-viewer src="Zespół1.glb" camera-controls auto-rotate shadow-intensity="1" ar-status="not-presenting"></model-viewer>
+                <div class="cad-screen">
+                    <div id="cad-3d" class="cad-content active">
+                        <model-viewer src="Zespół1.glb" camera-controls auto-rotate shadow-intensity="1"></model-viewer>
                     </div>
-                    <div id="view-wspornik" class="cad-view">
-                        <img src="wspornik.png" alt="Rysunek techniczny wspornika">
+                    <div id="cad-wspornik" class="cad-content">
+                        <img src="wspornik.png" alt="Wspornik">
                     </div>
-                    <div id="view-plytka" class="cad-view">
-                        <img src="plytka.png" alt="Rysunek techniczny płytki">
+                    <div id="cad-plytka" class="cad-content">
+                        <img src="plytka.png" alt="Płytka">
                     </div>
-                    <div id="view-koło" class="cad-view">
-                        <img src="kolopasowe.png" alt="Rysunek techniczny koła pasowego">
+                    <div id="cad-kolo" class="cad-content">
+                        <img src="kolopasowe.png" alt="Koło pasowe">
                     </div>
-                    <div id="view-walek" class="cad-view">
-                        <img src="walek.png" alt="Rysunek techniczny wałka">
+                    <div id="cad-walek" class="cad-content">
+                        <img src="walek.png" alt="Wałek">
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="projects">
-            <h2 class="section-title">Wybrane Projekty Inżynierskie</h2>
-            
-            <div class="project-row">
-                <div class="project-media">
-                    <img src="doniczka.jpg" alt="Rzeczywisty prototyp systemu hydroponicznego">
-                    <img src="doniczka3d.png" alt="Render ramy wykonawczej z Fusion 3D">
+            <h2 class="section-title">Projekty Mechatroniczne</h2>
+            <div class="project-block">
+                <h3>Smart System Hydroponiczny (Project-Based Learning)</h3>
+                <div class="project-gallery">
+                    <img src="doniczka.jpg" alt="Prototyp doniczki">
+                    <img src="doniczka3d.png" alt="Render konstrukcji">
                 </div>
-                <div class="project-info">
-                    <h3>Autonomiczny Smart System Hydroponiczny (PBL)</h3>
-                    <p>Interdyscyplinarny projekt zespołowy zrealizowany w ramach akademickiej metodologii Project-Based Learning. System automatyzuje proces pielęgnacji i optymalizacji wzrostu roślin poprzez stałą kontrolę warunków środowiskowych.</p>
-                    <ul>
-                        <li><strong>Mechanika:</strong> Opracowanie i wykonanie ramy bazowej oraz unikalnego mechanizmu łożyskowanego kulkowo, pozwalającego na kontrolowany obrót doniczki wokół własnej osi, co zapewnia harmonijną ekspozycję na światło.</li>
-                        <li><strong>Elektronika & Automatyka:</strong> Integracja niezależnego modułu pomiarowego opartego na czujnikach wilgotności gleby, temperatury i wilgotności powietrza.</li>
-                        <li><strong>Sterowanie:</strong> Zaprogramowanie mikrokontrolera w języku MicroPython realizującego inteligentne algorytmy sterowania silnikiem obrotu oraz pompą wodną na podstawie odczytów w czasie rzeczywistym.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="project-row" style="opacity: 0.5; border-style: dashed;">
-                <div style="text-align: center; grid-column: 1 / -1; padding: 40px 0;">
-                    <i class="fa-solid fa-microchip" style="font-size: 2.5rem; color: var(--accent-purple); margin-bottom: 15px;"></i>
-                    <h3>Kolejny projekt mechatroniczny w przygotowaniu</h3>
-                    <p style="margin-bottom: 0;">Aktualnie pracuję nad integracją systemów sensorycznych IMU z mikrokontrolerami w ramach prac koła naukowego.</p>
-                </div>
+                <p>Projekt interdyscyplinarnego urządzenia smart-gardening realizowany w zespole akademickim. Układ automatyzuje procesy opieki nad roślinami hydroponicznymi poprzez zbieranie danych środowiskowych oraz aktywną reakcję układów wykonawczych.</p>
+                <p><strong>Mój wkład:</strong> Opracowanie mechaniki urządzenia, w tym konstrukcji obrotowej ramy łożyskowanej kulkowo, umożliwiającej płynny ruch doniczki wokół osi w celu równomiernego naświetlania rośliny. Integracja czujników wilgotności podłoża i temperatury z mikrokontrolerem oraz oprogramowanie logiki sterowania pompą hydrauliczną i napędem w MicroPythonie.</p>
             </div>
         </section>
 
         <section id="software">
-            <h2 class="section-title">Laboratorium Kodu i Oprogramowanie</h2>
-            <div class="code-grid">
+            <h2 class="section-title">Repozytoria Kodu</h2>
+            <div class="repo-grid">
                 
-                <div class="code-card">
-                    <h3><i class="fa-brands fa-square-cpp"></i> Silnik Szachowy i Aplikacja GUI (C++)</h3>
-                    <p>Zaawansowana, obiektowa aplikacja desktopowa realizująca grę w szachy, zaimplementowana w środowisku Qt Creator. Projekt wykorzystuje zaawansowane paradygmaty programowania obiektowego (OOP), dynamiczne zarządzenie pamięcią oraz autorski silnik logiki wykonujący ewaluację ruchów i podstawowy algorytm sztucznej inteligencji (bot szachowy) na poziomie średniozaawansowanym.</p>
-                    
-                    <div class="code-window">
-<span class="comment">// Fragment implementacji logiki silnika ruchów</span>
-<span class="keyword">bool</span> <span class="function">Board::validateMove</span>(<span class="keyword">int</span> fromX, <span class="keyword">int</span> fromY, <span class="keyword">int</span> toX, <span class="keyword">int</span> toY) {
+                <div class="repo-card">
+                    <h3>Silnik Szachowy & GUI (C++)</h3>
+                    <p>Aplikacja desktopowa napisana w języku C++ z interfejsem graficznym w bibliotece Qt. Implementuje pełną logikę gry w szachy w paradygmacie obiektowym oraz moduł bota szachowego wykonującego analizę i ewaluację pozycji.</p>
+                    <pre>bool Board::validateMove(int fromX, int fromY, int toX, int toY) {
     Piece* p = grid[fromY][fromX];
-    <span class="keyword">if</span> (p == <span class="keyword">nullptr</span>) <span class="keyword">return</span> <span class="keyword">false</span>;
+    if (p == nullptr) return false;
     
-    <span class="comment">// Polimorficzne sprawdzanie wektora ruchu figury</span>
-    <span class="keyword">if</span> (!p-><span class="function">isValidPattern</span>(fromX, fromY, toX, toY)) <span class="keyword">return</span> <span class="keyword">false</span>;
-    
-    <span class="keyword">return</span> <span class="function">isPathClear</span>(fromX, fromY, toX, toY);
-}</div>
-                    <a href="https://github.com/MichalAntkowiak/ChessEngine_1" target="_blank" class="btn"><i class="fa-brands fa-github"></i> Zobacz kod na GitHubie ↗</a>
+    if (!p->isValidPattern(fromX, fromY, toX, toY)) return false;
+    return isPathClear(fromX, fromY, toX, toY);
+}</pre>
+                    <a href="https://github.com/MichalAntkowiak/ChessEngine_1" target="_blank" class="repo-btn">Kod źródłowy C++ ↗</a>
                 </div>
 
-                <div class="code-card">
-                    <h3><i class="fa-brands fa-python"></i> Generatywny Kreator Obrazów (Python)</h3>
-                    <p>Zaawansowany skrypt algorytmiczny (`main4.py`) realizujący funkcję generowania obrazu wyjściowego z ułożonych losowo elementów składowych ("cegiełek") na bazie mapy przezroczystości (Alpha Mask) obrazu wejściowego. Wykorzystuje zaawansowane operacje na wielowymiarowych macierzach danych w bibliotece NumPy oraz zaawansowaną manipulację kanałami RGB/RGBA przy użyciu biblioteki Pillow (PIL).</p>
-                    
-                    <div class="canvas-container">
-                        <button class="sim-btn" onclick="runAlgoSimulation()"><i class="fa-solid fa-play"></i> Ponów symulację</button>
-                        <canvas id="algo-canvas" width="180" height="120"></canvas>
-                        <div class="canvas-stats">
-                            <span id="sim-iter">Iterations: 0</span>
-                            <span id="sim-err">Error Δ: 0.0</span>
+                <div class="repo-card">
+                    <h3>Kreator Obrazów (Python)</h3>
+                    <p>Skrypt `main4.py` realizujący generowanie obrazów przy użyciu algorytmu losowego dopasowywania składowych tekstur. Wykorzystuje bibliotekę NumPy do operacji macierzowych oraz Pillow do zaawansowanej analizy kanałów RGBA i masek przezroczystości.</p>
+                    <div class="py-simulation">
+                        <button class="sim-trigger" onclick="proceduralRender()">Resetuj symulację</button>
+                        <canvas id="py-canvas" width="160" height="110"></canvas>
+                        <div class="sim-controls">
+                            <span id="p-iter">Iter: 0</span>
+                            <span id="p-err">Err: 0.0</span>
                         </div>
                     </div>
-                    <a href="https://github.com/MichalAntkowiak/Generative-Image-Builder" target="_blank" class="btn"><i class="fa-brands fa-github"></i> Zobacz kod na GitHubie ↗</a>
+                    <a href="https://github.com/MichalAntkowiak/Generative-Image-Builder" target="_blank" class="repo-btn">Kod źródłowy Python ↗</a>
                 </div>
 
             </div>
         </section>
 
         <section id="experience">
-            <h2 class="section-title">Doświadczenie i Osiągnięcia</h2>
-            <div class="timeline">
-                
-                <div class="time-node left-node">
-                    <div class="time-content">
-                        <h3>Członek Koła Naukowego "ONYKS"</h3>
+            <h2 class="section-title">Edukacja i Doświadczenie</h2>
+            <div class="tl-wrap">
+                <div class="tl-item">
+                    <div class="tl-content">
+                        <h3>Koło Naukowe "ONYKS"</h3>
                         <h4>10.2025 – Obecnie</h4>
-                        <p>Rozwój projektów mechatronicznych, praca z mikrokontrolerami, integracja systemów hardware z oprogramowaniem osadzonym.</p>
+                        <p>Aktywny rozwój autorskich systemów mechatronicznych oraz embedded w zespołach projektowych.</p>
                     </div>
                 </div>
-
-                <div class="time-node right-node">
-                    <div class="time-content">
-                        <h3>Studia Mechatroniczne (PW)</h3>
+                <div class="tl-item">
+                    <div class="tl-content">
+                        <h3>Wydział Mechatroniki PW</h3>
                         <h4>10.2025 – Obecnie</h4>
-                        <p>Student 1. roku studiów stacjonarnych inżynierskich na Wydziale Mechatroniki Politechniki Warszawskiej. Realizacja zaawansowanych zagadnień z zakresu wytrzymałości materiałów, mechaniki, programowania oraz metrologii rozszerzonej.</p>
+                        <p>Studia inżynierskie dzienne. Zakres: programowanie, elektrotechnika, metrologia laboratoryjna, mechanika.</p>
                     </div>
                 </div>
-
-                <div class="time-node left-node">
-                    <div class="time-content">
+                <div class="tl-item">
+                    <div class="tl-content">
                         <h3>Korepetytor Matematyki</h3>
                         <h4>09.2024 – Obecnie</h4>
-                        <p>Kompleksowe przygotowanie uczniów klas IV-VIII do Egzaminu Ósmoklasisty, systematyzacja wiedzy algebraicznej i geometrycznej, rozwój umiejętności interpersonalnych i logicznego myślenia.</p>
+                        <p>Przygotowanie uczniów do egzaminów, dydaktyka zagadnień logicznych i algebraicznych.</p>
                     </div>
                 </div>
-
-                <div class="time-node right-node">
-                    <div class="time-content">
+                <div class="tl-item">
+                    <div class="tl-content">
                         <h3>Kurier Gastronomiczny</h3>
                         <h4>02.2025 – 10.2025</h4>
-                        <p>Obsługa aplikacji dostawczych, logistyka dowozów, rozliczanie płatności finansowych, zarządzanie czasem pod presją terminów.</p>
+                        <p>Zarządzanie czasem, obsługa systemów rozliczeniowych i logistyka dostaw.</p>
                     </div>
                 </div>
-
-                <div class="time-node left-node">
-                    <div class="time-content">
-                        <h3>Absolwent XII LO im. J. Słowackiego</h3>
-                        <h4>2024</h4>
-                        <p>Ukończenie liceum ogólnokształcącego w Warszawie z wysokimi wynikami z egzaminów maturalnych w profilu ścisłym.</p>
-                    </div>
-                </div>
-
             </div>
         </section>
 
     </div>
 
     <footer>
-        <div class="footer-socials">
-            <a href="https://github.com/MichalAntkowiak" target="_blank"><i class="fa-brands fa-github"></i></a>
-            <a href="mailto:Michalantkowiak22@gmail.com"><i class="fa-solid fa-envelope"></i></a>
-        </div>
-        <p>&copy; 2026 Michał Antkowiak. Wszystkie prawa zastrzeżone. Strona realizowana przy użyciu GitHub Pages.</p>
+        <p>&copy; 2026 Michał Antkowiak. Realizacja przy użyciu GitHub Pages.</p>
     </footer>
 
     <script>
-        // CAD Workbench Control Script
-        function switchCadView(viewId, buttonElement) {
-            // Remove active classes from all buttons and layers
-            document.querySelectorAll('.cad-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.cad-view').forEach(view => view.classList.remove('active'));
-            
-            // Activate target button and layer
-            buttonElement.classList.add('active');
-            document.getElementById(viewId).classList.add('active');
+        function tabCAD(id, btn) {
+            document.querySelectorAll('.cad-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.cad-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(id).classList.add('active');
         }
 
-        // Python Skript Live Simulation Logic
-        let simInterval = null;
-        function runAlgoSimulation() {
-            const canvas = document.getElementById('algo-canvas');
+        let loopAnim = null;
+        function proceduralRender() {
+            const canvas = document.getElementById('py-canvas');
+            if(!canvas) return;
             const ctx = canvas.getContext('2d');
-            const iterText = document.getElementById('sim-iter');
-            const errText = document.getElementById('sim-err');
+            const itTxt = document.getElementById('p-iter');
+            const erTxt = document.getElementById('p-err');
             
-            // Clear and draw text base shape
             ctx.fillStyle = '#050508';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.font = 'bold 45px "Inter"';
-            ctx.fillStyle = 'rgba(240, 241, 245, 0.05)';
-            ctx.fillText('M_A', 35, 75);
+            ctx.font = 'bold 38px "Inter"';
+            ctx.fillStyle = 'rgba(240, 241, 245, 0.04)';
+            ctx.fillText('M_A', 35, 70);
             
-            let iter = 0;
-            let currentErr = 42000.0;
+            let currentIter = 0;
+            let currentErr = 38000.0;
             
-            clearInterval(simInterval);
+            clearInterval(loopAnim);
             
-            simInterval = setInterval(() => {
-                if (iter >= 2000) {
-                    clearInterval(simInterval);
+            loopAnim = setInterval(() => {
+                if (currentIter >= 1500) {
+                    clearInterval(loopAnim);
                     return;
                 }
                 
-                iter += 10;
-                currentErr -= Math.random() * 250;
-                if(currentErr < 1200) currentErr = 1142.3;
+                currentIter += 10;
+                currentErr -= Math.random() * 280;
+                if(currentErr < 900) currentErr = 894.1;
                 
-                // Draw random procedural bricks mimicking the NumPy array mutation
-                ctx.fillStyle = Math.random() > 0.4 ? '#9d4edd' : '#1f2d5a';
-                let bw = Math.random() * 12 + 4;
-                let bh = Math.random() * 6 + 2;
-                let bx = Math.random() * (canvas.width - bw);
-                let by = Math.random() * (canvas.height - bh);
+                ctx.fillStyle = Math.random() > 0.45 ? '#9d4edd' : '#1f2d5a';
+                let w = Math.random() * 10 + 4;
+                let h = Math.random() * 5 + 2;
+                let x = Math.random() * (canvas.width - w);
+                let y = Math.random() * (canvas.height - h);
                 
-                // Enforce rough shape boundaries for visualization
-                if (bx > 25 && bx < 155 && by > 30 && by < 90) {
-                    ctx.fillRect(bx, by, bw, bh);
+                if (x > 20 && x < 140 && y > 20 && y < 85) {
+                    ctx.fillRect(x, y, w, h);
                 }
                 
-                iterText.innerText = `Iterations: ${iter}`;
-                errText.innerText = `Error Δ: ${currentErr.toFixed(1)}`;
-            }, 15);
+                itTxt.innerText = `Iter: ${currentIter}`;
+                erTxt.innerText = `Err: ${currentErr.toFixed(1)}`;
+            }, 20);
         }
 
-        // Auto-start simulation on page load
-        window.addEventListener('load', runAlgoSimulation);
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(proceduralRender, 500);
+        });
     </script>
 </body>
 </html>
