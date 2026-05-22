@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Michał Antkowiak | Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Michał Antkowiak — Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 
     <style>
         :root {
-            --bg-base: #0a0a0c;
-            --bg-surface: #111115;
-            --bg-card: #16161f;
-            --accent: #9d4edd;
-            --text-main: #f0f1f5;
-            --text-muted: #9499b3;
-            --tech-blue: #1f2d5a;
+            --bg-main: #0a0a0a;
+            --bg-studio: #1a1a22; /* Nowe wyrafinowane tło dla modelu 3D */
+            --text-pure: #ffffff;
+            --text-dim: #7f7f8c;
+            --accent: #8a2be2;
+            --font-mono: 'Fira Code', monospace;
         }
 
         * {
@@ -27,518 +25,586 @@
         }
 
         body {
-            background-color: var(--bg-base);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
+            background-color: var(--bg-main);
+            color: var(--text-pure);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            letter-spacing: -0.02em;
+            -webkit-font-smoothing: antialiased;
         }
 
+        /* --- BRUTALIST NAVIGATION --- */
         nav {
             position: fixed;
             top: 0;
             width: 100%;
             z-index: 1000;
-            background: rgba(10, 10, 12, 0.8);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid rgba(157, 78, 221, 0.1);
+            padding: 30px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 5%;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
         }
 
-        nav a {
-            color: var(--text-main);
+        .nav-logo {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
             text-decoration: none;
-            font-weight: 700;
+            color: var(--text-pure);
         }
 
         .nav-links {
             display: flex;
-            gap: 20px;
+            gap: 40px;
             list-style: none;
         }
 
         .nav-links a {
-            color: var(--text-muted);
-            font-size: 0.9rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             transition: color 0.3s;
         }
 
         .nav-links a:hover {
-            color: var(--accent);
+            color: var(--text-pure);
         }
 
-        header {
-            min-height: 70vh;
+        /* --- MONUMENTAL HERO --- */
+        .hero {
+            min-height: 95vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
-            text-align: center;
-            background: radial-gradient(circle at 50% 50%, var(--tech-blue) 0%, var(--bg-base) 80%);
-            padding: 0 20px;
+            padding: 0 8%;
+        }
+
+        .hero h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: 8.5vw;
+            font-weight: 900;
+            line-height: 0.85;
+            text-transform: uppercase;
+            letter-spacing: -0.05em;
+            color: var(--text-pure);
+            margin-bottom: 30px;
+        }
+
+        .hero p {
+            font-size: 1.6rem;
+            font-weight: 300;
+            color: var(--text-dim);
+            max-width: 700px;
+            line-height: 1.4;
+        }
+
+        .hero p span {
+            color: var(--text-pure);
+            font-weight: 500;
+        }
+
+        /* --- LAYOUT SECTION CONTAINER --- */
+        .large-container {
+            padding: 140px 8%;
+        }
+
+        .grid-abstract {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            align-items: start;
+            margin-bottom: 120px;
+        }
+
+        .huge-num {
+            font-family: 'Inter', sans-serif;
+            font-size: 6rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.03);
+            line-height: 1;
+        }
+
+        .manifesto-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            line-height: 1;
+            margin-bottom: 30px;
+            color: var(--text-pure);
+        }
+
+        .manifesto-desc {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        /* --- PREMIUM CAD WORKBENCH --- */
+        .cad-section {
             margin-top: 60px;
         }
 
-        header h1 {
-            font-size: 3.5rem;
-            margin-bottom: 10px;
-        }
-
-        header p {
-            font-size: 1.3rem;
-            color: var(--text-muted);
-        }
-
-        header p span {
-            color: var(--accent);
-            font-weight: 600;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        section {
-            padding: 80px 0;
-            border-bottom: 1px solid rgba(240, 241, 245, 0.05);
-        }
-
-        .section-title {
-            font-size: 2rem;
-            margin-bottom: 40px;
-            border-left: 4px solid var(--accent);
-            padding-left: 15px;
-        }
-
-        .about-box {
-            background: var(--bg-surface);
-            padding: 30px;
-            border-radius: 6px;
-            border: 1px solid rgba(157, 78, 221, 0.1);
-        }
-
-        .about-box p {
-            color: var(--text-muted);
-            margin-bottom: 15px;
-            font-size: 1.05rem;
-        }
-
-        /* --- INTERACTIVE CAD WORKBENCH --- */
-        .cad-container {
+        .cad-interface {
             display: grid;
-            grid-template-columns: 250px 1fr;
-            gap: 20px;
-            background: var(--bg-surface);
-            padding: 20px;
-            border-radius: 6px;
-            border: 1px solid rgba(157, 78, 221, 0.1);
+            grid-template-columns: 300px 1fr;
+            gap: 40px;
+            background: #0f0f12;
+            padding: 40px;
+            border-radius: 12px;
         }
 
-        .cad-tabs {
+        .cad-nav {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
 
-        .cad-tab-btn {
-            background: var(--bg-base);
-            border: 1px solid rgba(240, 241, 245, 0.1);
-            color: var(--text-muted);
-            padding: 12px;
-            border-radius: 4px;
+        .cad-anchor {
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            padding: 16px 20px;
             text-align: left;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85rem;
+            border-radius: 8px;
             transition: all 0.3s;
         }
 
-        .cad-tab-btn:hover, .cad-tab-btn.active {
-            border-color: var(--accent);
-            color: var(--text-main);
-            background: rgba(157, 78, 221, 0.1);
+        .cad-anchor:hover {
+            color: var(--text-pure);
+            background: rgba(255, 255, 255, 0.02);
         }
 
-        .cad-screen {
-            background: #000;
-            border-radius: 4px;
-            height: 480px;
+        .cad-anchor.active {
+            background: #16161c;
+            color: var(--text-pure);
+            font-weight: 600;
+        }
+
+        .cad-viewer-frame {
+            border-radius: 8px;
+            height: 560px;
+            overflow: hidden;
             position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
-        .cad-content {
+        .cad-layer {
             display: none;
             width: 100%;
             height: 100%;
         }
 
-        .cad-content.active {
+        .cad-layer.active {
             display: block;
         }
 
-        .cad-content img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            padding: 10px;
-        }
-
+        /* STUDIO BACKGROUND IMPLEMENTATION */
         model-viewer {
             width: 100%;
             height: 100%;
+            background-color: var(--bg-studio);
         }
 
-        /* --- PROJECTS SECTION --- */
-        .project-block {
-            background: var(--bg-surface);
-            border-radius: 6px;
+        .cad-layer img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: var(--bg-studio);
             padding: 30px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(240, 241, 245, 0.05);
         }
 
-        .project-block h3 {
-            margin-bottom: 15px;
-            font-size: 1.4rem;
+        /* --- MONUMENTAL HARDWARE SHOWCASE --- */
+        .fullbleed-media {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            margin-top: 60px;
         }
 
-        .project-gallery {
+        .fullbleed-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .fullbleed-row img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .fullbleed-meta {
+            padding: 40px;
+        }
+
+        .fullbleed-meta h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 2rem;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            color: var(--text-pure);
+        }
+
+        .fullbleed-meta p {
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        /* --- CINEMATIC SOFTWARE PANELS --- */
+        .code-row-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-top: 60px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 60px;
+        }
+
+        .code-meta-description h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            color: var(--text-pure);
+            margin-bottom: 15px;
+        }
+
+        .code-meta-description p {
+            font-size: 1.05rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .code-sub-selectors {
+            display: flex;
             gap: 15px;
             margin-bottom: 20px;
         }
 
-        .project-gallery img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            border-radius: 4px;
-            border: 1px solid rgba(240, 241, 245, 0.05);
-        }
-
-        .project-block p {
-            color: var(--text-muted);
-            margin-bottom: 15px;
-        }
-
-        /* --- CODE / REPOS SECTION --- */
-        .repo-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-        }
-
-        .repo-card {
-            background: var(--bg-surface);
-            border-radius: 6px;
-            padding: 25px;
-            border: 1px solid rgba(240, 241, 245, 0.05);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .repo-card h3 {
-            margin-bottom: 15px;
-            font-size: 1.25rem;
-        }
-
-        .repo-card p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-bottom: 20px;
-            flex-grow: 1;
-        }
-
-        pre {
-            background: #020204;
-            padding: 15px;
-            border-radius: 4px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.8rem;
-            overflow-x: auto;
-            color: #a9b1d6;
-            border: 1px solid rgba(240, 241, 245, 0.05);
-            margin-bottom: 20px;
-            height: 220px;
-        }
-
-        .py-simulation {
-            background: #020204;
-            border: 1px solid rgba(157, 78, 221, 0.2);
-            border-radius: 4px;
-            height: 220px;
-            margin-bottom: 20px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .py-simulation canvas {
-            background: #050508;
-        }
-
-        .sim-controls {
-            position: absolute;
-            bottom: 8px;
-            left: 12px;
-            right: 12px;
-            display: flex;
-            justify-content: space-between;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.75rem;
-            color: var(--accent);
-        }
-
-        .sim-trigger {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: var(--tech-blue);
-            color: #fff;
+        .selector-tag {
+            background: #111115;
             border: none;
-            padding: 4px 8px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.7rem;
-            border-radius: 3px;
+            color: var(--text-dim);
+            padding: 8px 16px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
             cursor: pointer;
-        }
-
-        .repo-btn {
-            display: block;
-            text-align: center;
-            background: transparent;
-            border: 1px solid var(--accent);
-            color: #fff;
-            padding: 10px;
             border-radius: 4px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: background 0.3s;
+            transition: all 0.3s;
         }
 
-        .repo-btn:hover {
-            background: var(--accent);
+        .selector-tag:hover, .selector-tag.active {
+            background: var(--text-pure);
+            color: #000;
         }
 
-        /* --- EXPERIENCE TIMELINE --- */
-        .tl-wrap {
-            position: relative;
-            margin-top: 20px;
+        .raw-editor-box {
+            background: #020203;
+            border-radius: 8px;
+            padding: 30px;
+            height: 380px;
+            overflow: auto;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .tl-wrap::before {
-            content: '';
-            position: absolute;
-            left: 20px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--accent);
-        }
-
-        .tl-item {
-            position: relative;
-            padding-left: 50px;
-            margin-bottom: 30px;
-        }
-
-        .tl-item::before {
-            content: '';
-            position: absolute;
-            left: 13px;
-            top: 6px;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: var(--bg-base);
-            border: 3px solid var(--accent);
-        }
-
-        .tl-content h3 {
-            font-size: 1.15rem;
-            margin-bottom: 2px;
-        }
-
-        .tl-content h4 {
+        .raw-snippet {
+            display: none;
+            font-family: var(--font-mono);
             font-size: 0.85rem;
-            color: var(--accent);
-            margin-bottom: 8px;
-            text-transform: uppercase;
+            white-space: pre;
+            color: #a9b1d6;
         }
 
-        .tl-content p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
+        .raw-snippet.active {
+            display: block;
+        }
+
+        .action-anchor {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-pure);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--text-pure);
+            padding-bottom: 4px;
+            transition: opacity 0.3s;
+        }
+
+        .action-anchor:hover {
+            opacity: 0.7;
+        }
+
+        /* --- BRUTALIST ACADEMIC TIMELINE --- */
+        .minimal-tl {
+            margin-top: 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        .tl-stripe {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 30px;
+        }
+
+        .tl-date {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            font-weight: 500;
+        }
+
+        .tl-header-title h3 {
+            font-size: 1.4rem;
+            color: var(--text-pure);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .tl-header-title p {
+            font-size: 1rem;
+            color: var(--text-dim);
+            max-width: 700px;
         }
 
         footer {
-            background: #020204;
-            padding: 30px;
+            padding: 80px 8%;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
             text-align: center;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            border-top: 1px solid rgba(240, 241, 245, 0.05);
-            margin-top: 60px;
+            font-size: 0.85rem;
+            color: var(--text-dim);
         }
 
-        @media (max-width: 800px) {
-            .cad-container, .repo-grid {
+        @media (max-width: 960px) {
+            .hero h1 { font-size: 12vw; }
+            .grid-abstract, .cad-interface, .fullbleed-row, .code-row-display, .tl-stripe {
                 grid-template-columns: 1fr;
+                gap: 40px;
             }
-            .project-gallery {
-                grid-template-columns: 1fr;
-            }
-            .cad-screen {
-                height: 350px;
-            }
+            .cad-viewer-frame { height: 380px; }
+            .fullbleed-row img { height: 320px; }
         }
     </style>
 </head>
 <body>
 
     <nav>
-        <a href="#">M.ANTKOWIAK</a>
+        <a href="#" class="nav-logo">M.ANTKOWIAK</a>
         <ul class="nav-links">
             <li><a href="#about">Profil</a></li>
             <li><a href="#cad">CAD</a></li>
-            <li><a href="#projects">Projekty</a></li>
-            <li><a href="#software">Kody</a></li>
-            <li><a href="#experience">Doświadczenie</a></li>
+            <li><a href="#hardware">Hardware</a></li>
+            <li><a href="#software">Software</a></li>
+            <li><a href="#education">Edukacja</a></li>
         </ul>
     </nav>
 
-    <header>
-        <h1>Michał Antkowiak</h1>
-        <p>Wydział Mechatroniki PW | <span>Portfolio Inżynierskie</span></p>
-    </header>
+    <section class="hero">
+        <h1>Michał<br>Antkowiak</h1>
+        <p>Student Wydziału Mechatroniki Politechniki Warszawskiej. Rozwój systemów autonomicznych, programowanie zorientowane obiektowo w <span>C++</span> oraz inżynieria mechaniczna <span>CAD</span>.</p>
+    </section>
 
-    <div class="container">
+    <div class="large-container">
 
-        <section id="about">
-            <h2 class="section-title">Profil Zawodowy</h2>
-            <div class="about-box">
-                <p>Jestem studentem pierwszego roku Wydziału Mechatroniki Politechniki Warszawskiej oraz członkiem Koła Naukowego ONYKS. Moje zainteresowania inżynierskie skupiają się na styku mechaniki konstrukcyjnej, systemów mikroprocesorowych oraz programowania użytkowego.</p>
-                <p>W sferze software rozwijam aplikacje obiektowe w środowisku C++ (Qt) oraz skrypty algorytmiczne w języku Python (NumPy, Pillow). W obszarze hardware zajmuję się parametryzacją i projektowaniem mechanicznym maszyn w Autodesk Inventor oraz AutoCAD.</p>
+        <section id="about" class="grid-abstract">
+            <div class="huge-num">01 //</div>
+            <div>
+                <h2 class="manifesto-title">Profil Inżynierski</h2>
+                <p class="manifesto-desc">Moja ścieżka akademicka i naukowa skupia się wokół interdyscyplinarnych zagadnień mechatronicznych. Jako członek Koła Naukowego ONYKS realizuję projekty na styku hardware i software, łącząc zaawansowane programowanie strukturalne i obiektowe z precyzyjnym wykonawstwem mechanicznym, analizą tolerancji oraz dokumentacją normatywną ISO.</p>
             </div>
         </section>
 
         <section id="cad">
-            <h2 class="section-title">Konstrukcje i Dokumentacja CAD</h2>
-            <div class="cad-container">
-                <div class="cad-tabs">
-                    <button class="cad-tab-btn active" onclick="tabCAD('cad-3d', this)">Złożenie mechanizmu (3D)</button>
-                    <button class="cad-tab-btn" onclick="tabCAD('cad-wspornik', this)">ZP 01: Wspornik (2D)</button>
-                    <button class="cad-tab-btn" onclick="tabCAD('cad-plytka', this)">ZP 02: Płytka / Rolka (2D)</button>
-                    <button class="cad-tab-btn" onclick="tabCAD('cad-kolo', this)">ZP 03: Koło pasowe (2D)</button>
-                    <button class="cad-tab-btn" onclick="tabCAD('cad-walek', this)">ZP 04: Wałek stopniowany (2D)</button>
+            <div class="grid-abstract">
+                <div class="huge-num">02 //</div>
+                <div>
+                    <h2 class="manifesto-title">Konstrukcje CAD</h2>
+                    <p class="manifesto-desc">Projektowanie parametryczne podzespołów maszyn oraz generowanie płaskiej dokumentacji wykonawczej (2D) w systemie Autodesk Inventor.</p>
                 </div>
-                <div class="cad-screen">
-                    <div id="cad-3d" class="cad-content active">
+            </div>
+
+            <div class="cad-interface">
+                <div class="cad-nav">
+                    <button class="cad-anchor active" onclick="triggerCAD('cad3d', this)">Złożenie mechanizmu (3D)</button>
+                    <button class="cad-anchor" onclick="triggerCAD('cad1', this)">ZP 01: Wspornik (2D)</button>
+                    <button class="cad-anchor" onclick="triggerCAD('cad2', this)">ZP 02: Płytka / Rolka (2D)</button>
+                    <button class="cad-anchor" onclick="triggerCAD('cad3', this)">ZP 03: Koło pasowe (2D)</button>
+                    <button class="cad-anchor" onclick="triggerCAD('cad4', this)">ZP 04: Wałek stopniowany (2D)</button>
+                </div>
+                <div class="cad-viewer-frame">
+                    <div id="cad3d" class="cad-layer active">
                         <model-viewer src="Zespół1.glb" camera-controls auto-rotate shadow-intensity="1"></model-viewer>
                     </div>
-                    <div id="cad-wspornik" class="cad-content">
+                    <div id="cad1" class="cad-layer">
                         <img src="wspornik.png" alt="Wspornik">
                     </div>
-                    <div id="cad-plytka" class="cad-content">
+                    <div id="cad2" class="cad-layer">
                         <img src="plytka.png" alt="Płytka">
                     </div>
-                    <div id="cad-kolo" class="cad-content">
-                        <img src="kolopasowe.png" alt="Koło pasowe">
+                    <div id="cad3" class="cad-layer">
+                        <img src="kolopasowe.png" alt="Koło Pasowe">
                     </div>
-                    <div id="cad-walek" class="cad-content">
+                    <div id="cad4" class="cad-layer">
                         <img src="walek.png" alt="Wałek">
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="projects">
-            <h2 class="section-title">Projekty Mechatroniczne</h2>
-            <div class="project-block">
-                <h3>Smart System Hydroponiczny (Project-Based Learning)</h3>
-                <div class="project-gallery">
-                    <img src="doniczka.jpg" alt="Prototyp doniczki">
-                    <img src="doniczka3d.png" alt="Render konstrukcji">
+        <section id="hardware">
+            <div class="grid-abstract">
+                <div class="huge-num">03 //</div>
+                <div>
+                    <h2 class="manifesto-title">Systemy Mechatroniczne</h2>
+                    <p class="manifesto-desc">Integracja platform sprzętowych, mikrokontrolerów oraz mechanizmów osiowych w ramach struktur Project-Based Learning.</p>
                 </div>
-                <p>Projekt interdyscyplinarnego urządzenia smart-gardening realizowany w zespole akademickim. Układ automatyzuje procesy opieki nad roślinami hydroponicznymi poprzez zbieranie danych środowiskowych oraz aktywną reakcję układów wykonawczych.</p>
-                <p><strong>Mój wkład:</strong> Opracowanie mechaniki urządzenia, w tym konstrukcji obrotowej ramy łożyskowanej kulkowo, umożliwiającej płynny ruch doniczki wokół osi w celu równomiernego naświetlania rośliny. Integracja czujników wilgotności podłoża i temperatury z mikrokontrolerem oraz oprogramowanie logiki sterowania pompą hydrauliczną i napędem w MicroPythonie.</p>
+            </div>
+
+            <div class="fullbleed-media">
+                <div class="fullbleed-row">
+                    <img src="doniczka.jpg" alt="Rzeczywisty Prototyp Systemu">
+                    <div class="fullbleed-meta">
+                        <h4>Smart System Hydroponiczny</h4>
+                        <p>Kompleksowe rozwiązanie automatyzujące procesy upraw hydroponicznych. Odpowiadałem za mechaniczną strukturę urządzenia, w tym unikalny mechanizm obrotowy ramy osadzonej na łożysku kulkowym. Konstrukcja zapewnia płynną rotację doniczki wokół własnej osi, niwelując zjawisko fototropizmu ujemnego (wyginania pędów w jedną stronę).</p>
+                        <p>Układ integruje odczyty parametrów środowiskowych (wilgotność, temperatura) oraz implementuje algorytmy wykonawcze sterowania pompami i napędem w środowisku MicroPython.</p>
+                    </div>
+                </div>
+                <div class="fullbleed-row">
+                    <div class="fullbleed-meta">
+                        <h4>Analiza Parametryczna Konstrukcji ramy</h4>
+                        <p>Cyfrowy render struktury nośnej wykonany podczas optymalizacji geometrii podstawy. Pozwolił na precyzyjne rozplanowanie osiowe elementów napędowych oraz stabilne spasowanie punktów montażowych podzespołów elektronicznych i sensorów.</p>
+                    </div>
+                    <img src="doniczka3d.png" alt="Render Konstrukcji Ramy">
+                </div>
             </div>
         </section>
 
         <section id="software">
-            <h2 class="section-title">Repozytoria Kodu</h2>
-            <div class="repo-grid">
-                
-                <div class="repo-card">
-                    <h3>Silnik Szachowy & GUI (C++)</h3>
-                    <p>Aplikacja desktopowa napisana w języku C++ z interfejsem graficznym w bibliotece Qt. Implementuje pełną logikę gry w szachy w paradygmacie obiektowym oraz moduł bota szachowego wykonującego analizę i ewaluację pozycji.</p>
-                    <pre>bool Board::validateMove(int fromX, int fromY, int toX, int toY) {
-    Piece* p = grid[fromY][fromX];
-    if (p == nullptr) return false;
-    
-    if (!p->isValidPattern(fromX, fromY, toX, toY)) return false;
-    return isPathClear(fromX, fromY, toX, toY);
-}</pre>
-                    <a href="https://github.com/MichalAntkowiak/ChessEngine_1" target="_blank" class="repo-btn">Kod źródłowy C++ ↗</a>
+            <div class="grid-abstract">
+                <div class="huge-num">04 //</div>
+                <div>
+                    <h2 class="manifesto-title">Inżynieria Oprogramowania</h2>
+                    <p class="manifesto-desc">Implementacje obiektowe systemów desktopowych oraz matematyczne skrypty optymalizacji macierzowej.</p>
                 </div>
+            </div>
 
-                <div class="repo-card">
-                    <h3>Kreator Obrazów (Python)</h3>
-                    <p>Skrypt `main4.py` realizujący generowanie obrazów przy użyciu algorytmu losowego dopasowywania składowych tekstur. Wykorzystuje bibliotekę NumPy do operacji macierzowych oraz Pillow do zaawansowanej analizy kanałów RGBA i masek przezroczystości.</p>
-                    <div class="py-simulation">
-                        <button class="sim-trigger" onclick="proceduralRender()">Resetuj symulację</button>
-                        <canvas id="py-canvas" width="160" height="110"></canvas>
-                        <div class="sim-controls">
-                            <span id="p-iter">Iter: 0</span>
-                            <span id="p-err">Err: 0.0</span>
-                        </div>
+            <div class="code-row-display">
+                <div class="code-meta-description">
+                    <h3>Obiektowy Silnik Szachowy (C++ / Qt)</h3>
+                    <p>Zaawansowana implementacja silnika logicznego gry w szachy w standardzie C++17 z wykorzystaniem bibliotek graficznych Qt. Architektura bazuje na polimorficznych klasach figur dziedziczących z klasy bazowej Piece, rygorystycznym zarządzaniu pamięcią operacyjną oraz module sztucznej inteligencji realizującym heurystyczną ewaluację stanów planszy.</p>
+                    <a href="https://github.com/MichalAntkowiak/ChessEngine_1" target="_blank" class="action-anchor">Zobacz pełne repozytorium C++ ↗</a>
+                </div>
+                <div>
+                    <div class="code-sub-selectors">
+                        <button class="selector-tag active" onclick="triggerSnippet('cpp1', this)">board.cpp (Destruktor)</button>
+                        <button class="selector-tag" onclick="triggerSnippet('cpp2', this)">gameengine.cpp (AI)</button>
+                        <button class="selector-tag" onclick="triggerSnippet('cpp3', this)">bishop.cpp (Ruch)</button>
                     </div>
-                    <a href="https://github.com/MichalAntkowiak/Generative-Image-Builder" target="_blank" class="repo-btn">Kod źródłowy Python ↗</a>
-                </div>
+                    <div class="raw-editor-box">
+                        <div id="cpp1" class="raw-snippet active">Board::~Board() {
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+            if (grid[i][j] != nullptr) {
+                delete grid[i][j]; // Czyszczenie wskaźników z pamięci RAM
+                grid[i][j] = nullptr;
+            }
+        }
+    }
+}</div>
+                        <div id="cpp2" class="raw-snippet">void GameEngine::makeAIMove() {
+    std::vector&lt;Move&gt; legalMoves = getAllLegalMoves(PieceColor::Black);
+    if (legalMoves.empty()) return;
 
+    Move bestMove = legalMoves[0];
+    int bestScore = -999999;
+    // Pętla symulacji posunięć i przewidywanie odpowiedzi gracza...
+}</div>
+                        <div id="cpp3" class="raw-snippet">bool Bishop::isValidMove(int toX, int toY, const Board& board) {
+    int dx = toX - x;
+    int dy = toY - y;
+    if (std::abs(dx) != std::abs(dy) || dx == 0) return false;
+    // Sprawdzanie drogi diagonalnej pod kątem kolizji...
+    return true;
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-row-display">
+                <div class="code-meta-description">
+                    <h3>Kreator Obrazów (Python / NumPy)</h3>
+                    <p>Skrypt algorytmiczny optymalizujący dopasowanie składowych płatów tekstur na bazie mapy przezroczystości obrazu wejściowego. Wykorzystuje operacje na wielowymiarowych macierzach NumPy do obliczania błędu średniokwadratowego dopasowania kanałów RGB oraz Pillow do zaawansowanego maskowania warstw (Alpha Masking).</p>
+                    <a href="https://github.com/MichalAntkowiak/Generative-Image-Builder" target="_blank" class="action-anchor">Zobacz pełne repozytorium Python ↗</a>
+                </div>
+                <div>
+                    <div class="raw-editor-box" style="height: auto;">
+                        <div class="raw-snippet active">def compute_slice_error(slice_a, slice_b):
+    # Ewaluacja błędu średniokwadratowego dopasowania kanałów macierzy
+    return np.sum((slice_a - slice_b) ** 2)
+
+if new_error &lt; old_error:
+    # Akceptacja zmiany w strukturze macierzowej obrazu wyjściowego
+    eval_canvas_np[y:y+bh, x:x+bw] = temp_slice</div>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <section id="experience">
-            <h2 class="section-title">Edukacja i Doświadczenie</h2>
-            <div class="tl-wrap">
-                <div class="tl-item">
-                    <div class="tl-content">
+        <section id="education">
+            <div class="grid-abstract">
+                <div class="huge-num">05 //</div>
+                <div>
+                    <h2 class="manifesto-title">Ścieżka Edukacji</h2>
+                </div>
+            </div>
+
+            <div class="minimal-tl">
+                <div class="tl-stripe">
+                    <div class="tl-date">10.2025 — OBECNIE</div>
+                    <div class="tl-header-title">
                         <h3>Koło Naukowe "ONYKS"</h3>
-                        <h4>10.2025 – Obecnie</h4>
-                        <p>Aktywny rozwój autorskich systemów mechatronicznych oraz embedded w zespołach projektowych.</p>
+                        <p>Projektowanie oraz implementacja dedykowanych modułów hardware/software w strukturach studenckich zespołów badawczych.</p>
                     </div>
                 </div>
-                <div class="tl-item">
-                    <div class="tl-content">
-                        <h3>Wydział Mechatroniki PW</h3>
-                        <h4>10.2025 – Obecnie</h4>
-                        <p>Studia inżynierskie dzienne. Zakres: programowanie, elektrotechnika, metrologia laboratoryjna, mechanika.</p>
+                <div class="tl-stripe">
+                    <div class="tl-date">10.2025 — OBECNIE</div>
+                    <div class="tl-header-title">
+                        <h3>Politechnika Warszawska</h3>
+                        <p>Studia inżynierskie dzienne na Wydziale Mechatroniki. Zakres merytoryczny: mechanika analityczna, elektrotechnika, programowanie inżynierskie, zaawansowana metrologia.</p>
                     </div>
                 </div>
-                <div class="tl-item">
-                    <div class="tl-content">
-                        <h3>Korepetytor Matematyki</h3>
-                        <h4>09.2024 – Obecnie</h4>
-                        <p>Przygotowanie uczniów do egzaminów, dydaktyka zagadnień logicznych i algebraicznych.</p>
+                <div class="tl-stripe">
+                    <div class="tl-date">09.2024 — OBECNIE</div>
+                    <div class="tl-header-title">
+                        <h3>Konsultacje i Dydaktyka Matematyczna</h3>
+                        <p>Prowadzenie indywidualnych paneli przygotowawczych z zakresu algebry, analizy matematycznej oraz struktur geometrycznych.</p>
                     </div>
                 </div>
-                <div class="tl-item">
-                    <div class="tl-content">
-                        <h3>Kurier Gastronomiczny</h3>
-                        <h4>02.2025 – 10.2025</h4>
-                        <p>Zarządzanie czasem, obsługa systemów rozliczeniowych i logistyka dostaw.</p>
+                <div class="tl-stripe">
+                    <div class="tl-date">2024</div>
+                    <div class="tl-header-title">
+                        <h3>XII LO im. Juliusza Słowackiego</h3>
+                        <p>Ukończenie edukacji średniej ogólnokształcącej w Warszawie w profilu matematyczno-fizycznym.</p>
                     </div>
                 </div>
             </div>
@@ -547,64 +613,24 @@
     </div>
 
     <footer>
-        <p>&copy; 2026 Michał Antkowiak. Realizacja przy użyciu GitHub Pages.</p>
+        <p>&copy; 2026 Michał Antkowiak. Witryna hostowana w architekturze GitHub Pages.</p>
     </footer>
 
     <script>
-        function tabCAD(id, btn) {
-            document.querySelectorAll('.cad-tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.cad-content').forEach(c => c.classList.remove('active'));
+        function triggerCAD(layerId, btn) {
+            document.querySelectorAll('.cad-anchor').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.cad-layer').forEach(l => l.classList.remove('active'));
             btn.classList.add('active');
-            document.getElementById(id).classList.add('active');
+            document.getElementById(layerId).classList.add('active');
         }
 
-        let loopAnim = null;
-        function proceduralRender() {
-            const canvas = document.getElementById('py-canvas');
-            if(!canvas) return;
-            const ctx = canvas.getContext('2d');
-            const itTxt = document.getElementById('p-iter');
-            const erTxt = document.getElementById('p-err');
-            
-            ctx.fillStyle = '#050508';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.font = 'bold 38px "Inter"';
-            ctx.fillStyle = 'rgba(240, 241, 245, 0.04)';
-            ctx.fillText('M_A', 35, 70);
-            
-            let currentIter = 0;
-            let currentErr = 38000.0;
-            
-            clearInterval(loopAnim);
-            
-            loopAnim = setInterval(() => {
-                if (currentIter >= 1500) {
-                    clearInterval(loopAnim);
-                    return;
-                }
-                
-                currentIter += 10;
-                currentErr -= Math.random() * 280;
-                if(currentErr < 900) currentErr = 894.1;
-                
-                ctx.fillStyle = Math.random() > 0.45 ? '#9d4edd' : '#1f2d5a';
-                let w = Math.random() * 10 + 4;
-                let h = Math.random() * 5 + 2;
-                let x = Math.random() * (canvas.width - w);
-                let y = Math.random() * (canvas.height - h);
-                
-                if (x > 20 && x < 140 && y > 20 && y < 85) {
-                    ctx.fillRect(x, y, w, h);
-                }
-                
-                itTxt.innerText = `Iter: ${currentIter}`;
-                erTxt.innerText = `Err: ${currentErr.toFixed(1)}`;
-            }, 20);
+        function triggerSnippet(blockId, btn) {
+            const container = btn.parentElement.parentElement;
+            container.querySelectorAll('.selector-tag').forEach(b => b.classList.remove('active'));
+            container.querySelectorAll('.raw-snippet').forEach(s => s.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(blockId).classList.add('active');
         }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(proceduralRender, 500);
-        });
     </script>
 </body>
 </html>
