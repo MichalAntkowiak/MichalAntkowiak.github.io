@@ -133,67 +133,69 @@
         .about-left { color: var(--text-light); font-weight: 400; }
         .about-right { color: var(--text-dark); display: flex; flex-direction: column; gap: 20px; }
 
-        /* --- MONUMENTAL AUTODESK INVENTOR STACK --- */
-        .inventor-linear-layout {
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-            width: 100%;
-        }
-
-        .cad-3d-fullbleed-viewport {
-            background-color: var(--bg-studio);
-            border-radius: 8px;
-            width: 100%;
-            height: 600px;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            position: relative;
-        }
-
-        model-viewer { width: 100%; height: 100%; background-color: var(--bg-studio); }
-
-        .blueprints-vertical-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-            width: 100%;
-        }
-
-        .blueprint-container-box {
+        /* --- AUTODESK INVENTOR WORKBENCH --- */
+        .cad-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
             background: var(--bg-box);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
             padding: 30px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
         }
 
-        .blueprint-container-box h4 {
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            color: var(--accent-purple);
-            letter-spacing: 1px;
+        .cad-sidebar { display: flex; flex-direction: column; gap: 6px; }
+        
+        .cad-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-dark);
+            padding: 14px 18px;
+            text-align: left;
+            font-family: inherit;
             font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s;
         }
 
-        .blueprint-image-cage {
-            width: 100%;
-            background: var(--bg-studio);
+        .cad-btn:hover { color: var(--text-light); background: rgba(255, 255, 255, 0.02); }
+        .cad-btn.active {
+            background: #13131a;
+            border-color: var(--border-color);
+            color: var(--text-light);
+            border-left: 3px solid var(--accent-purple);
+        }
+
+        /* Anti-distortion framing engine for technical blueprints */
+        .cad-view-frame {
+            background-color: var(--bg-studio);
             border-radius: 6px;
+            width: 100%;
+            height: 550px;
+            position: relative;
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.02);
         }
 
-        .blueprint-image-cage img {
+        .cad-layer { display: none; width: 100%; height: 100%; }
+        .cad-layer.active { display: flex; justify-content: center; align-items: center; }
+        
+        model-viewer { width: 100%; height: 550px; background-color: var(--bg-studio); }
+        
+        .cad-layer img {
             max-width: 100%;
+            max-height: 100%;
+            width: auto;
             height: auto;
-            max-height: 90vh;
             object-fit: contain;
             display: block;
             border-radius: 4px;
+            padding: 10px;
         }
 
         /* --- SYSTEM HYDROPONICZNY --- */
@@ -238,14 +240,14 @@
         .hw-text-box { display: flex; flex-direction: column; justify-content: center; }
         .hw-text-box h3 { font-size: 1.5rem; text-transform: uppercase; margin-bottom: 15px; font-weight: 700; }
         .hw-text-box p { color: var(--text-dark); font-size: 1rem; line-height: 1.6; margin-bottom: 20px; text-align: justify; }
-        .hw-list { list-style: none; margin-bottom: 25px; }
+        .hw-list { list-style: none; margin-bottom: 20px; }
         .hw-list li { position: relative; padding-left: 22px; margin-bottom: 10px; font-size: 0.95rem; color: var(--text-light); }
         .hw-list li::before { content: "▪"; position: absolute; left: 0; color: var(--accent-purple); top: 1px; }
 
         .hw-tech-details {
             border-top: 1px solid var(--border-color);
-            padding-top: 20px;
-            margin-top: 10px;
+            padding-top: 15px;
+            margin-top: 5px;
         }
 
         .hw-tech-details summary {
@@ -256,16 +258,15 @@
             user-select: none;
             outline: none;
             font-weight: 500;
-            transition: color 0.2s;
         }
 
         .hw-tech-details summary:hover { color: var(--text-light); }
 
         .hw-details-content {
-            padding-top: 20px;
+            padding-top: 15px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
             font-size: 0.95rem;
             color: var(--text-dark);
             border-left: 2px solid var(--border-color);
@@ -325,6 +326,7 @@
             position: absolute;
         }
 
+        /* Interactive Weather Simulator View */
         .weather-panel {
             background: var(--bg-terminal);
             border: 1px solid var(--border-color);
@@ -440,8 +442,8 @@
 
         @media (max-width: 1024px) {
             .hero-title { font-size: 12vw; }
-            .about-layout, .hw-card, .lab-layout { grid-template-columns: 1fr; gap: 40px; }
-            .cad-3d-fullbleed-viewport { height: 400px; }
+            .about-layout, .cad-container, .hw-card, .lab-layout { grid-template-columns: 1fr; gap: 40px; }
+            .cad-view-frame { min-height: 400px; }
         }
     </style>
 </head>
@@ -469,11 +471,11 @@
             <div class="section-title">O mnie</div>
             <div class="about-layout">
                 <div class="about-left">
-                    Studiuję mechatronikę, ponieważ interesuje mnie budowanie gotowych, kompletnych urządzeń — od wykonania rysunków i modeli konstrukcyjnych, przez elektronikę pomiarową, aż po napisanie kodu sterującego pracą całego układu. 
+                    Studiuję mechatronikę, ponieważ interesuje mnie budowanie gotowych, kompletnych urządzeń — od wykonania rysunków i modeli konstrukcyjnych, przez elektroniki pomiarową, aż po napisanie kodu sterującego pracą całego układu. 
                 </div>
                 <div class="about-right">
                     <p>W obszarze mechaniki pracuję w programie Autodesk Inventor, gdzie zajmuję się modelowaniem części i kompletnych złożeń maszynowych. Zwracam szczególną uwagę na poprawne pasowania tolerancyjne podzespołów oraz generowanie czystej, czytelnej dokumentacji wykonawczej 2D zgodnej z normami ISO.</p>
-                    <p>W sferze oprogramowania piszę aplikacje zorientowane obiektowo w C++ (z wykorzystaniem środowiska Qt Creator), dbając o optymalną strukturę kodu oraz precyzyjne zarządzanie pamięcią dynamiczną. Tworzę również skrypty analityczne w Pythonie ułatwiające przetwarzanie i operowanie na danych pomiarowych.</p>
+                    <p>W sferze oprogramowania piszę aplikacje zorientowane obiektowo w C++ (z wykorzystaniem środowiska Qt Creator), dbając o optymalną strukturę kodu oraz precyzyjne zarządzanie pamięcią dynamicczną. Tworzę również skrypty analityczne w Pythonie ułatwiające przetwarzanie i operowanie na danych pomiarowych.</p>
                 </div>
             </div>
         </section>
@@ -481,38 +483,29 @@
         <section id="cad">
             <h2 class="section-title">Projekty w programie Autodesk Inventor</h2>
             
-            <div class="inventor-linear-layout">
-                <div class="cad-3d-fullbleed-viewport">
-                    <model-viewer src="Zespół1.glb" camera-controls auto-rotate shadow-intensity="1"></model-viewer>
+            <div class="cad-container">
+                <div class="cad-sidebar">
+                    <button class="cad-btn active" onclick="triggerCAD('cad-3d-studio', this)">Złożenie mechanizmu (3D)</button>
+                    <button class="cad-btn" onclick="triggerCAD('cad-wspornik-img', this)">ZP 01: Wspornik (2D)</button>
+                    <button class="cad-btn" onclick="triggerCAD('cad-plytka-img', this)">ZP 02: Płytka / Rolka (2D)</button>
+                    <button class="cad-btn" onclick="triggerCAD('cad-kolo-img', this)">ZP 03: Koło pasowe (2D)</button>
+                    <button class="cad-btn" onclick="triggerCAD('cad-walek-img', this)">ZP 04: Wałek stopniowany (2D)</button>
                 </div>
-
-                <div class="blueprints-vertical-stack">
-                    <div class="blueprint-container-box">
-                        <h4>ZP 01: Wspornik (Dokumentacja 2D)</h4>
-                        <div class="blueprint-image-cage">
-                            <img src="wspornik.jpg" alt="Rysunek wykonawczy wspornika 2D">
-                        </div>
+                <div class="cad-view-frame">
+                    <div id="cad-3d-studio" class="cad-layer active">
+                        <model-viewer src="Zespol1.glb" camera-controls auto-rotate shadow-intensity="1"></model-viewer>
                     </div>
-
-                    <div class="blueprint-container-box">
-                        <h4>ZP 02: Płytka / Rolka (Dokumentacja 2D)</h4>
-                        <div class="blueprint-image-cage">
-                            <img src="plytka.jpg" alt="Rysunek wykonawczy płytki 2D">
-                        </div>
+                    <div id="cad-wspornik-img" class="cad-layer">
+                        <img src="wspornik.png" alt="Rysunek wykonawczy wspornika 2D">
                     </div>
-
-                    <div class="blueprint-container-box">
-                        <h4>ZP 03: Koło pasowe (Dokumentacja 2D)</h4>
-                        <div class="blueprint-image-cage">
-                            <img src="kolopasowe.jpg" alt="Rysunek wykonawczy koła pasowego 2D">
-                        </div>
+                    <div id="cad-plytka-img" class="cad-layer">
+                        <img src="plytka.png" alt="Rysunek wykonawczy płytki 2D">
                     </div>
-
-                    <div class="blueprint-container-box">
-                        <h4>ZP 04: Wałek stopniowany (Dokumentacja 2D)</h4>
-                        <div class="blueprint-image-cage">
-                            <img src="walek.jpg" alt="Rysunek techniczny wałka stopniowanego 2D">
-                        </div>
+                    <div id="cad-kolo-img" class="cad-layer">
+                        <img src="kolopasowe.png" alt="Rysunek wykonawczy koła pasowego 2D">
+                    </div>
+                    <div id="cad-walek-img" class="cad-layer">
+                        <img src="walek.png" alt="Rysunek techniczny wałka stopniowanego 2D">
                     </div>
                 </div>
             </div>
@@ -558,10 +551,10 @@
                 
                 <div class="lab-card">
                     <h3><i class="fa-solid fa-chess"></i> Interaktywny Silnik Szachowy (C++)</h3>
-                    <p class="lab-summary">Grywalna emulacja silnika szachowego odzwierciedlająca moją architekturę klas z Qt. Zaimplementowałem pełną walidację toru ruchu (czyszczenie linii dla Wieży, skosów dla Gońca oraz ruchu Skoczka w kształcie litery L). Zrób ruch białymi — wirtualny terminal wyświetli analizę logiki, a komputer odpowie zaanwasowanym algorytmem Minimax (Głębokość 2) zabezpieczającym przed stratami figur.</p>
+                    <p class="lab-summary">Grywalna emulacja silnika szachowego odzwierciedlająca moją architekturę klas z Qt. Zaimplementowałem pełną walidację toru ruchu (czyszczenie linii dla Wieży, skosów dla Gońca oraz ruchu Skoczka w kształcie litery L). Zrób ruch białymi — wirtualny terminal wyświetli analizę logiki, a komputer odpowie zaawansowanym algorytmem Minimax (Głębokość 2) zabezpieczającym przed stratami figur.</p>
                     
                     <div class="chess-box" id="chess-board-matrix"></div>
-                    <div class="terminal-box" id="chess-terminal-logs">[SYSTEM] Silnik szachowy załadowany. Oczekiwanie na ruch gracza (białe)...</div>
+                    <div class="terminal-box" id="chess-terminal-logs">[SYSTEM] Silnik szachowy skompilowany pomyślnie. Oczekiwanie na ruch Gracza (białe)...</div>
                     <a href="https://github.com/MichalAntkowiak/ChessEngine_1" target="_blank" class="repo-link">Repozytorium kodu C++ (Szachy) ↗</a>
                 </div>
 
@@ -643,7 +636,6 @@
     </footer>
 
     <script>
-        // CAD Studio Manager
         function triggerCAD(layerId, btn) {
             document.querySelectorAll('.cad-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.cad-layer').forEach(v => v.classList.remove('active'));
@@ -651,7 +643,6 @@
             document.getElementById(layerId).classList.add('active');
         }
 
-        /* --- REAL WARSAW WEATHER LIVE FETCH ENGINE --- */
         async function fetchLiveWarsawWeather() {
             const tempNode = document.getElementById('live-temp');
             const statusNode = document.getElementById('live-status');
@@ -688,7 +679,6 @@
         }
         window.addEventListener('DOMContentLoaded', fetchLiveWarsawWeather);
 
-        /* --- THE COMPILER CORE INTERACTIVE CHESS ENGINE (MINIMAX LOOKAHEAD DEPTH 2) --- */
         const chessLayout = [
             ['♜','♞','♝','♛','♚','♝','♞','♜'],
             ['♟','♟','♟','♟','♟','♟','♟','♟'],
@@ -711,7 +701,6 @@
             chessLogs.scrollTop = chessLogs.scrollHeight;
         }
 
-        // Translates matrix coordinates into clean algebraic notation (e.g. 4,6 -> e2)
         function getChessNotation(x, y) {
             const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
             const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
@@ -885,8 +874,8 @@
 
         function willMoveLeaveKingInCheck(fx, fy, tx, ty, color) {
             let simGrid = JSON.parse(JSON.stringify(boardState));
-            simGrid[ty][tx] = simGrid[fx][fy];
-            simGrid[fx][fy] = '';
+            simGrid[ty][tx] = simGrid[fy][fx];
+            simGrid[fy][fx] = '';
             return isKingCheckedOnGrid(simGrid, color);
         }
 
@@ -987,12 +976,10 @@
                 m.score = worstCaseScenario;
             });
 
-            // ANTI-REPETITION BALANCER SYSTEM (Resolves move loops on identical weights)
             legalBlackMoves.sort((a, b) => b.score - a.score);
             let topScoreValue = legalBlackMoves[0].score;
             let matchingTopMoves = legalBlackMoves.filter(m => m.score === topScoreValue);
             
-            // Random choice breakdown among equal optimal choices breaks oscillation loops
             let selectedAIMove = matchingTopMoves[Math.floor(Math.random() * matchingTopMoves.length)];
 
             boardState[selectedAIMove.to.y][selectedAIMove.to.x] = boardState[selectedAIMove.from.y][selectedAIMove.from.x];
