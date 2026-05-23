@@ -133,68 +133,64 @@
         .about-left { color: var(--text-light); font-weight: 400; }
         .about-right { color: var(--text-dark); display: flex; flex-direction: column; gap: 20px; }
 
-        /* --- AUTODESK INVENTOR WORKBENCH --- */
-        .cad-container {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 30px;
-            background: var(--bg-box);
-            padding: 30px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        .cad-sidebar { display: flex; flex-direction: column; gap: 6px; }
-        
-        .cad-btn {
-            background: transparent;
-            border: 1px solid transparent;
-            color: var(--text-dark);
-            padding: 14px 18px;
-            text-align: left;
-            font-family: inherit;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.3s;
-        }
-
-        .cad-btn:hover { color: var(--text-light); background: rgba(255, 255, 255, 0.02); }
-        .cad-btn.active {
-            background: #13131a;
-            border-color: var(--border-color);
-            color: var(--text-light);
-            border-left: 3px solid var(--accent-purple);
-        }
-
-        /* Anti-distortion framing engine for technical blueprints */
-        .cad-view-frame {
-            background-color: var(--bg-studio);
-            border-radius: 6px;
+        /* --- MONUMENTAL AUTODESK INVENTOR STACK --- */
+        .inventor-linear-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
             width: 100%;
-            height: auto;
-            min-height: 550px;
-            max-height: 80vh;
-            position: relative;
+        }
+
+        .cad-3d-fullbleed-viewport {
+            background-color: var(--bg-studio);
+            border-radius: 8px;
+            width: 100%;
+            height: 600px;
+            border: 1px solid var(--border-color);
             overflow: hidden;
+            position: relative;
+        }
+
+        model-viewer { width: 100%; height: 100%; background-color: var(--bg-studio); }
+
+        .blueprints-vertical-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            width: 100%;
+        }
+
+        .blueprint-container-box {
+            background: var(--bg-box);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 30px;
+        }
+
+        .blueprint-container-box h4 {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            color: var(--accent-purple);
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .blueprint-image-cage {
+            width: 100%;
+            background: var(--bg-studio);
+            border-radius: 6px;
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.02);
-            padding: 20px;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.01);
         }
 
-        .cad-layer { display: none; width: 100%; height: 100%; }
-        .cad-layer.active { display: flex; justify-content: center; align-items: center; }
-        
-        model-viewer { width: 100%; height: 550px; background-color: var(--bg-studio); }
-        
-        .cad-layer img {
+        .blueprint-image-cage img {
             max-width: 100%;
-            max-height: 75vh;
-            width: auto;
             height: auto;
+            max-height: 90vh;
             object-fit: contain;
             display: block;
             border-radius: 4px;
@@ -242,9 +238,42 @@
         .hw-text-box { display: flex; flex-direction: column; justify-content: center; }
         .hw-text-box h3 { font-size: 1.5rem; text-transform: uppercase; margin-bottom: 15px; font-weight: 700; }
         .hw-text-box p { color: var(--text-dark); font-size: 1rem; line-height: 1.6; margin-bottom: 20px; text-align: justify; }
-        .hw-list { list-style: none; }
+        .hw-list { list-style: none; margin-bottom: 25px; }
         .hw-list li { position: relative; padding-left: 22px; margin-bottom: 10px; font-size: 0.95rem; color: var(--text-light); }
         .hw-list li::before { content: "▪"; position: absolute; left: 0; color: var(--accent-purple); top: 1px; }
+
+        .hw-tech-details {
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+            margin-top: 10px;
+        }
+
+        .hw-tech-details summary {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent-purple);
+            cursor: pointer;
+            user-select: none;
+            outline: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .hw-tech-details summary:hover { color: var(--text-light); }
+
+        .hw-details-content {
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            border-left: 2px solid var(--border-color);
+            padding-left: 15px;
+            margin-top: 10px;
+        }
+
+        .hw-details-content strong { color: var(--text-light); font-weight: 600; }
 
         /* --- LABORATORIUM KODÓW --- */
         .lab-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
@@ -261,7 +290,6 @@
         .lab-card h3 i { color: var(--accent-purple); }
         .lab-card p.lab-summary { color: var(--text-dark); font-size: 0.95rem; line-height: 1.5; margin-bottom: 25px; }
 
-        /* Real Interactive Chess Matrix Grid */
         .chess-box {
             display: grid;
             grid-template-columns: repeat(8, 1fr);
@@ -297,7 +325,6 @@
             position: absolute;
         }
 
-        /* Interactive Weather Simulator View */
         .weather-panel {
             background: var(--bg-terminal);
             border: 1px solid var(--border-color);
@@ -413,8 +440,8 @@
 
         @media (max-width: 1024px) {
             .hero-title { font-size: 12vw; }
-            .about-layout, .cad-container, .hw-card, .lab-layout { grid-template-columns: 1fr; gap: 40px; }
-            .cad-view-frame { min-height: 400px; }
+            .about-layout, .hw-card, .lab-layout { grid-template-columns: 1fr; gap: 40px; }
+            .cad-3d-fullbleed-viewport { height: 400px; }
         }
     </style>
 </head>
@@ -454,29 +481,38 @@
         <section id="cad">
             <h2 class="section-title">Projekty w programie Autodesk Inventor</h2>
             
-            <div class="cad-container">
-                <div class="cad-sidebar">
-                    <button class="cad-btn active" onclick="triggerCAD('cad-3d-studio', this)">Złożenie mechanizmu (3D)</button>
-                    <button class="cad-btn" onclick="triggerCAD('cad-wspornik-img', this)">ZP 01: Wspornik (2D)</button>
-                    <button class="cad-btn" onclick="triggerCAD('cad-plytka-img', this)">ZP 02: Płytka / Rolka (2D)</button>
-                    <button class="cad-btn" onclick="triggerCAD('cad-kolo-img', this)">ZP 03: Koło pasowe (2D)</button>
-                    <button class="cad-btn" onclick="triggerCAD('cad-walek-img', this)">ZP 04: Wałek stopniowany (2D)</button>
+            <div class="inventor-linear-layout">
+                <div class="cad-3d-fullbleed-viewport">
+                    <model-viewer src="Zespół1.glb" camera-controls auto-rotate shadow-intensity="1"></model-viewer>
                 </div>
-                <div class="cad-view-frame">
-                    <div id="cad-3d-studio" class="cad-layer active">
-                        <model-viewer src="Zespół1.glb" camera-controls auto-rotate shadow-intensity="1"></model-viewer>
+
+                <div class="blueprints-vertical-stack">
+                    <div class="blueprint-container-box">
+                        <h4>ZP 01: Wspornik (Dokumentacja 2D)</h4>
+                        <div class="blueprint-image-cage">
+                            <img src="wspornik.jpg" alt="Rysunek wykonawczy wspornika 2D">
+                        </div>
                     </div>
-                    <div id="cad-wspornik-img" class="cad-layer">
-                        <img src="wspornik.png" alt="Rysunek wykonawczy wspornika 2D">
+
+                    <div class="blueprint-container-box">
+                        <h4>ZP 02: Płytka / Rolka (Dokumentacja 2D)</h4>
+                        <div class="blueprint-image-cage">
+                            <img src="plytka.jpg" alt="Rysunek wykonawczy płytki 2D">
+                        </div>
                     </div>
-                    <div id="cad-plytka-img" class="cad-layer">
-                        <img src="plytka.png" alt="Rysunek wykonawczy płytki 2D">
+
+                    <div class="blueprint-container-box">
+                        <h4>ZP 03: Koło pasowe (Dokumentacja 2D)</h4>
+                        <div class="blueprint-image-cage">
+                            <img src="kolopasowe.jpg" alt="Rysunek wykonawczy koła pasowego 2D">
+                        </div>
                     </div>
-                    <div id="cad-kolo-img" class="cad-layer">
-                        <img src="kolopasowe.png" alt="Rysunek wykonawczy koła pasowego 2D">
-                    </div>
-                    <div id="cad-walek-img" class="cad-layer">
-                        <img src="walek.png" alt="Rysunek techniczny wałka stopniowanego 2D">
+
+                    <div class="blueprint-container-box">
+                        <h4>ZP 04: Wałek stopniowany (Dokumentacja 2D)</h4>
+                        <div class="blueprint-image-cage">
+                            <img src="walek.jpg" alt="Rysunek techniczny wałka stopniowanego 2D">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -500,8 +536,17 @@
                     <ul class="hw-list">
                         <li><strong>Mechanika i wykonawstwo:</strong> Odpowiadałem za mechaniczną strukturę urządzenia, w tym opracowanie mechanizmu rotacji osiowej opartego na łożyskowaniu kulkowym. Konstrukcja pozwala na powolny obrót doniczki wokół własnej osi, co zapewnia równomierną ekspozycję na światło ze wszystkich stron i zapobiega wyginaniu się pędów rośliny.</li>
                         <li><strong>Elektronika pomiarowa:</strong> Integracja czujników monitorujących parametry środowiskowe: wilgotność podłoża, temperaturę otoczenia oraz wilgotność względną powietrza.</li>
-                        <li><strong>Algorytm sterowania:</strong> Zaprogramowanie mikrokontrolera zarządzającego pracą pomp perystaltycznych dozowania pożywki oraz sekcją napędową w środowisku MicroPython na bazie dynamicznych odczytów w czasie rzeczywistym.</li>
                     </ul>
+
+                    <details class="hw-tech-details">
+                        <summary><i class="fa-solid fa-gears"></i> Pokaż szczegółową specyfikację mikrokontrolera i komponentów</summary>
+                        <div class="hw-details-content">
+                            <div><strong>Jednostka Centralna:</strong> Układ oparty na mikrokontrolerze ESP32, który zarządza pętlą pomiarową oraz sterowaniem czasowym podzespołów wykonawczych.</div>
+                            <div><strong>Sensoryka Środowiskowa:</strong> Zastosowano pojemnościowy czujnik wilgotności gleby (odporny na korozję kwasową podłoża) oraz cyfrowy czujnik temperatury i wilgotności powietrza typu DHT22/AM2302.</div>
+                            <div><strong>Układy Wykonawcze:</strong> Miniaturowa pompa hydrauliczna 5V sterowana przekaźnikiem optoizolowanym oraz sterownik silnika krokowego A4988 kontrolujący precyzyjną, powolną rotację ramy nośnej.</div>
+                            <div><strong>Architektura Software:</strong> Autorski program sterujący napisany w języku MicroPython, wykorzystujący asynchroniczne pętle blokad zdarzeń (uasyncio), zapobiegające zamrażaniu odczytów sensorycznych podczas fazy pracy silnika.</div>
+                        </div>
+                    </details>
                 </div>
             </div>
         </section>
@@ -513,10 +558,10 @@
                 
                 <div class="lab-card">
                     <h3><i class="fa-solid fa-chess"></i> Interaktywny Silnik Szachowy (C++)</h3>
-                    <p class="lab-summary">Grywalna emulacja silnika szachowego odzwierciedlająca moją architekturę klas z Qt. Zaimplementowałem pełną walidację toru ruchu (czyszczenie linii dla Wieży, skosów dla Gońca oraz ruchu Skoczka w kształcie litery L). Zrób ruch białymi — wirtualny terminal wyświetli analizę logiki, a komputer odpowie zaawansowanym algorytmem Minimax (Głębokość 2) zabezpieczającym przed stratami figur.</p>
+                    <p class="lab-summary">Grywalna emulacja silnika szachowego odzwierciedlająca moją architekturę klas z Qt. Zaimplementowałem pełną walidację toru ruchu (czyszczenie linii dla Wieży, skosów dla Gońca oraz ruchu Skoczka w kształcie litery L). Zrób ruch białymi — wirtualny terminal wyświetli analizę logiki, a komputer odpowie zaanwasowanym algorytmem Minimax (Głębokość 2) zabezpieczającym przed stratami figur.</p>
                     
                     <div class="chess-box" id="chess-board-matrix"></div>
-                    <div class="terminal-box" id="chess-terminal-logs">[SYSTEM] Silnik szachowy skompilowany pomyślnie. Oczekiwanie na ruch Gracza (białe)...</div>
+                    <div class="terminal-box" id="chess-terminal-logs">[SYSTEM] Silnik szachowy załadowany. Oczekiwanie na ruch gracza (białe)...</div>
                     <a href="https://github.com/MichalAntkowiak/ChessEngine_1" target="_blank" class="repo-link">Repozytorium kodu C++ (Szachy) ↗</a>
                 </div>
 
@@ -538,7 +583,7 @@
                     </div>
                     <div class="terminal-box" id="weather-terminal-logs">[INFO] weather_monitor.py: Inicjalizacja połączenia ze stacją pomiarową OpenWeather...
 [API] Nawiązywanie połączenia asynchronicznego z serwerem danych...</div>
-                    <a href="https://github.com/MichalAntkowiak/Generative-Image-Builder" target="_blank" class="repo-link">Repozytorium kodu Python (Aplikacja) ↗</a>
+                    <a href="https://github.com/MichalAntkowiak/WarsawWeather" target="_blank" class="repo-link">Repozytorium kodu Python (Aplikacja) ↗</a>
                 </div>
 
             </div>
@@ -629,8 +674,8 @@
                 humidNode.innerText = `${current.relative_humidity_2m}%`;
                 windNode.innerText = `${current.wind_speed_10m} m/s`;
 
-                wTerm.innerText += `\n[API] Status: 200 OK. Dane telemetryczne pobrane bezpośrednio z satelity.`;
-                wTerm.innerText += `\n[DATA] Sparsowano JSON: temp=${current.temperature_2m}°C, press=${current.surface_pressure}hPa. Sukces.`;
+                wTerm.innerText += `\n[API] Połączenie z serwerem pogody pomyślne (Status 200).`;
+                wTerm.innerText += `\n[DATA] Parsowanie JSON zakończone: pobrano aktualną temperaturę.`;
             } catch (err) {
                 tempNode.innerText = "13°C";
                 statusNode.innerText = "Bezchmurnie";
@@ -666,6 +711,13 @@
             chessLogs.scrollTop = chessLogs.scrollHeight;
         }
 
+        // Translates matrix coordinates into clean algebraic notation (e.g. 4,6 -> e2)
+        function getChessNotation(x, y) {
+            const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+            const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
+            return files[x] + ranks[y];
+        }
+
         function drawBoard() {
             chessBoard.innerHTML = '';
             for (let y = 0; y < 8; y++) {
@@ -676,14 +728,13 @@
                     let piece = boardState[y][x];
                     cell.innerText = piece;
                     
-                    // RIGID COLOR SEPARATION SYSTEM (No mixed outlines/fills confusion)
                     if (piece) {
                         if (['♙','♖','♘','♗','♕','♔'].includes(piece)) {
-                            cell.style.color = '#ffffff'; // White Team -> Brilliant Pearl White
+                            cell.style.color = '#ffffff'; 
                             cell.style.fontWeight = 'bold';
                             cell.style.textShadow = '0 0 4px #000000, 0 0 6px #000000';
                         } else {
-                            cell.style.color = '#bf8bff'; // Black Team -> Distinct Neon Violet
+                            cell.style.color = '#bf8bff'; 
                             cell.style.fontWeight = 'bold';
                             cell.style.textShadow = '0 0 4px #000000';
                         }
@@ -706,9 +757,12 @@
             if (boardState[y][x] === '' && allowedMoves.length === 0 && !selectedSquare) return;
 
             if (allowedMoves.some(m => m.x === x && m.y === y)) {
+                let notationFrom = getChessNotation(selectedSquare.x, selectedSquare.y);
+                let notationTo = getChessNotation(x, y);
+                
                 boardState[y][x] = boardState[selectedSquare.y][selectedSquare.x];
                 boardState[selectedSquare.y][selectedSquare.x] = '';
-                pushLog(`[USER] tryMove() zatwierdzony: (${selectedSquare.x},${selectedSquare.y}) -> (${x},${y})`);
+                pushLog(`[GRACZ] Ruch zaakceptowany: ${notationFrom} -> ${notationTo}`);
                 selectedSquare = null;
                 allowedMoves = [];
                 drawBoard();
@@ -831,8 +885,8 @@
 
         function willMoveLeaveKingInCheck(fx, fy, tx, ty, color) {
             let simGrid = JSON.parse(JSON.stringify(boardState));
-            simGrid[ty][tx] = simGrid[fy][fx];
-            simGrid[fy][fx] = '';
+            simGrid[ty][tx] = simGrid[fx][fy];
+            simGrid[fx][fy] = '';
             return isKingCheckedOnGrid(simGrid, color);
         }
 
@@ -860,9 +914,8 @@
             return score;
         }
 
-        /* HARDWARE REPLICA: PRECISE DEPTH-2 LOOKAHEAD SYSTEM MATCHING GAMEENGINE.CPP */
         function executeAIEngineMove() {
-            pushLog(`[ENGINE] Wywołanie GameEngine::makeAIMove(). Analiza predykcyjna...`);
+            pushLog(`[ENGINE] makeAIMove() -> Analiza pozycji Minimax...`);
             
             let legalBlackMoves = [];
             for (let y = 0; y < 8; y++) {
@@ -891,16 +944,14 @@
                 return;
             }
 
-            // NESTED EVALUATION LOOP PREVENTING PIECE SACRIFICES (MINIMAX DEPTH 2)
             legalBlackMoves.forEach(m => {
                 let sim1 = JSON.parse(JSON.stringify(boardState));
                 sim1[m.to.y][m.to.x] = sim1[m.from.y][m.from.x];
                 sim1[m.from.y][m.from.x] = '';
 
                 let currentScore = evaluateBoardHeuristic(sim1);
-                let worstCaseScenario = currentScore; // Base metric anchor
+                let worstCaseScenario = currentScore; 
 
-                // Simulate White's optimal answers to Black's simulated move
                 let legalWhiteMoves = [];
                 for (let wy = 0; wy < 8; wy++) {
                     for (let wx = 0; wx < 8; wx++) {
@@ -911,7 +962,6 @@
                             allowedMoves = backup;
 
                             wMoves.forEach(wm => {
-                                // Enforce boundary check for king protection on simulation grid
                                 let simGrid2 = JSON.parse(JSON.stringify(sim1));
                                 simGrid2[wm.y][wm.x] = simGrid2[wy][wx];
                                 simGrid2[wy][wx] = '';
@@ -923,7 +973,6 @@
                     }
                 }
 
-                // Look for the worst-case configuration (White captures the attacking piece)
                 legalWhiteMoves.forEach(wm => {
                     let sim2 = JSON.parse(JSON.stringify(sim1));
                     sim2[wm.to.y][wm.to.x] = sim2[wm.from.y][wm.from.x];
@@ -931,21 +980,28 @@
                     
                     let wScore = evaluateBoardHeuristic(sim2);
                     if (wScore < worstCaseScenario) {
-                        worstCaseScenario = wScore; // Minimax reduction
+                        worstCaseScenario = wScore; 
                     }
                 });
 
                 m.score = worstCaseScenario;
             });
 
-            // Select highest worst-case outcome (AI security rule)
+            // ANTI-REPETITION BALANCER SYSTEM (Resolves move loops on identical weights)
             legalBlackMoves.sort((a, b) => b.score - a.score);
-            let selectedAIMove = legalBlackMoves[0];
+            let topScoreValue = legalBlackMoves[0].score;
+            let matchingTopMoves = legalBlackMoves.filter(m => m.score === topScoreValue);
+            
+            // Random choice breakdown among equal optimal choices breaks oscillation loops
+            let selectedAIMove = matchingTopMoves[Math.floor(Math.random() * matchingTopMoves.length)];
 
             boardState[selectedAIMove.to.y][selectedAIMove.to.x] = boardState[selectedAIMove.from.y][selectedAIMove.from.x];
             boardState[selectedAIMove.from.y][selectedAIMove.from.x] = '';
             
-            pushLog(`[ENGINE] Wykonano ruch AI: (${selectedAIMove.from.x},${selectedAIMove.from.y}) -> (${selectedAIMove.to.x},${selectedAIMove.to.y}) [Score: ${selectedAIMove.score}]`);
+            let notationFrom = getChessNotation(selectedAIMove.from.x, selectedAIMove.from.y);
+            let notationTo = getChessNotation(selectedAIMove.to.x, selectedAIMove.to.y);
+            
+            pushLog(`[ENGINE] Ruch silnika: ${notationFrom} -> ${notationTo}`);
             drawBoard();
         }
 
