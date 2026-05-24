@@ -487,7 +487,7 @@
                 <div class="cad-sidebar">
                     <button class="cad-btn active" onclick="triggerCAD('cad-3d-studio', this)">Złożenie mechanizmu (3D)</button>
                     <button class="cad-btn" onclick="triggerCAD('cad-wspornik-img', this)">ZW 0.1: Wspornik (2D)</button>
-                    <button class="cad-btn" onclick="triggerCAD('cad-plytka-img', this)">ZW 0.2: Płytka / Rolka (2D)</button>
+                    <button class="cad-btn" onclick="triggerCAD('cad-plytka-img', this)">ZW 0.2: Płytka (2D)</button>
                     <button class="cad-btn" onclick="triggerCAD('cad-kolo-img', this)">ZW 0.3: Koło pasowe (2D)</button>
                     <button class="cad-btn" onclick="triggerCAD('cad-walek-img', this)">ZW 0.4: Wałek (2D)</button>
                 </div>
@@ -527,17 +527,19 @@
                     <h3>Autonmatyczny system nawadniania roślinki w doniczce</h3>
                     <p>Projekt zespołowy zrealizowany na studiach w ramach programu Project-Based Learning. Układ w pełni automatyzuje proces wzrostu roślin, dzieki samonawadniający się mechanizm oraz możliwy obrót doniczki w samodzielnie napisanej aplikacji. Zapewnia równomierny dostęp rośliny do światła .</p>
                     <ul class="hw-list">
-                        <li><strong>Mechanika i wykonawstwo:</strong> Odpowiadałem za mechaniczną strukturę urządzenia, w tym opracowanie mechanizmu rotacji osiowej opartego na łożyskowaniu kulkowym. Konstrukcja pozwala na powolny obrót doniczki wokół własnej osi, co zapewnia równomierną ekspozycję na światło ze wszystkich stron i zapobiega wyginaniu się pędów rośliny.</li>
-                        <li><strong>Elektronika pomiarowa:</strong> Integracja czujników monitorujących parametry środowiskowe: wilgotność podłoża, temperaturę otoczenia oraz wilgotność względną powietrza.</li>
+                        <li><strong>Mechanika:</strong> Odpowiadałem za mechaniczną strukturę urządzenia, w tym opracowanie mechanizmu rotacji osiowej opartego na łożyskowaniu kulkowym. Konstrukcja pozwala na powolny obrót doniczki wokół własnej osi, co zapewnia równomierną ekspozycję na światło ze wszystkich stron i zapobiega wyginaniu się pędów rośliny.</li>
+                        <li><strong>Elektronika:</strong> Integrowałem czujniki monitorujące parametry środowiskowe: wilgotność podłoża, temperaturę otoczenia oraz wilgotność powietrza.</li>
+                        <li><strong>Programowanie:</strong> Zaprogramowałem aplikację, która pozwala na obrót za pomocą serwa doniczki na łożyskach.</li>
+                        <li><strong>Druk 3d:</strong> Zaprojektowałem cały mechanizm(pokazany na zdjęciu po prawej) w programie Fusion 360, a następnie korzystając z uczelnianej drukarki 3d go wydrukowałem.</li>
                     </ul>
 
                     <details class="hw-tech-details">
-                        <summary><i class="fa-solid fa-gears"></i> Pokaż szczegółową specyfikację mikrokontrolera i komponentów</summary>
+                        <summary><i class="fa-solid fa-gears"></i> Pokaż szczegółową specyfikację projektu</summary>
                         <div class="hw-details-content">
-                            <div><strong>Jednostka Centralna:</strong> Układ oparty na mikrokontrolerze ESP32, który zarządza pętlą pomiarową oraz sterowaniem czasowym podzespołów wykonawczych.</div>
-                            <div><strong>Sensoryka Środowiskowa:</strong> Zastosowano pojemnościowy czujnik wilgotności gleby (odporny na korozję kwasową podłoża) oraz cyfrowy czujnik temperatury i wilgotności powietrza typu DHT22/AM2302.</div>
-                            <div><strong>Układy Wykonawcze:</strong> Miniaturowa pompa hydrauliczna 5V sterowana przekaźnikiem optoizolowanym oraz sterownik silnika krokowego A4988 kontrolujący precyzyjną, powolną rotację ramy nośnej.</div>
-                            <div><strong>Architektura Software:</strong> Autorski program sterujący napisany w języku MicroPython, wykorzystujący asynchroniczne pętle blokad zdarzeń (uasyncio), zapobiegające zamrażaniu odczytów sensorycznych podczas fazy pracy silnika.</div>
+                            <div><strong>Jednostka Centralna:</strong> Układ oparty na mikrokontrolerze ESP32, który zarządza działaniem całego mechanizmu.</div>
+                            <div><strong>Sensoryka:</strong> Zastosowano pojemnościowy czujnik wilgotności gleby (odporny na korozję kwasową podłoża) oraz cyfrowy czujnik temperatury i wilgotności powietrza typu DHT22/AM2302.</div>
+                            <div><strong>Układy Wykonawcze:</strong> Miniaturowa pompa hydrauliczna 5V sterowana przekaźnikiem oraz sterownik silnika krokowego A4988 kontrolujący precyzyjną, powolną rotację ramy.</div>
+                            <div><strong>Software:</strong> Autorski program sterujący napisany w języku MicroPython sterujący pompką wodną.</div>
                         </div>
                     </details>
                 </div>
