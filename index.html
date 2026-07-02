@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Michał Antkowiak — Mechatronika // City Hub</title>
+<meta name="description" content="Portfolio inżynierskie Michała Antkowiaka — student Mechatroniki PW, KN ONYKS. CAD, embedded, C++, Python.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   MA//CITY — brutalistyczno-futurystyczny hub przestrzenny
+   baza: #060608 | akcent: #9d4edd | Space Grotesk / Fira Code
+   ============================================================ */
+:root{
+  --bg:#060608;
+  --bg-2:#0b0b10;
+  --panel:#0e0e15;
+  --panel-2:#12121b;
+  --line:#22222e;
+  --line-soft:#1a1a24;
+  --acc:#9d4edd;
+  --acc-dim:#5a2e85;
+  --acc-glow:rgba(157,78,221,.35);
+  --txt:#e8e8ef;
+  --txt-dim:#9a9aa8;
+  --txt-mute:#5c5c6c;
+  --term-green:#41d97e;
+  --white-glow:rgba(255,255,255,.85);
+  --font-d:'Space Grotesk',system-ui,sans-serif;
+  --font-m:'Fira Code',ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--txt);
+  font-family:var(--font-d);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--acc);color:#fff}
+a{color:inherit}
+button{font-family:inherit;cursor:pointer}
+
+/* ---------- NAV BAR ---------- */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:58px;display:flex;align-items:stretch;
+  background:rgba(6,6,8,.82);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.nav-logo{
+  display:flex;align-items:center;gap:10px;
+  padding:0 22px;border-right:1px solid var(--line);
+  font-family:var(--font-m);font-size:13px;letter-spacing:.5px;
+  text-decoration:none;white-space:nowrap;
+}
+.nav-logo b{color:var(--acc);font-weight:600}
+.nav-logo .dot{width:7px;height:7px;background:var(--acc);box-shadow:0 0 10px var(--acc)}
+.nav-links{display:flex;align-items:stretch;flex:1}
+.nav-item{position:relative;display:flex;align-items:stretch}
+.nav-btn{
+  display:flex;align-items:center;gap:7px;
+  padding:0 18px;background:none;border:none;
+  border-right:1px solid var(--line-soft);
+  color:var(--txt-dim);font-size:13px;font-weight:500;
+  letter-spacing:.4px;text-transform:uppercase;text-decoration:none;
+  transition:color .15s,background .15s;
+}
+.nav-btn:hover,.nav-btn:focus-visible{color:var(--txt);background:rgba(157,78,221,.08)}
+.nav-btn:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}
+.nav-btn .caret{font-size:9px;color:var(--acc);transition:transform .2s}
+.nav-item.open .nav-btn .caret{transform:rotate(180deg)}
+
+/* Dropdown Grid — Projekty */
+.dropdown{
+  position:absolute;top:calc(100% + 1px);left:0;
+  min-width:560px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-top:2px solid var(--acc);
+  display:grid;grid-template-columns:repeat(3,1fr);
+  opacity:0;visibility:hidden;transform:translateY(-6px);
+  transition:opacity .18s,transform .18s,visibility .18s;
+  box-shadow:0 24px 60px rgba(0,0,0,.6);
+}
+.nav-item.open .dropdown,
+.nav-item:focus-within .dropdown{opacity:1;visibility:visible;transform:translateY(0)}
+.dd-card{
+  display:block;padding:18px 16px 16px;text-decoration:none;
+  border-right:1px solid var(--line-soft);
+  transition:background .15s;
+}
+.dd-card:last-child{border-right:none}
+.dd-card:hover,.dd-card:focus-visible{background:var(--panel-2)}
+.dd-card:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}
+.dd-tag{
+  font-family:var(--font-m);font-size:10px;color:var(--acc);
+  letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:8px;
+}
+.dd-title{font-size:14px;font-weight:600;color:var(--txt);margin-bottom:6px}
+.dd-desc{font-size:11.5px;line-height:1.45;color:var(--txt-dim)}
+.dd-path{font-family:var(--font-m);font-size:10px;color:var(--txt-mute);display:block;margin-top:10px}
+.nav-gh{
+  margin-left:auto;display:flex;align-items:center;padding:0 22px;
+  border-left:1px solid var(--line);
+  font-family:var(--font-m);font-size:12px;color:var(--txt-dim);
+  text-decoration:none;transition:color .15s;
+}
+.nav-gh:hover{color:var(--acc)}
+
+/* ---------- CITY VIEWPORT ---------- */
+#viewport{
+  position:fixed;inset:0;top:58px;
+  perspective:1400px;perspective-origin:50% 40%;
+  overflow:hidden;cursor:grab;
+  background:
+    radial-gradient(1200px 700px at 70% 10%,rgba(157,78,221,.06),transparent 60%),
+    var(--bg);
+}
+#viewport.dragging{cursor:grabbing}
+#world{
+  position:absolute;top:0;left:0;
+  width:3000px;height:1960px;
+  transform-origin:0 0;
+  will-change:transform;
+  background-image:
+    linear-gradient(var(--line-soft) 1px,transparent 1px),
+    linear-gradient(90deg,var(--line-soft) 1px,transparent 1px),
+    linear-gradient(rgba(157,78,221,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(157,78,221,.05) 1px,transparent 1px);
+  background-size:60px 60px,60px 60px,300px 300px,300px 300px;
+}
+/* arterie miasta */
+.avenue{position:absolute;background:linear-gradient(90deg,transparent,var(--acc-dim),transparent);height:2px;opacity:.5}
+.avenue.v{width:2px;height:auto;background:linear-gradient(180deg,transparent,var(--acc-dim),transparent)}
+
+/* ---------- DZIELNICE ---------- */
+.district{
+  position:absolute;
+  background:var(--panel);
+  border:1px solid var(--line);
+  box-shadow:0 30px 80px rgba(0,0,0,.55);
+}
+.district::before{
+  content:attr(data-sector);
+  position:absolute;top:-26px;left:0;
+  font-family:var(--font-m);font-size:11px;letter-spacing:2px;
+  color:var(--acc);text-transform:uppercase;
+}
+.district::after{ /* narożnik konstrukcyjny */
+  content:"";position:absolute;top:-1px;left:-1px;width:26px;height:26px;
+  border-top:2px solid var(--acc);border-left:2px solid var(--acc);
+}
+.d-head{
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  padding:20px 24px 0;
+}
+.d-head h2{font-size:24px;font-weight:700;letter-spacing:-.5px}
+.d-head .idx{font-family:var(--font-m);font-size:11px;color:var(--txt-mute)}
+.d-body{padding:16px 24px 24px}
+.d-body p{font-size:13.5px;line-height:1.65;color:var(--txt-dim)}
+.d-body p + p{margin-top:10px}
+.d-link{
+  display:inline-flex;align-items:center;gap:8px;margin-top:16px;
+  padding:10px 16px;border:1px solid var(--acc-dim);
+  font-family:var(--font-m);font-size:12px;color:var(--txt);
+  text-decoration:none;letter-spacing:.5px;
+  transition:background .15s,border-color .15s,box-shadow .15s;
+}
+.d-link:hover,.d-link:focus-visible{background:rgba(157,78,221,.12);border-color:var(--acc);box-shadow:0 0 20px var(--acc-glow)}
+.d-link .arr{color:var(--acc)}
+.spec{font-family:var(--font-m);font-size:11.5px;color:var(--txt-dim);line-height:1.7}
+.spec b{color:var(--txt);font-weight:500}
+.spec .k{color:var(--acc)}
+
+/* RDZEŃ */
+#d-core{left:160px;top:170px;width:700px}
+#d-core .d-head h2{font-size:34px}
+#d-core .role{
+  font-family:var(--font-m);font-size:12px;color:var(--acc);
+  letter-spacing:1.5px;text-transform:uppercase;margin:6px 0 14px;
+}
+.core-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft);margin-top:18px}
+.core-cell{background:var(--panel-2);padding:12px 14px}
+.core-cell .lbl{font-family:var(--font-m);font-size:10px;color:var(--txt-mute);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:5px}
+.core-cell .val{font-size:12.5px;color:var(--txt-dim);line-height:1.5}
+
+/* MECHANIKA */
+#d-mech{left:1060px;top:120px;width:640px}
+.blueprint{
+  margin-top:14px;border:1px solid var(--line);
+  background:
+    linear-gradient(var(--line-soft) 1px,transparent 1px),
+    linear-gradient(90deg,var(--line-soft) 1px,transparent 1px),
+    var(--bg-2);
+  background-size:22px 22px;
+  padding:18px;font-family:var(--font-m);font-size:11px;color:var(--txt-dim);
+}
+.blueprint .row{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:6px 0}
+.blueprint .row:last-child{border-bottom:none}
+.blueprint .row span:last-child{color:var(--acc)}
+
+/* METEO */
+#d-meteo{left:1930px;top:200px;width:560px}
+.weather-panel{margin-top:14px;border:1px solid var(--line);background:var(--bg-2)}
+.weather-main{display:flex;align-items:stretch;border-bottom:1px solid var(--line)}
+.weather-temp{
+  flex:0 0 auto;padding:18px 22px;border-right:1px solid var(--line);
+  font-family:var(--font-m);
+}
+.weather-temp .t{font-size:42px;font-weight:600;color:var(--txt);line-height:1}
+.weather-temp .t small{font-size:18px;color:var(--acc)}
+.weather-temp .loc{font-size:10px;color:var(--txt-mute);letter-spacing:1px;text-transform:uppercase;margin-top:8px}
+.weather-aux{flex:1;display:grid;grid-template-rows:1fr 1fr}
+.weather-aux div{display:flex;justify-content:space-between;align-items:center;padding:0 16px;font-family:var(--font-m);font-size:11.5px;color:var(--txt-dim)}
+.weather-aux div + div{border-top:1px solid var(--line-soft)}
+.weather-aux b{color:var(--txt);font-weight:500}
+.term{
+  font-family:var(--font-m);font-size:10.5px;line-height:1.7;
+  color:var(--term-green);background:#04070a;
+  padding:12px 14px;min-height:96px;max-height:150px;overflow-y:auto;
+}
+.term .err{color:#ff5c5c}
+.term .dim{color:#2c7a4b}
+
+/* PBL */
+#d-pbl{left:160px;top:830px;width:700px}
+details.tech{
+  margin-top:16px;border:1px solid var(--line);background:var(--bg-2);
+}
+details.tech summary{
+  padding:12px 16px;cursor:pointer;list-style:none;
+  font-family:var(--font-m);font-size:12px;color:var(--acc);
+  letter-spacing:1px;text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;user-select:none;
+}
+details.tech summary::before{content:"[+]";color:var(--txt-mute)}
+details.tech[open] summary::before{content:"[−]"}
+details.tech summary::-webkit-details-marker{display:none}
+.tech-body{padding:4px 16px 16px;border-top:1px solid var(--line-soft)}
+.tech-body dl{display:grid;grid-template-columns:150px 1fr;gap:8px 14px;font-size:12px;line-height:1.55}
+.tech-body dt{font-family:var(--font-m);font-size:10.5px;color:var(--acc);text-transform:uppercase;letter-spacing:.5px;padding-top:2px}
+.tech-body dd{color:var(--txt-dim)}
+
+/* STREFA KODU — SZACHY */
+#d-chess{left:1060px;top:760px;width:880px}
+.chess-wrap{display:grid;grid-template-columns:auto 1fr;gap:18px;margin-top:16px}
+#board{
+  display:grid;grid-template-columns:repeat(8,54px);grid-template-rows:repeat(8,54px);
+  border:2px solid var(--line);width:max-content;user-select:none;
+}
+.sq{
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;line-height:1;position:relative;cursor:pointer;
+}
+.sq.light{background:#15151f}
+.sq.dark{background:#0a0a10}
+.sq .pc{pointer-events:none}
+.sq .pc.w{color:#fff;text-shadow:0 0 8px var(--white-glow),0 0 2px #fff}
+.sq .pc.b{color:var(--acc);text-shadow:0 0 12px var(--acc),0 0 4px var(--acc)}
+.sq.sel{outline:2px solid #fff;outline-offset:-2px;z-index:2}
+.sq.move::after{
+  content:"";position:absolute;width:14px;height:14px;border-radius:50%;
+  background:rgba(157,78,221,.55);box-shadow:0 0 10px var(--acc-glow);
+}
+.sq.capture::after{
+  content:"";position:absolute;inset:3px;border:2px solid var(--acc);
+  border-radius:0;width:auto;height:auto;background:none;
+}
+.sq.check{background:#3a1020 !important}
+.chess-side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.chess-status{
+  border:1px solid var(--line);background:var(--bg-2);
+  padding:10px 14px;font-family:var(--font-m);font-size:12px;color:var(--txt-dim);
+  display:flex;justify-content:space-between;gap:10px;align-items:center;
+}
+.chess-status b{color:var(--acc);font-weight:600}
+#chess-term{flex:1;min-height:220px;max-height:328px}
+.chess-actions{display:flex;gap:10px}
+.btn-sm{
+  padding:8px 14px;background:none;border:1px solid var(--line);
+  color:var(--txt-dim);font-family:var(--font-m);font-size:11px;letter-spacing:.5px;
+  transition:border-color .15s,color .15s;
+}
+.btn-sm:hover{border-color:var(--acc);color:var(--txt)}
+.coords{font-family:var(--font-m);font-size:9px;color:var(--txt-mute);position:absolute}
+.coords.file{bottom:2px;right:3px}
+.coords.rank{top:2px;left:3px}
+
+/* ARCHIWUM */
+#d-arch{left:2030px;top:860px;width:620px}
+.timeline{margin-top:14px;border-left:2px solid var(--line);padding-left:18px;display:flex;flex-direction:column;gap:16px}
+.tl-item{position:relative}
+.tl-item::before{
+  content:"";position:absolute;left:-24px;top:5px;width:9px;height:9px;
+  background:var(--bg);border:2px solid var(--acc);
+}
+.tl-item .when{font-family:var(--font-m);font-size:10.5px;color:var(--acc);letter-spacing:1px}
+.tl-item .what{font-size:13.5px;font-weight:600;margin:3px 0}
+.tl-item .how{font-size:12px;color:var(--txt-dim);line-height:1.55}
+
+/* ---------- HUD ---------- */
+.hud{
+  position:fixed;z-index:90;bottom:20px;left:20px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.hud-sector{
+  font-family:var(--font-m);font-size:11px;color:var(--txt-dim);
+  background:rgba(6,6,8,.85);border:1px solid var(--line);
+  padding:8px 12px;letter-spacing:1px;backdrop-filter:blur(8px);
+}
+.hud-sector b{color:var(--acc)}
+.hud-nav{display:flex;flex-wrap:wrap;gap:6px;max-width:440px}
+.hud-btn{
+  padding:7px 12px;background:rgba(6,6,8,.85);border:1px solid var(--line);
+  color:var(--txt-dim);font-family:var(--font-m);font-size:10.5px;letter-spacing:.5px;
+  backdrop-filter:blur(8px);
+  transition:border-color .15s,color .15s,box-shadow .15s;
+}
+.hud-btn:hover,.hud-btn:focus-visible{border-color:var(--acc);color:var(--txt);box-shadow:0 0 14px var(--acc-glow)}
+.hud-btn:focus-visible{outline:none}
+.hud-btn.active{border-color:var(--acc);color:var(--acc)}
+.hud-hint{
+  position:fixed;z-index:90;bottom:20px;right:20px;
+  font-family:var(--font-m);font-size:10px;color:var(--txt-mute);
+  background:rgba(6,6,8,.85);border:1px solid var(--line);padding:8px 12px;
+  letter-spacing:.5px;backdrop-filter:blur(8px);
+}
+
+/* ---------- MOBILE FALLBACK: pion ---------- */
+@media (max-width:860px){
+  body{overflow:auto}
+  #viewport{position:static;perspective:none;overflow:visible;cursor:default;padding:80px 16px 40px}
+  #world{position:static;width:auto;height:auto;transform:none !important;background:none}
+  .avenue{display:none}
+  .district{position:static;width:auto !important;margin:0 0 44px}
+  .hud,.hud-hint{display:none}
+  .dropdown{min-width:calc(100vw - 32px)}
+  #board{grid-template-columns:repeat(8,11.5vw);grid-template-rows:repeat(8,11.5vw)}
+  .sq{font-size:8vw}
+  .chess-wrap{grid-template-columns:1fr}
+  .nav-btn{padding:0 12px;font-size:11px}
+  .nav-logo{padding:0 12px}
+  .nav-gh{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none !important;animation:none !important}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= NAV ================= -->
+<header class="nav">
+  <a class="nav-logo" href="index.html"><span class="dot"></span>MICHAŁ&nbsp;ANTKOWIAK <b>// MT-112</b></a>
+  <nav class="nav-links" aria-label="Nawigacja miasta">
+    <div class="nav-item"><button class="nav-btn" data-fly="core">Rdzeń</button></div>
+    <div class="nav-item" id="nav-projects">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Projekty <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu" aria-label="Dokumentacja projektów">
+        <a class="dd-card" role="menuitem" href="projekty/inventor.html">
+          <span class="dd-tag">CAD / Mechanika</span>
+          <span class="dd-title">Hala montażowa — Inventor</span>
+          <span class="dd-desc">Złożenie parametryczne, pasowania H8/h7 · H7/g6, dokumentacja wykonawcza ISO.</span>
+          <span class="dd-path">projekty/inventor.html</span>
+        </a>
+        <a class="dd-card" role="menuitem" href="projekty/hydroponika.html">
+          <span class="dd-tag">Embedded / PBL</span>
+          <span class="dd-title">Laboratorium hydroponiki</span>
+          <span class="dd-desc">ESP32, uasyncio, autorski mechanizm rotacji osiowej na łożysku kulkowym.</span>
+          <span class="dd-path">projekty/hydroponika.html</span>
+        </a>
+        <a class="dd-card" role="menuitem" href="projekty/szachy.html">
+          <span class="dd-tag">C++ / Algorytmika</span>
+          <span class="dd-title">Środowisko silnika szachowego</span>
+          <span class="dd-desc">Architektura OOP w Qt Creator, Minimax D2, system anty-repetycji.</span>
+          <span class="dd-path">projekty/szachy.html</span>
+        </a>
+      </div>
+    </div>
+    <div class="nav-item"><button class="nav-btn" data-fly="pbl">Lab PBL</button></div>
+    <div class="nav-item"><button class="nav-btn" data-fly="chess">Strefa kodu</button></div>
+    <div class="nav-item"><button class="nav-btn" data-fly="meteo">Meteo</button></div>
+    <div class="nav-item"><button class="nav-btn" data-fly="arch">Archiwum</button></div>
+  </nav>
+  <a class="nav-gh" href="https://github.com/MichalAntkowiak" target="_blank" rel="noopener">github/MichalAntkowiak ↗</a>
+</header>
+
+<!-- ================= CITY ================= -->
+<main id="viewport" aria-label="Interaktywne miasto portfolio">
+  <div id="world">
+
+    <div class="avenue" style="left:120px;top:700px;width:2760px"></div>
+    <div class="avenue v" style="left:960px;top:100px;height:1760px"></div>
+    <div class="avenue v" style="left:1990px;top:100px;height:1760px"></div>
+
+    <!-- RDZEŃ -->
+    <section class="district" id="d-core" data-sector="SEKTOR 00 / RDZEŃ">
+      <div class="d-head"><h2>Michał Antkowiak</h2><span class="idx">52.22°N 21.01°E</span></div>
+      <div class="d-body">
+        <div class="role">Mechatronika · Politechnika Warszawska · gr. mt-112</div>
+        <p>Student I roku na Wydziale Mechatroniki PW. Buduję rzeczy, które łączą mechanikę, elektronikę
+        i kod — od parametrycznych złożeń CAD, przez systemy embedded na ESP32, po silniki gier w C++.
+        Bez marketingu: poniżej dokumentacja, parametry i działający kod.</p>
+        <div class="core-grid">
+          <div class="core-cell"><span class="lbl">Koło naukowe</span><span class="val">KN „ONYKS" — automatyka i systemy embedded, rozwój projektów sprzętowych.</span></div>
+          <div class="core-cell"><span class="lbl">Stack</span><span class="val">Autodesk Inventor · C++ (Qt) · Python · MicroPython · ESP32</span></div>
+          <div class="core-cell"><span class="lbl">Praca</span><span class="val">Korepetytor matematyki (od 2024) — algebra, geometria. Wcześniej kurier gastronomiczny: logistyka pod presją czasu.</span></div>
+          <div class="core-cell"><span class="lbl">Liceum</span><span class="val">XII LO im. J. Słowackiego, Warszawa — profil mat-fiz z rozszerzoną algorytmiką.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MECHANIKA -->
+    <section class="district" id="d-mech" data-sector="SEKTOR 01 / DZIELNICA MECHANICZNA">
+      <div class="d-head"><h2>Inventor — złożenie maszynowe</h2><span class="idx">CAD/ISO</span></div>
+      <div class="d-body">
+        <p>Projektowanie parametryczne części i złożeń. Poprawne pasowania tolerancyjne podzespołów
+        oraz czysta, znormalizowana dokumentacja wykonawcza 2D zgodna ze standardami ISO.</p>
+        <div class="blueprint">
+          <div class="row"><span>Zespol1.glb</span><span>złożenie · podgląd 3D</span></div>
+          <div class="row"><span>wspornik / plytka / kolopasowe / walek</span><span>4 rys. wykonawcze</span></div>
+          <div class="row"><span>Pasowania</span><span>H8/h7 · H7/g6</span></div>
+        </div>
+        <a class="d-link" href="projekty/inventor.html">Wejdź do hali montażowej <span class="arr">→</span></a>
+      </div>
+    </section>
+
+    <!-- METEO -->
+    <section class="district" id="d-meteo" data-sector="SEKTOR 02 / WIEŻA METEO">
+      <div class="d-head"><h2>Monitor pogodowy Warszawy</h2><span class="idx">PY/API</span></div>
+      <div class="d-body">
+        <p>Aplikacja GUI w Pythonie (Tkinter + requests) na pakietach JSON z API Open-Meteo.
+        Poniżej działający odpowiednik webowy: żywy odczyt z twardym timeoutem 2000 ms
+        i warstwą fallback offline.</p>
+        <div class="weather-panel">
+          <div class="weather-main">
+            <div class="weather-temp">
+              <div class="t"><span id="w-temp">--</span><small>°C</small></div>
+              <div class="loc">Warszawa · live</div>
+            </div>
+            <div class="weather-aux">
+              <div><span>Ciśnienie</span><b id="w-press">-- hPa</b></div>
+              <div><span>Wilgotność</span><b id="w-hum">-- %</b></div>
+            </div>
+          </div>
+          <div class="term" id="w-term" aria-live="polite"></div>
+        </div>
+        <a class="d-link" href="https://github.com/MichalAntkowiak/WarsawWeather" target="_blank" rel="noopener">Repozytorium WarsawWeather <span class="arr">↗</span></a>
+      </div>
+    </section>
+
+    <!-- PBL -->
+    <section class="district" id="d-pbl" data-sector="SEKTOR 03 / LABORATORIUM PBL">
+      <div class="d-head"><h2>Autonomiczna doniczka hydroponiczna</h2><span class="idx">TEAM/PBL</span></div>
+      <div class="d-body">
+        <p>Interdyscyplinarny projekt zespołowy w ramach akademickiego programu Project-Based Learning:
+        bezglebowa doniczka z autonomiczną pętlą pomiarowo-wykonawczą. Mój wkład konstrukcyjny —
+        autorski układ rotacji osiowej na łożysku kulkowym, eliminujący fototropizm rośliny.</p>
+        <details class="tech">
+          <summary>Panel techniczny — hardware &amp; embedded</summary>
+          <div class="tech-body">
+            <dl>
+              <dt>Jednostka centralna</dt><dd>ESP32 — koordynacja pętli pomiarowo-wykonawczej.</dd>
+              <dt>Sensoryka</dt><dd>Pojemnościowy czujnik wilgotności gleby (odporny na korozję kwasową podłoża) + DHT22 (AM2302): temperatura i wilgotność względna powietrza.</dd>
+              <dt>Aktuatory</dt><dd>Pompa perystaltyczna 5V na kluczu tranzystorowym / przekaźniku optoizolowanym; silnik krokowy ze sterownikiem A4988.</dd>
+              <dt>Mechanizm obrotowy</dt><dd>Autorska rotacja osiowa na mechanicznym łożyskowaniu kulkowym — powolny obrót doniczki, równomierna ekspozycja na światło, brak wyginania pędów.</dd>
+              <dt>Software</dt><dd>MicroPython, asynchroniczna wielozadaniowość <code>uasyncio</code> — odczyty z czujników nie zamarzają podczas pracy silnika.</dd>
+            </dl>
+          </div>
+        </details>
+        <a class="d-link" href="projekty/hydroponika.html">Pełne studium przypadku <span class="arr">→</span></a>
+      </div>
+    </section>
+
+    <!-- SZACHY -->
+    <section class="district" id="d-chess" data-sector="SEKTOR 04 / STREFA KODU">
+      <div class="d-head"><h2>Silnik szachowy — makieta uruchomieniowa</h2><span class="idx">C++→JS</span></div>
+      <div class="d-body">
+        <p>Silnik napisany obiektowo w C++ (Qt Creator): <code>board.cpp</code>, <code>pawn.cpp</code>, <code>bishop.cpp</code>,
+        <code>rook.cpp</code>, <code>knight.cpp</code>, <code>queen.cpp</code>, <code>gameengine.cpp</code>. Poniżej interaktywna makieta JS:
+        Minimax D2, funkcja <code>evaluateBoard</code>, kontrola szacha i system anty-repetycji. Grasz białymi.</p>
+        <div class="chess-wrap">
+          <div>
+            <div id="board" aria-label="Szachownica"></div>
+            <div class="chess-actions" style="margin-top:10px">
+              <button class="btn-sm" id="btn-reset">[ RESET PARTII ]</button>
+            </div>
+          </div>
+          <div class="chess-side">
+            <div class="chess-status"><span>STATUS</span><b id="chess-status">Twój ruch (Białe)</b></div>
+            <div class="term" id="chess-term" aria-live="polite"></div>
+            <a class="d-link" href="https://github.com/MichalAntkowiak/ChessEngine_1" target="_blank" rel="noopener">ChessEngine_1 (C++) <span class="arr">↗</span></a>
+            <a class="d-link" href="projekty/szachy.html">Dokumentacja architektury <span class="arr">→</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARCHIWUM -->
+    <section class="district" id="d-arch" data-sector="SEKTOR 05 / ARCHIWUM">
+      <div class="d-head"><h2>Ścieżka</h2><span class="idx">LOG</span></div>
+      <div class="d-body">
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="when">2025 → teraz</div>
+            <div class="what">Mechatronika, Politechnika Warszawska</div>
+            <div class="how">Wydział Mechatroniki, grupa mt-112. Członek KN „ONYKS" — automatyka i systemy embedded.</div>
+          </div>
+          <div class="tl-item">
+            <div class="when">2024 → teraz</div>
+            <div class="what">Korepetycje z matematyki</div>
+            <div class="how">Ugruntowana algebra i geometria — tłumaczenie trudnych rzeczy prostym językiem.</div>
+          </div>
+          <div class="tl-item">
+            <div class="when">wcześniej</div>
+            <div class="what">Kurier gastronomiczny (dorywczo)</div>
+            <div class="how">Logistyka i organizacja czasu pod realną presją.</div>
+          </div>
+          <div class="tl-item">
+            <div class="when">do 2025</div>
+            <div class="what">XII LO im. J. Słowackiego, Warszawa</div>
+            <div class="how">Profil matematyczno-fizyczny z rozszerzoną algorytmiką.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- ================= HUD ================= -->
+<div class="hud">
+  <div class="hud-sector">SEKTOR: <b id="hud-sector">00 / RDZEŃ</b> · <span id="hud-coord">x0 y0</span></div>
+  <div class="hud-nav" role="tablist" aria-label="Szybki skok do dzielnicy">
+    <button class="hud-btn active" data-fly="core">00 RDZEŃ</button>
+    <button class="hud-btn" data-fly="mech">01 MECHANIKA</button>
+    <button class="hud-btn" data-fly="meteo">02 METEO</button>
+    <button class="hud-btn" data-fly="pbl">03 PBL</button>
+    <button class="hud-btn" data-fly="chess">04 KOD</button>
+    <button class="hud-btn" data-fly="arch">05 ARCHIWUM</button>
+  </div>
+</div>
+<div class="hud-hint">PRZECIĄGNIJ = pan · SCROLL = zoom · 1–6 = sektory</div>
+
+<script>
+/* ============================================================
+   1. SPATIAL CITY CAMERA — kinetyczny pan/zoom z inercją
+   ============================================================ */
+(function(){
+  const vp = document.getElementById('viewport');
+  const world = document.getElementById('world');
+  const mq = window.matchMedia('(max-width:860px)');
+  const reduced = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  const SECTORS = {
+    core:  {el:'d-core',  label:'00 / RDZEŃ',      scale:0.95},
+    mech:  {el:'d-mech',  label:'01 / MECHANIKA',  scale:0.95},
+    meteo: {el:'d-meteo', label:'02 / METEO',      scale:0.95},
+    pbl:   {el:'d-pbl',   label:'03 / LAB PBL',    scale:0.95},
+    chess: {el:'d-chess', label:'04 / STREFA KODU',scale:0.82},
+    arch:  {el:'d-arch',  label:'05 / ARCHIWUM',   scale:0.95},
+  };
+
+  // stan kamery: cur = pozycja renderowana, tgt = cel (lerp => inercja)
+  const cam = {x:0,y:0,s:0.8, tx:0,ty:0,ts:0.8};
+  const LERP = reduced ? 1 : 0.085;
+  const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
+
+  function centerOn(key, instant){
+    const s = SECTORS[key]; if(!s) return;
+    const el = document.getElementById(s.el);
+    const cx = el.offsetLeft + el.offsetWidth/2;
+    const cy = el.offsetTop  + el.offsetHeight/2;
+    const sc = s.scale;
+    cam.ts = sc;
+    cam.tx = vp.clientWidth/2  - cx*sc;
+    cam.ty = vp.clientHeight/2 - cy*sc + 10;
+    if(instant){cam.x=cam.tx;cam.y=cam.ty;cam.s=cam.ts;}
+    document.getElementById('hud-sector').textContent = s.label;
+    document.querySelectorAll('.hud-btn').forEach(b=>b.classList.toggle('active', b.dataset.fly===key));
+  }
+
+  function frame(){
+    cam.x += (cam.tx-cam.x)*LERP;
+    cam.y += (cam.ty-cam.y)*LERP;
+    cam.s += (cam.ts-cam.s)*LERP;
+    const tilt = reduced ? 0 : (1.15-cam.s)*4; // głębia: lekki rotateX zależny od zoomu
+    world.style.transform =
+      `translate3d(${cam.x.toFixed(2)}px,${cam.y.toFixed(2)}px,0) rotateX(${tilt.toFixed(2)}deg) scale(${cam.s.toFixed(4)})`;
+    document.getElementById('hud-coord').textContent =
+      `x${Math.round(-cam.x)} y${Math.round(-cam.y)} z${cam.s.toFixed(2)}`;
+    requestAnimationFrame(frame);
+  }
+
+  // drag-pan
+  let drag=null;
+  vp.addEventListener('pointerdown', e=>{
+    if(mq.matches) return;
+    if(e.target.closest('a,button,#board,details,summary,.term')) return;
+    drag={x:e.clientX,y:e.clientY,tx:cam.tx,ty:cam.ty};
+    vp.classList.add('dragging'); vp.setPointerCapture(e.pointerId);
+  });
+  vp.addEventListener('pointermove', e=>{
+    if(!drag) return;
+    cam.tx = drag.tx + (e.clientX-drag.x);
+    cam.ty = drag.ty + (e.clientY-drag.y);
+  });
+  vp.addEventListener('pointerup', ()=>{drag=null;vp.classList.remove('dragging')});
+
+  // wheel-zoom w stronę kursora
+  vp.addEventListener('wheel', e=>{
+    if(mq.matches) return;
+    if(e.target.closest('.term')) return;
+    e.preventDefault();
+    const old = cam.ts;
+    const next = clamp(old * (e.deltaY>0 ? 0.9 : 1.1), 0.35, 1.35);
+    const k = next/old;
+    cam.tx = e.clientX - (e.clientX - cam.tx)*k;
+    cam.ty = (e.clientY-58) - ((e.clientY-58) - cam.ty)*k;
+    cam.ts = next;
+  }, {passive:false});
+
+  // przyciski nav + hud
+  document.querySelectorAll('[data-fly]').forEach(b=>{
+    b.addEventListener('click', ()=>{ if(!mq.matches) centerOn(b.dataset.fly); });
+  });
+  // klawisze 1-6
+  const order=['core','mech','meteo','pbl','chess','arch'];
+  window.addEventListener('keydown', e=>{
+    if(mq.matches || e.target.matches('input,textarea')) return;
+    const i = parseInt(e.key,10)-1;
+    if(i>=0 && i<order.length) centerOn(order[i]);
+  });
+  window.addEventListener('resize', ()=>{ /* zachowaj cel przy resize */ });
+
+  // deep-link: index.html#d-chess itd.
+  const byId = Object.fromEntries(Object.entries(SECTORS).map(([k,v])=>[v.el,k]));
+  const hashKey = byId[location.hash.replace('#','')];
+  if(!mq.matches){ centerOn(hashKey || 'core', true); frame(); }
+
+  // Dropdown "Projekty" — klik + hover, dostępny z klawiatury
+  const np = document.getElementById('nav-projects');
+  const npBtn = np.querySelector('.nav-btn');
+  npBtn.addEventListener('click', ()=>{
+    const open = np.classList.toggle('open');
+    npBtn.setAttribute('aria-expanded', open);
+  });
+  np.addEventListener('mouseenter', ()=>{np.classList.add('open');npBtn.setAttribute('aria-expanded','true')});
+  np.addEventListener('mouseleave', ()=>{np.classList.remove('open');npBtn.setAttribute('aria-expanded','false')});
+  document.addEventListener('click', e=>{
+    if(!np.contains(e.target)){np.classList.remove('open');npBtn.setAttribute('aria-expanded','false')}
+  });
+})();
+
+/* ============================================================
+   2. MONITOR POGODOWY — Open-Meteo, timeout 2000 ms + fallback
+   ============================================================ */
+(function(){
+  const $t=document.getElementById('w-temp'),
+        $p=document.getElementById('w-press'),
+        $h=document.getElementById('w-hum'),
+        term=document.getElementById('w-term');
+  const log=(msg,cls)=>{
+    const d=document.createElement('div');
+    if(cls) d.className=cls;
+    d.textContent=`[${new Date().toLocaleTimeString('pl-PL')}] ${msg}`;
+    term.appendChild(d); term.scrollTop=term.scrollHeight;
+  };
+  const FALLBACK={temp:13, press:1015, hum:58}; // lokalny cache awaryjny
+
+  async function fetchWeather(){
+    log('INIT :: żądanie GET → api.open-meteo.com (Warszawa 52.23N 21.01E)','dim');
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(), 2000); // sztywny timeout 2 s
+    try{
+      const r=await fetch(
+        'https://api.open-meteo.com/v1/forecast?latitude=52.2297&longitude=21.0122'+
+        '&current=temperature_2m,relative_humidity_2m,surface_pressure',
+        {signal:ctrl.signal}
+      );
+      clearTimeout(timer);
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      const j=await r.json();
+      const c=j.current;
+      $t.textContent=Math.round(c.temperature_2m*10)/10;
+      $p.textContent=Math.round(c.surface_pressure)+' hPa';
+      $h.textContent=Math.round(c.relative_humidity_2m)+' %';
+      log('OK :: pakiet JSON odebrany, dane LIVE zsynchronizowane');
+    }catch(err){
+      clearTimeout(timer);
+      const why = err.name==='AbortError' ? 'TIMEOUT >2000ms (firewall / brak sieci)' : err.message;
+      log('ERR :: '+why,'err');
+      log('FALLBACK :: przejście w tryb OFFLINE CACHE — dane lokalne','err');
+      $t.textContent=FALLBACK.temp;
+      $p.textContent=FALLBACK.press+' hPa';
+      $h.textContent=FALLBACK.hum+' %';
+      log('OK :: podstawiono cache: 13°C / 1015 hPa / 58%');
+    }
+  }
+  fetchWeather();
+})();
+
+/* ============================================================
+   3. SILNIK SZACHOWY — Minimax D2, anti-repetition, notacja alg.
+      Białe = gracz (biel), Czarne = bot (neonowy fiolet)
+   ============================================================ */
+(function(){
+  const GLYPH={P:'♟',N:'♞',B:'♝',R:'♜',Q:'♛',K:'♚'};
+  const VAL={P:10,N:30,B:30,R:50,Q:90,K:900};       // wagi z evaluateBoard
+  const CENTER={ '3,3':3,'3,4':3,'4,3':3,'4,4':3,   // ścisłe centrum d4 e4 d5 e5
+                 '2,2':1,'2,3':1,'2,4':1,'2,5':1,'3,2':1,'3,5':1,
+                 '4,2':1,'4,5':1,'5,2':1,'5,3':1,'5,4':1,'5,5':1 };
+  const FILES='abcdefgh';
+  const alg=(r,c)=>FILES[c]+(8-r);
+
+  const boardEl=document.getElementById('board');
+  const termEl=document.getElementById('chess-term');
+  const statusEl=document.getElementById('chess-status');
+
+  let B, turn, sel, legal, gameOver;
+
+  function initBoard(){
+    const back=['R','N','B','Q','K','B','N','R'];
+    B=Array.from({length:8},()=>Array(8).fill(null));
+    for(let c=0;c<8;c++){
+      B[0][c]={t:back[c],c:'b'}; B[1][c]={t:'P',c:'b'};
+      B[6][c]={t:'P',c:'w'};    B[7][c]={t:back[c],c:'w'};
+    }
+    turn='w'; sel=null; legal=[]; gameOver=false;
+    termEl.innerHTML='';
+    log('[SYSTEM] Inicjalizacja planszy. Grasz Białymi.');
+    setStatus('Twój ruch (Białe)');
+    render();
+  }
+
+  function log(msg,cls){
+    const d=document.createElement('div');
+    if(cls) d.className=cls;
+    d.textContent=msg;
+    termEl.appendChild(d); termEl.scrollTop=termEl.scrollHeight;
+  }
+  function setStatus(s){statusEl.textContent=s}
+
+  /* ---- generacja ruchów (pseudo-legalne) ---- */
+  const IN=(r,c)=>r>=0&&r<8&&c>=0&&c<8;
+  function ray(B,r,c,drs,me,out){
+    for(const [dr,dc] of drs){
+      let rr=r+dr,cc=c+dc;
+      while(IN(rr,cc)){                          // czyszczenie linii toru ruchu
+        if(!B[rr][cc]) out.push([rr,cc]);
+        else{ if(B[rr][cc].c!==me) out.push([rr,cc]); break; }
+        rr+=dr; cc+=dc;
+      }
+    }
+  }
+  function pseudoMoves(B,r,c){
+    const p=B[r][c]; if(!p) return [];
+    const me=p.c, out=[];
+    switch(p.t){
+      case 'P':{
+        const dir = me==='w'?-1:1, start = me==='w'?6:1;
+        if(IN(r+dir,c)&&!B[r+dir][c]){
+          out.push([r+dir,c]);
+          if(r===start && !B[r+2*dir][c]) out.push([r+2*dir,c]);
+        }
+        for(const dc of [-1,1]){
+          const rr=r+dir,cc=c+dc;
+          if(IN(rr,cc)&&B[rr][cc]&&B[rr][cc].c!==me) out.push([rr,cc]);
+        }
+        break;
+      }
+      case 'N': // ruch w kształcie "L"
+        for(const [dr,dc] of [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]]){
+          const rr=r+dr,cc=c+dc;
+          if(IN(rr,cc)&&(!B[rr][cc]||B[rr][cc].c!==me)) out.push([rr,cc]);
+        }
+        break;
+      case 'B': ray(B,r,c,[[-1,-1],[-1,1],[1,-1],[1,1]],me,out); break;         // skosy
+      case 'R': ray(B,r,c,[[-1,0],[1,0],[0,-1],[0,1]],me,out); break;           // linie
+      case 'Q': ray(B,r,c,[[-1,-1],[-1,1],[1,-1],[1,1],[-1,0],[1,0],[0,-1],[0,1]],me,out); break;
+      case 'K':
+        for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){
+          if(!dr&&!dc) continue;
+          const rr=r+dr,cc=c+dc;
+          if(IN(rr,cc)&&(!B[rr][cc]||B[rr][cc].c!==me)) out.push([rr,cc]);
+        }
+        break;
+    }
+    return out;
+  }
+
+  /* ---- szach: isKingInCheck ---- */
+  function isKingInCheck(B,color){
+    let kr=-1,kc=-1;
+    for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+      const p=B[r][c];
+      if(p&&p.t==='K'&&p.c===color){kr=r;kc=c}
+    }
+    if(kr<0) return true; // brak króla = przegrana pozycja
+    const enemy=color==='w'?'b':'w';
+    for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+      const p=B[r][c];
+      if(p&&p.c===enemy){
+        for(const [rr,cc] of pseudoMoves(B,r,c)) if(rr===kr&&cc===kc) return true;
+      }
+    }
+    return false;
+  }
+
+  function applyMove(B,from,to){
+    const nb=B.map(row=>row.map(p=>p?{...p}:null));
+    const p=nb[from[0]][from[1]];
+    nb[to[0]][to[1]]=p; nb[from[0]][from[1]]=null;
+    if(p.t==='P'&&(to[0]===0||to[0]===7)) p.t='Q'; // auto-promocja
+    return nb;
+  }
+
+  /* ---- ruchy legalne: blokada odsłonięcia Króla ---- */
+  function legalMoves(B,r,c){
+    const p=B[r][c]; if(!p) return [];
+    return pseudoMoves(B,r,c).filter(m=>!isKingInCheck(applyMove(B,[r,c],m),p.c));
+  }
+  function allLegal(B,color){
+    const out=[];
+    for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+      const p=B[r][c];
+      if(p&&p.c===color) for(const m of legalMoves(B,r,c)) out.push({from:[r,c],to:m});
+    }
+    return out;
+  }
+
+  /* ---- evaluateBoard: perspektywa Czarnych (bota) ---- */
+  function evaluateBoard(B){
+    let score=0;
+    for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+      const p=B[r][c]; if(!p) continue;
+      let v=VAL[p.t] + (CENTER[r+','+c]||0);      // bonus za pola centralne
+      score += p.c==='b' ? v : -v;
+    }
+    return score;
+  }
+
+  /* ---- Minimax Depth 2: bot -> najgorsza odpowiedź gracza ---- */
+  function botMove(){
+    const moves=allLegal(B,'b');
+    if(!moves.length){ endGame('b'); return; }
+    let best=-Infinity;
+    const scored=[];
+    for(const mv of moves){
+      const b1=applyMove(B,mv.from,mv.to);
+      const replies=allLegal(b1,'w');
+      let worst=Infinity;                         // worst-case reduction
+      if(!replies.length){
+        worst = isKingInCheck(b1,'w') ? 10000 : 0; // mat / pat
+      }else{
+        for(const rp of replies){
+          const b2=applyMove(b1,rp.from,rp.to);
+          const s=evaluateBoard(b2);
+          if(s<worst) worst=s;
+        }
+      }
+      scored.push({mv,score:worst});
+      if(worst>best) best=worst;
+    }
+    // Anti-Repetition System: losowanie z puli ruchów o identycznej, najwyższej wadze
+    const pool=scored.filter(s=>s.score===best);
+    const pick=pool[Math.floor(Math.random()*pool.length)].mv;
+
+    B=applyMove(B,pick.from,pick.to);
+    log(`[ENGINE] Ruch silnika: ${alg(...pick.from)} -> ${alg(...pick.to)}`);
+    if(pool.length>1) log(`[ENGINE] Anti-repetition: wylosowano 1 z ${pool.length} ruchów o wadze ${best}.`,'dim');
+    turn='w';
+    postMoveChecks('w');
+    render();
+  }
+
+  function postMoveChecks(color){
+    if(isKingInCheck(B,color)){
+      if(!allLegal(B,color).length){ endGame(color); return; }
+      log(`[SYSTEM] Szach na Króla ${color==='w'?'Białych':'Czarnych'}!`);
+      setStatus(color==='w' ? 'SZACH — broń Króla (Białe)' : 'Szach na bota');
+    }else if(!allLegal(B,color).length){
+      gameOver=true; setStatus('PAT — remis');
+      log('[SYSTEM] Pat. Partia zakończona remisem.');
+    }else{
+      setStatus(color==='w' ? 'Twój ruch (Białe)' : 'Silnik analizuje…');
+    }
+  }
+  function endGame(loser){
+    gameOver=true;
+    const winner = loser==='w' ? 'ENGINE (Czarne)' : 'GRACZ (Białe)';
+    setStatus('MAT — wygrywa '+winner);
+    log(`[SYSTEM] Szach-mat. Zwycięzca: ${winner}.`);
+  }
+
+  /* ---- UI ---- */
+  function render(){
+    boardEl.innerHTML='';
+    const checked = isKingInCheck(B,turn) ? turn : null;
+    for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+      const sq=document.createElement('div');
+      sq.className='sq '+((r+c)%2?'dark':'light');
+      sq.dataset.r=r; sq.dataset.c=c;
+      const p=B[r][c];
+      if(p){
+        const s=document.createElement('span');
+        s.className='pc '+p.c; s.textContent=GLYPH[p.t];
+        sq.appendChild(s);
+        if(p.t==='K'&&p.c===checked) sq.classList.add('check');
+      }
+      if(sel&&sel[0]===r&&sel[1]===c) sq.classList.add('sel');
+      if(legal.some(m=>m[0]===r&&m[1]===c)) sq.classList.add(p?'capture':'move');
+      if(c===0){const k=document.createElement('span');k.className='coords rank';k.textContent=8-r;sq.appendChild(k)}
+      if(r===7){const k=document.createElement('span');k.className='coords file';k.textContent=FILES[c];sq.appendChild(k)}
+      sq.addEventListener('click',()=>onSquare(r,c));
+      boardEl.appendChild(sq);
+    }
+  }
+
+  function onSquare(r,c){
+    if(gameOver||turn!=='w') return;
+    const p=B[r][c];
+    if(sel){
+      if(legal.some(m=>m[0]===r&&m[1]===c)){
+        const from=sel;
+        B=applyMove(B,from,[r,c]);
+        log(`[GRACZ] Ruch zaakceptowany: ${alg(...from)} -> ${alg(r,c)}`);
+        sel=null; legal=[]; turn='b';
+        postMoveChecks('b');
+        render();
+        if(!gameOver) setTimeout(botMove, 420); // pauza na "analizę"
+        return;
+      }
+      if(p&&p.c==='w'){ sel=[r,c]; legal=legalMoves(B,r,c); render(); return; }
+      // ruch nielegalny
+      if(sel && !(sel[0]===r&&sel[1]===c))
+        log(`[GRACZ] Ruch odrzucony: ${alg(...sel)} -> ${alg(r,c)} (nielegalny / odsłania Króla)`,'err');
+      sel=null; legal=[]; render();
+    }else if(p&&p.c==='w'){
+      sel=[r,c]; legal=legalMoves(B,r,c);
+      if(!legal.length){ sel=null; }
+      render();
+    }
+  }
+
+  document.getElementById('btn-reset').addEventListener('click',initBoard);
+  initBoard();
+})();
+</script>
+</body>
+</html>
