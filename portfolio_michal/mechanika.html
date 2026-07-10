@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mechanika — Dolina fabryczna · Michał Antkowiak</title>
+<meta name="description" content="Świat mechaniki: CAD, pasowania, konstrukcje. Zniżanie dronem nad doliną fabryczną.">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+/* paleta dnia doliny */
+body{background:#aebcc4}
+#sky-css{position:fixed;inset:0;z-index:0;background:
+  radial-gradient(1100px 560px at 50% 116%, #c4b9a4 0%, transparent 62%),
+  linear-gradient(#0a0f16 0%, #223140 16%, #6d8093 40%, #94a3ab 68%, #b2ab9c 100%)}
+.dd.jump .n{color:var(--acc)}
+.dd.jump .t{color:#c98a3a}
+.dd.here{opacity:.55;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="sky-css" aria-hidden="true"></div>
+<div id="sky" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav-logo" href="index.html" data-jump="index.html"><span class="dot"></span>MICHAŁ ANTKOWIAK <b>// MT-112</b></a>
+  <nav class="nav-links" aria-label="Światy">
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Elektronika <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <a class="dd jump" href="elektronika.html" data-jump="elektronika.html"><span class="t">Świat // noc</span><span class="n">Kanion krzemowy ⇢ skok</span>
+          <span class="d">Płyta PCB, świecące ścieżki, układy-wieżowce.</span><span class="p">elektronika.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/hydroponika.html">
+          <span class="t">Embedded / PBL</span><span class="n">Laboratorium hydroponiki</span>
+          <span class="d">ESP32, uasyncio, DHT22, pompa 5V — pełny system upraw.</span>
+          <span class="p">projekty/hydroponika.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/hydroponika.html#naped">
+          <span class="t">Sterowanie</span><span class="n">Napęd rotacji — A4988</span>
+          <span class="d">Silnik krokowy + sterownik; powolny obrót eliminujący fototropizm.</span>
+          <span class="p">hydroponika.html#naped</span></a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Programowanie <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <a class="dd jump" href="index.html" data-jump="index.html"><span class="t">Świat // dzień</span><span class="n">Solar City ⇢ skok</span>
+          <span class="d">Deorbitacja nad solarpunkowym miastem.</span><span class="p">index.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/szachy.html">
+          <span class="t">C++ / Algorytmika</span><span class="n">Środowisko silnika szachowego</span>
+          <span class="d">OOP w Qt Creator, Minimax D2, anty-repetycja.</span>
+          <span class="p">projekty/szachy.html</span></a>
+        <a class="dd" role="menuitem" href="index.html#wp5">
+          <span class="t">JS / API</span><span class="n">WarsawWeather</span>
+          <span class="d">Open-Meteo, AbortController, degradacja do fallbacku.</span>
+          <span class="p">index.html#wp5</span></a>
+        <a class="dd" role="menuitem" href="index.html">
+          <span class="t">Three.js</span><span class="n">Portfolio MA//DEORBIT</span>
+          <span class="d">Ten silnik światów: scroll-zniżanie, modele GLB z Blendera.</span>
+          <span class="p">index.html</span></a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Mechanika <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <span class="dd jump here"><span class="t">Świat // dzień</span><span class="n">Dolina fabryczna</span>
+          <span class="d">Jesteś tutaj. Hale, suwnice i wielkie koła zębate.</span><span class="p">mechanika.html</span></span>
+        <a class="dd" role="menuitem" href="projekty/inventor.html">
+          <span class="t">CAD / Mechanika</span><span class="n">Hala montażowa — Inventor</span>
+          <span class="d">Złożenie parametryczne, pasowania H8/h7 · H7/g6, dokumentacja ISO.</span>
+          <span class="p">projekty/inventor.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/hydroponika.html#mechanizm">
+          <span class="t">Konstrukcja</span><span class="n">Mechanizm rotacji upraw</span>
+          <span class="d">Łożysko kulkowe, wał, mocowania — mechaniczna strona hydroponiki.</span>
+          <span class="p">hydroponika.html#mechanizm</span></a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Doświadczenie <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <a class="dd jump" href="doswiadczenie.html" data-jump="doswiadczenie.html"><span class="t">Świat // świt</span><span class="n">Serpentyna ⇢ skok</span>
+          <span class="d">Górska droga-oś czasu: liceum → praca → studia.</span><span class="p">doswiadczenie.html</span></a>
+        <a class="dd" role="menuitem" href="doswiadczenie.html#wp1" data-jump="doswiadczenie.html#wp1">
+          <span class="t">Edukacja</span><span class="n">XII LO im. Słowackiego</span>
+          <span class="d">Profil mat-fiz z rozszerzoną algorytmiką.</span><span class="p">doswiadczenie.html#wp1</span></a>
+        <a class="dd" role="menuitem" href="doswiadczenie.html#wp2" data-jump="doswiadczenie.html#wp2">
+          <span class="t">Praca</span><span class="n">Kurier miejski</span>
+          <span class="d">Logistyka pod presją czasu, niezawodność dostaw.</span><span class="p">doswiadczenie.html#wp2</span></a>
+        <a class="dd" role="menuitem" href="doswiadczenie.html#wp3" data-jump="doswiadczenie.html#wp3">
+          <span class="t">Dydaktyka</span><span class="n">Korepetycje z matematyki</span>
+          <span class="d">Od 2024 — algebra i geometria, uczniowie LO.</span><span class="p">doswiadczenie.html#wp3</span></a>
+        <a class="dd" role="menuitem" href="doswiadczenie.html#wp4" data-jump="doswiadczenie.html#wp4">
+          <span class="t">Studia</span><span class="n">PW Mechatronika + KN ONYKS</span>
+          <span class="d">mt-112; koło naukowe automatyki i embedded.</span><span class="p">doswiadczenie.html#wp4</span></a>
+      </div>
+    </div>
+  </nav>
+  <a class="nav-gh" href="https://github.com/MichalAntkowiak" target="_blank" rel="noopener">github/MichalAntkowiak ↗</a>
+</header>
+
+<div id="alt" aria-hidden="true">
+  <div class="bar"><div class="fill" id="alt-fill"></div></div>
+  <div class="read">
+    <div class="v"><span id="alt-v">360</span><small id="alt-u"> m</small></div>
+    <div class="l" id="alt-l">DOLINA FABRYCZNA</div>
+    <div class="wp" id="alt-wp">WP.00 ZRZUT</div>
+  </div>
+</div>
+
+<nav id="rail" aria-label="Waypointy">
+  <a href="#wp0" class="active"><span>WP.00 ZRZUT</span><i class="p"></i></a>
+  <a href="#wp1"><span>WP.01 CAD</span><i class="p"></i></a>
+  <a href="#wp2"><span>WP.02 TOLERANCJE</span><i class="p"></i></a>
+  <a href="#wp3"><span>WP.03 MECHANIZM</span><i class="p"></i></a>
+  <a href="#wp4"><span>WP.04 PAD</span><i class="p"></i></a>
+</nav>
+
+<main>
+  <section class="wp-sec" id="wp0" data-wp="WP.00 ZRZUT">
+    <div class="wrap side-l"><div class="card">
+      <span class="hero-k">Świat 3/4 // mechanika · dzień</span>
+      <h1>DOLINA<br>FABRYCZNA<br><span class="thin">MECHANIKA</span></h1>
+      <p class="hero-sub">Zrzut nad zakładem: hale szedowe, suwnica bramowa, zazębione przekładnie
+      i taśmociąg z detalami. <b>Scroll w dół = zniżanie na stalową płytę P-M1.</b></p>
+      <div class="hero-meta">
+        <span>PROFIL: <b>ZRZUT → PAD P-M1</b></span>
+        <span>PUŁAP: <b>360 m</b></span>
+        <span>TRYB: <b>DZIENNY</b></span>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="wp-sec" id="wp1" data-wp="WP.01 CAD">
+    <div class="wrap side-r"><div class="card">
+      <div class="wp-tag">Waypoint 01 // CAD · Inventor</div>
+      <h2>Hala montażowa — Inventor</h2>
+      <p>Złożenie parametryczne w <b>Autodesk Inventor</b>: od modeli części, przez wiązania,
+      po komplet rysunków wykonawczych.</p>
+      <div class="kv">
+        <div><span class="l">Złożenie</span><span class="v">Wiązania parametryczne, sterowanie wymiarami przez parametry — zmiana jednej wartości przelicza całość.</span></div>
+        <div><span class="l">Rysunki</span><span class="v">Rzuty, przekroje i detale: wspornik, płytka, koło pasowe, wałek — wg ISO.</span></div>
+        <div><span class="l">Model 3D</span><span class="v">Podgląd złożenia (Zespol1.glb) osadzony na podstronie projektu.</span></div>
+      </div>
+      <a class="btn" href="projekty/inventor.html">Dokumentacja + rysunki → inventor.html</a>
+    </div></div>
+  </section>
+
+  <section class="wp-sec" id="wp2" data-wp="WP.02 TOLERANCJE">
+    <div class="wrap side-l"><div class="card">
+      <div class="wp-tag">Waypoint 02 // tolerancje i pasowania</div>
+      <h2>H8/h7 · H7/g6 — dlaczego tak</h2>
+      <p>Dobór pasowań pod funkcję węzła: <b>H8/h7</b> tam, gdzie liczy się łatwy montaż
+      przy zachowaniu prowadzenia; <b>H7/g6</b> dla ruchowego pasowania z minimalnym luzem.</p>
+      <div class="kv">
+        <div><span class="l">Zasada</span><span class="v">Stały otwór (H) — tolerancja realizowana na wałku; prostsze narzędziowanie otworów.</span></div>
+        <div><span class="l">Dokumentacja</span><span class="v">Tabelki rysunkowe, chropowatość i bazy zgodnie z ISO.</span></div>
+      </div>
+      <a class="btn" href="projekty/inventor.html">Rysunki wykonawcze → inventor.html</a>
+    </div></div>
+  </section>
+
+  <section class="wp-sec" id="wp3" data-wp="WP.03 MECHANIZM">
+    <div class="wrap side-r"><div class="card">
+      <div class="wp-tag">Waypoint 03 // konstrukcja</div>
+      <h2>Mechanizm rotacji upraw</h2>
+      <p>Mechaniczna strona autorskiego pomysłu z laboratorium hydroponiki: powolny obrót
+      platformy uprawnej na <b>łożysku kulkowym</b>, który eliminuje fototropizm.</p>
+      <div class="kv">
+        <div><span class="l">Węzeł obrotu</span><span class="v">Łożysko kulkowe + wał; moment przenoszony z krokowca przez sprzęgło.</span></div>
+        <div><span class="l">Mocowania</span><span class="v">Konstrukcja pod lekką platformę; dostęp serwisowy do napędu.</span></div>
+        <div><span class="l">Cross-link</span><span class="v">Elektryczna strona napędu (A4988) opisana w świecie Elektroniki.</span></div>
+      </div>
+      <a class="btn" href="projekty/hydroponika.html#mechanizm">Szczegóły mechanizmu → #mechanizm</a>
+    </div></div>
+  </section>
+
+  <section class="wp-sec" id="wp4" data-wp="WP.04 PAD P-M1">
+    <div class="wrap side-c"><div class="card">
+      <div class="wp-tag">Waypoint 04 // przyziemienie</div>
+      <h2>Płyta P-M1</h2>
+      <p>Stalowa płyta w strefie za taśmociągiem. Suwnica właśnie przenosi kolejny detal.
+      Dokąd teraz?</p>
+      <div class="hero-meta">
+        <span><a class="btn" href="projekty/inventor.html">DOKUMENTACJA CAD →</a></span>
+        <span><a class="btn" href="doswiadczenie.html" data-jump="doswiadczenie.html">SKOK: SERPENTYNA ⇢</a></span>
+      </div>
+    </div></div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <span>© 2026 Michał Antkowiak · Mechatronika PW</span>
+  <span class="mono">ŚWIAT: MECHANIKA // DOLINA FABRYCZNA</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="assets/world.js"></script>
+<script src="assets/GLTFLoader.js"></script>
+<script src="assets/hyper.js"></script>
+<script src="assets/biome.js"></script>
+<script src="assets/biomes/factory.js"></script>
+<script>
+(function(){
+'use strict';
+/* przylot z nadprzestrzeni */
+MAHYPER.arrive();
+/* dropdowny */
+document.querySelectorAll('.nav-item').forEach(it=>{
+  const btn=it.querySelector('.nav-btn');if(!btn)return;
+  btn.addEventListener('click',e=>{e.stopPropagation();
+    const open=it.classList.contains('open');
+    document.querySelectorAll('.nav-item.open').forEach(o=>o.classList.remove('open'));
+    it.classList.toggle('open',!open);
+    btn.setAttribute('aria-expanded',String(!open))});
+});
+document.addEventListener('click',()=>document.querySelectorAll('.nav-item.open')
+  .forEach(o=>o.classList.remove('open')));
+/* hiperskoki */
+document.querySelectorAll('[data-jump]').forEach(a=>{
+  a.addEventListener('click',e=>{e.preventDefault();MAHYPER.jump(a.dataset.jump)});
+});
+/* świat */
+MABIOME.run(MABIOME_FACTORY);
+})();
+</script>
+</body>
+</html>
