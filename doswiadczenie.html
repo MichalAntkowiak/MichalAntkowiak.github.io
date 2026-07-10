@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doświadczenie — Serpentyna · Michał Antkowiak</title>
+<meta name="description" content="Oś czasu w górach o świcie: liceum, praca, dydaktyka, studia. Zniżanie dronem wzdłuż serpentyny.">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+/* paleta świtu */
+body{background:#c88a5e}
+#sky-css{position:fixed;inset:0;z-index:0;background:
+  radial-gradient(900px 520px at 62% 106%, #ffcf8a 0%, rgba(255,207,138,0) 60%),
+  linear-gradient(#0c0a1c 0%, #2c1a44 18%, #6e4470 40%, #a8636e 62%, #d08a62 82%, #e6a866 100%)}
+.dd.jump .n{color:var(--acc)}
+.dd.jump .t{color:#ffb46a}
+.dd.here{opacity:.55;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="sky-css" aria-hidden="true"></div>
+<div id="sky" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav-logo" href="index.html" data-jump="index.html"><span class="dot"></span>MICHAŁ ANTKOWIAK <b>// MT-112</b></a>
+  <nav class="nav-links" aria-label="Światy">
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Elektronika <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <a class="dd jump" href="elektronika.html" data-jump="elektronika.html"><span class="t">Świat // noc</span><span class="n">Kanion krzemowy ⇢ skok</span>
+          <span class="d">Płyta PCB, świecące ścieżki, układy-wieżowce.</span><span class="p">elektronika.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/hydroponika.html">
+          <span class="t">Embedded / PBL</span><span class="n">Laboratorium hydroponiki</span>
+          <span class="d">ESP32, uasyncio, DHT22, pompa 5V — pełny system upraw.</span>
+          <span class="p">projekty/hydroponika.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/hydroponika.html#naped">
+          <span class="t">Sterowanie</span><span class="n">Napęd rotacji — A4988</span>
+          <span class="d">Silnik krokowy + sterownik; powolny obrót eliminujący fototropizm.</span>
+          <span class="p">hydroponika.html#naped</span></a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Programowanie <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <a class="dd jump" href="index.html" data-jump="index.html"><span class="t">Świat // dzień</span><span class="n">Solar City ⇢ skok</span>
+          <span class="d">Deorbitacja nad solarpunkowym miastem.</span><span class="p">index.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/szachy.html">
+          <span class="t">C++ / Algorytmika</span><span class="n">Środowisko silnika szachowego</span>
+          <span class="d">OOP w Qt Creator, Minimax D2, anty-repetycja.</span>
+          <span class="p">projekty/szachy.html</span></a>
+        <a class="dd" role="menuitem" href="index.html#wp5">
+          <span class="t">JS / API</span><span class="n">WarsawWeather</span>
+          <span class="d">Open-Meteo, AbortController, degradacja do fallbacku.</span>
+          <span class="p">index.html#wp5</span></a>
+        <a class="dd" role="menuitem" href="index.html">
+          <span class="t">Three.js</span><span class="n">Portfolio MA//DEORBIT</span>
+          <span class="d">Ten silnik światów: scroll-zniżanie, modele GLB z Blendera.</span>
+          <span class="p">index.html</span></a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Mechanika <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <a class="dd jump" href="mechanika.html" data-jump="mechanika.html"><span class="t">Świat // dzień</span><span class="n">Dolina fabryczna ⇢ skok</span>
+          <span class="d">Hale, suwnice i wielkie koła zębate.</span><span class="p">mechanika.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/inventor.html">
+          <span class="t">CAD / Mechanika</span><span class="n">Hala montażowa — Inventor</span>
+          <span class="d">Złożenie parametryczne, pasowania H8/h7 · H7/g6, dokumentacja ISO.</span>
+          <span class="p">projekty/inventor.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/hydroponika.html#mechanizm">
+          <span class="t">Konstrukcja</span><span class="n">Mechanizm rotacji upraw</span>
+          <span class="d">Łożysko kulkowe, wał, mocowania — mechaniczna strona hydroponiki.</span>
+          <span class="p">hydroponika.html#mechanizm</span></a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Doświadczenie <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <span class="dd jump here"><span class="t">Świat // świt</span><span class="n">Serpentyna</span>
+          <span class="d">Jesteś tutaj. Oś czasu od liceum po politechnikę.</span><span class="p">doswiadczenie.html</span></span>
+        <a class="dd" role="menuitem" href="#wp1">
+          <span class="t">Edukacja</span><span class="n">XII LO im. Słowackiego</span>
+          <span class="d">Profil mat-fiz z rozszerzoną algorytmiką.</span><span class="p">#wp1 · liceum</span></a>
+        <a class="dd" role="menuitem" href="#wp2">
+          <span class="t">Praca</span><span class="n">Kurier miejski</span>
+          <span class="d">Logistyka pod presją czasu, niezawodność dostaw.</span><span class="p">#wp2 · kurier</span></a>
+        <a class="dd" role="menuitem" href="#wp3">
+          <span class="t">Dydaktyka</span><span class="n">Korepetycje z matematyki</span>
+          <span class="d">Od 2024 — algebra i geometria, uczniowie LO.</span><span class="p">#wp3 · korepetycje</span></a>
+        <a class="dd" role="menuitem" href="#wp4">
+          <span class="t">Studia</span><span class="n">PW Mechatronika + KN ONYKS</span>
+          <span class="d">mt-112; koło naukowe automatyki i embedded.</span><span class="p">#wp4 · studia</span></a>
+      </div>
+    </div>
+  </nav>
+  <a class="nav-gh" href="https://github.com/MichalAntkowiak" target="_blank" rel="noopener">github/MichalAntkowiak ↗</a>
+</header>
+
+<div id="alt" aria-hidden="true">
+  <div class="bar"><div class="fill" id="alt-fill"></div></div>
+  <div class="read">
+    <div class="v"><span id="alt-v">300</span><small id="alt-u"> m</small></div>
+    <div class="l" id="alt-l">SERPENTYNA · ŚWIT</div>
+    <div class="wp" id="alt-wp">WP.00 ZRZUT</div>
+  </div>
+</div>
+
+<nav id="rail" aria-label="Waypointy">
+  <a href="#wp0" class="active"><span>WP.00 ZRZUT</span><i class="p"></i></a>
+  <a href="#wp1"><span>WP.01 LICEUM</span><i class="p"></i></a>
+  <a href="#wp2"><span>WP.02 KURIER</span><i class="p"></i></a>
+  <a href="#wp3"><span>WP.03 KOREPETYCJE</span><i class="p"></i></a>
+  <a href="#wp4"><span>WP.04 STUDIA</span><i class="p"></i></a>
+  <a href="#wp5"><span>WP.05 PAD</span><i class="p"></i></a>
+</nav>
+
+<main>
+  <section class="wp-sec" id="wp0" data-wp="WP.00 ZRZUT">
+    <div class="wrap side-l"><div class="card">
+      <span class="hero-k">Świat 4/4 // doświadczenie · świt</span>
+      <h1>SERPEN-<br>TYNA<br><span class="thin">OŚ CZASU</span></h1>
+      <p class="hero-sub">Górska droga o wschodzie słońca. Każdy zakręt to etap:
+      liceum, praca, dydaktyka, studia. <b>Scroll w dół = zniżanie wzdłuż drogi — od
+      szczytu doświadczeń do punktu startu.</b></p>
+      <div class="hero-meta">
+        <span>PROFIL: <b>SZCZYT → PAD P-D1</b></span>
+        <span>PUŁAP: <b>300 m</b></span>
+        <span>TRYB: <b>ZŁOTA GODZINA</b></span>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="wp-sec" id="wp4" data-wp="WP.04 STUDIA">
+    <div class="wrap side-r"><div class="card">
+      <div class="wp-tag">Taras 4 // szczyt · 2025—teraz</div>
+      <h2>PW Mechatronika + KN „ONYKS"</h2>
+      <p>Wydział Mechatroniki Politechniki Warszawskiej, grupa <b>mt-112</b>. Na szczycie
+      serpentyny — bo to punkt, z którego widać wszystkie wcześniejsze zakręty.</p>
+      <div class="kv">
+        <div><span class="l">Koło naukowe</span><span class="v"><b>KN „ONYKS"</b> — automatyka i systemy embedded; rozwój projektów sprzętowych.</span></div>
+        <div><span class="l">Profil</span><span class="v">Styk mechaniki, elektroniki i kodu — dokładnie to, co widzisz w pozostałych światach.</span></div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="wp-sec" id="wp3" data-wp="WP.03 KOREPETYCJE">
+    <div class="wrap side-l"><div class="card">
+      <div class="wp-tag">Taras 3 // dydaktyka · od 2024</div>
+      <h2>Korepetycje z matematyki</h2>
+      <p>Algebra i geometria dla licealistów. Tablica, kreda i cierpliwość — uczenie innych
+      to najlepszy test własnego zrozumienia.</p>
+      <div class="kv">
+        <div><span class="l">Zakres</span><span class="v">Poziom podstawowy i rozszerzony; przygotowanie do sprawdzianów i matury.</span></div>
+        <div><span class="l">Co daje</span><span class="v">Umiejętność tłumaczenia trudnych rzeczy prosto — przydaje się też w dokumentacji projektów.</span></div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="wp-sec" id="wp2" data-wp="WP.02 KURIER">
+    <div class="wrap side-r"><div class="card">
+      <div class="wp-tag">Taras 2 // praca · logistyka</div>
+      <h2>Kurier miejski</h2>
+      <p>Dostawy gastronomiczne w Warszawie: trasa, czas, niezawodność. Mniej romantyczne
+      niż roboty, ale uczy planowania pod presją jak mało co.</p>
+      <div class="kv">
+        <div><span class="l">Twarde</span><span class="v">Optymalizacja tras w czasie rzeczywistym; punktualność jako KPI.</span></div>
+        <div><span class="l">Miękkie</span><span class="v">Kontakt z klientem, odpowiedzialność za powierzone zlecenia.</span></div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="wp-sec" id="wp1" data-wp="WP.01 LICEUM">
+    <div class="wrap side-l"><div class="card">
+      <div class="wp-tag">Taras 1 // edukacja · matura 2025</div>
+      <h2>XII LO im. J. Słowackiego</h2>
+      <p>Warszawa, profil <b>mat-fiz</b> z rozszerzoną algorytmiką — tu zaczęła się droga,
+      którą właśnie zjeżdżasz.</p>
+      <div class="kv">
+        <div><span class="l">Rozszerzenia</span><span class="v">Matematyka · fizyka · informatyka (algorytmika).</span></div>
+        <div><span class="l">Efekt</span><span class="v">Fundament pod silnik szachowy w C++ i całą resztę.</span></div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="wp-sec" id="wp5" data-wp="WP.05 PAD P-D1">
+    <div class="wrap side-c"><div class="card">
+      <div class="wp-tag">Łąka // przyziemienie</div>
+      <h2>Pad P-D1 · początek szlaku</h2>
+      <p>Dron osiadł na kamiennym kręgu przy drogowskazie. Oś czasu przeczytana od
+      szczytu do startu — a dalej? Dalej są projekty.</p>
+      <div class="hero-meta">
+        <span><a class="btn" href="elektronika.html" data-jump="elektronika.html">SKOK: KANION KRZEMOWY ⇢</a></span>
+        <span><a class="btn" href="index.html" data-jump="index.html">SKOK: SOLAR CITY ⇢</a></span>
+      </div>
+    </div></div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <span>© 2026 Michał Antkowiak · Mechatronika PW</span>
+  <span class="mono">ŚWIAT: DOŚWIADCZENIE // SERPENTYNA</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="assets/world.js"></script>
+<script src="assets/GLTFLoader.js"></script>
+<script src="assets/hyper.js"></script>
+<script src="assets/biome.js"></script>
+<script src="assets/biomes/ridge.js"></script>
+<script>
+(function(){
+'use strict';
+/* przylot z nadprzestrzeni */
+MAHYPER.arrive();
+/* dropdowny */
+document.querySelectorAll('.nav-item').forEach(it=>{
+  const btn=it.querySelector('.nav-btn');if(!btn)return;
+  btn.addEventListener('click',e=>{e.stopPropagation();
+    const open=it.classList.contains('open');
+    document.querySelectorAll('.nav-item.open').forEach(o=>o.classList.remove('open'));
+    it.classList.toggle('open',!open);
+    btn.setAttribute('aria-expanded',String(!open))});
+});
+document.addEventListener('click',()=>document.querySelectorAll('.nav-item.open')
+  .forEach(o=>o.classList.remove('open')));
+/* hiperskoki */
+document.querySelectorAll('[data-jump]').forEach(a=>{
+  a.addEventListener('click',e=>{e.preventDefault();MAHYPER.jump(a.dataset.jump)});
+});
+/* świat */
+MABIOME.run(MABIOME_RIDGE);
+})();
+</script>
+</body>
+</html>
