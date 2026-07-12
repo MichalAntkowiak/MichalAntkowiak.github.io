@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Michał Antkowiak — Deorbit · Mechatronika PW</title>
+<meta name="description" content="Portfolio inżynierskie Michała Antkowiaka — zniżanie z orbity na parking: CAD, embedded, C++, Python.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="assets/world.js"></script>
+<script src="assets/GLTFLoader.js"></script>
+<script src="assets/hyper.js"></script>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+<style>
+/* ══════════════════════════════════════════════════════════════
+   MA//DEORBIT — orbita → chmury → góry → wieżowce → parking
+   niebo wielowarstwowe · atrament nawigacyjny · pomarańcz lotniczy
+   ══════════════════════════════════════════════════════════════ */
+:root{
+  --ink:#122a3d; --ink-dim:#45607a; --ink-mute:#7b91a3;
+  --acc:#e8500f; --acc2:#ff7a33;
+  --acc-soft:rgba(232,80,15,.12); --acc-glow:rgba(255,110,40,.4);
+  --glass:rgba(255,255,255,.62); --glass-2:rgba(255,255,255,.44);
+  --brd:rgba(18,42,61,.16); --brd-2:rgba(18,42,61,.09);
+  --box:#0f2334; --green:#35d07f;
+  --fd:'Space Grotesk',system-ui,sans-serif;
+  --fm:'Fira Code',ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{color:var(--ink);font-family:var(--fd);-webkit-font-smoothing:antialiased;background:#7fb1dc}
+::selection{background:var(--acc);color:#fff}
+a{color:inherit} button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+/* ─── NIEBO WIELOWARSTWOWE: kosmos → ziemia (przewijane w JS) ─── */
+#skygrad{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(180deg,
+    #030510 0%, #050a1c 6%, #081326 12%, #0d2440 20%,
+    #1c4a7e 30%, #2f6fb4 40%, #5f9dd2 50%, #8fbde4 60%,
+    #b6d6ec 70%, #d6e9f4 80%, #e9f1ee 90%, #edece2 100%);
+  background-size:100% 1000%;
+  background-position:0% 0%;
+}
+#sky{position:fixed;inset:0;z-index:1;pointer-events:none}
+#sky canvas{display:block;width:100%;height:100%}
+body.no3d #sky{display:none}
+#haze{position:fixed;left:0;right:0;bottom:0;height:44vh;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(240,238,228,.92));opacity:0}
+
+/* ─── NAV ─── */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;height:56px;
+  display:flex;align-items:stretch;
+  background:rgba(250,253,255,.72);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--brd);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;padding:0 20px;border-right:1px solid var(--brd);
+  font-family:var(--fm);font-size:12.5px;letter-spacing:.5px;text-decoration:none;white-space:nowrap;font-weight:500}
+.nav-logo b{color:var(--acc);font-weight:600}
+.nav-logo .dot{width:7px;height:7px;border-radius:50%;background:var(--acc);box-shadow:0 0 10px var(--acc-glow);animation:blink 3s infinite}
+@keyframes blink{0%,92%{opacity:1}96%{opacity:.25}100%{opacity:1}}
+.nav-links{display:flex;flex:1}
+.nav-item{position:relative;display:flex}
+.nav-btn{display:flex;align-items:center;gap:7px;padding:0 16px;background:none;border:none;
+  border-right:1px solid var(--brd-2);color:var(--ink-dim);font-size:12px;font-weight:600;
+  letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:.15s}
+.nav-btn:hover{color:var(--ink);background:var(--acc-soft)}
+.nav-btn .caret{font-size:8px;color:var(--acc);transition:transform .2s}
+.nav-item.open .caret{transform:rotate(180deg)}
+.dropdown{position:absolute;top:calc(100% + 1px);left:0;min-width:600px;
+  background:rgba(252,254,255,.96);border:1px solid var(--brd);border-top:2px solid var(--acc);
+  display:grid;grid-template-columns:repeat(3,1fr);
+  opacity:0;visibility:hidden;transform:translateY(-8px);transition:.18s;
+  box-shadow:0 30px 70px rgba(18,42,61,.22);backdrop-filter:blur(16px)}
+.nav-item.open .dropdown,.nav-item:focus-within .dropdown{opacity:1;visibility:visible;transform:none}
+.dd{display:block;padding:18px 16px;text-decoration:none;border-right:1px solid var(--brd-2);transition:background .15s}
+.dd:last-child{border-right:0}
+.dd:hover{background:#eef5fa}
+.dd .t{font-family:var(--fm);font-size:10px;color:var(--acc);letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:8px}
+.dd .n{font-size:13.5px;font-weight:700;display:block;margin-bottom:6px}
+.dd .d{font-size:11.5px;line-height:1.5;color:var(--ink-dim);display:block}
+.dd .p{font-family:var(--fm);font-size:9.5px;color:var(--ink-mute);display:block;margin-top:10px}
+.dd.jump .n{color:var(--acc)}
+.dd.here{opacity:.55;pointer-events:none}
+.nav-gh{margin-left:auto;display:flex;align-items:center;padding:0 20px;border-left:1px solid var(--brd);
+  font-family:var(--fm);font-size:11.5px;color:var(--ink-dim);text-decoration:none}
+.nav-gh:hover{color:var(--acc)}
+
+/* ─── HUD ─── */
+#alt{position:fixed;left:22px;top:50%;transform:translateY(-50%);z-index:60;
+  display:flex;align-items:center;gap:12px;pointer-events:none;
+  background:var(--glass-2);border:1px solid var(--brd);backdrop-filter:blur(10px);padding:14px 16px}
+#alt .bar{width:3px;height:200px;background:rgba(18,42,61,.15);position:relative}
+#alt .fill{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,var(--acc2),var(--acc));
+  box-shadow:0 0 10px var(--acc-glow);height:100%}
+#alt .read{font-family:var(--fm)}
+#alt .read .v{font-size:24px;font-weight:600;line-height:1;white-space:nowrap}
+#alt .read .v small{font-size:12px;color:var(--acc)}
+#alt .read .l{font-size:9px;color:var(--ink-mute);letter-spacing:2px;margin-top:5px}
+#alt .read .wp{font-size:9.5px;color:var(--acc);letter-spacing:1px;margin-top:8px;font-weight:600;max-width:150px}
+
+#rail{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:60;
+  display:flex;flex-direction:column;gap:14px;direction:rtl}
+#rail a{display:flex;align-items:center;gap:10px;text-decoration:none;direction:ltr;
+  font-family:var(--fm);font-size:9.5px;letter-spacing:1.5px;color:var(--ink-mute);font-weight:500}
+#rail a .p{width:9px;height:9px;border:2px solid var(--ink-mute);transform:rotate(45deg);transition:.2s;flex:0 0 auto;background:rgba(255,255,255,.5)}
+#rail a span{opacity:0;transform:translateX(6px);transition:.2s;background:var(--glass);padding:3px 8px;border:1px solid var(--brd)}
+#rail a:hover span{opacity:1;transform:none}
+#rail a.active{color:var(--acc)}
+#rail a.active .p{border-color:var(--acc);background:var(--acc);box-shadow:0 0 10px var(--acc-glow)}
+#rail a.active span{opacity:1;transform:none}
+
+/* ─── TREŚĆ ─── */
+main{position:relative;z-index:10}
+.wp-sec{min-height:140vh;display:flex;align-items:center;padding:110px 24px}
+.wp-scenic{min-height:75vh;display:flex;align-items:center;justify-content:center;padding:40px 24px}
+.scenic-chip{font-family:var(--fm);font-size:10px;letter-spacing:3px;color:var(--ink-dim);
+  background:var(--glass-2);border:1px solid var(--brd);padding:9px 16px;backdrop-filter:blur(8px);
+  text-transform:uppercase;font-weight:600}
+.scenic-chip b{color:var(--acc)}
+.wrap{width:100%;max-width:1180px;margin:0 auto;display:flex}
+.card{width:min(600px,100%);background:var(--glass);border:1px solid var(--brd);
+  backdrop-filter:blur(16px);padding:28px 28px 30px;position:relative;
+  box-shadow:0 24px 60px rgba(18,42,61,.14);
+  opacity:0;transform:translateY(34px);transition:opacity .7s,transform .7s cubic-bezier(.22,.9,.3,1)}
+.card.in{opacity:1;transform:none}
+.card::before{content:"";position:absolute;top:-1px;left:-1px;width:26px;height:26px;
+  border-top:2px solid var(--acc);border-left:2px solid var(--acc)}
+.side-l{justify-content:flex-start}.side-r{justify-content:flex-end}.side-c{justify-content:center}
+.side-c .card{width:min(720px,100%)}
+.wp-tag{font-family:var(--fm);font-size:10px;color:var(--acc);letter-spacing:2.5px;text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;margin-bottom:12px;font-weight:600}
+.wp-tag::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(232,80,15,.5),transparent)}
+.card h2{font-size:24px;font-weight:700;letter-spacing:-.4px;margin-bottom:12px}
+.card p{font-size:13.5px;line-height:1.7;color:var(--ink-dim)}
+.card p+p{margin-top:10px}
+.card code{font-family:var(--fm);font-size:.9em;color:var(--acc);font-weight:500}
+.dlink{display:inline-flex;align-items:center;gap:8px;margin-top:16px;margin-right:10px;
+  padding:10px 15px;border:1px solid rgba(232,80,15,.45);font-family:var(--fm);font-size:11.5px;
+  color:var(--ink);text-decoration:none;letter-spacing:.5px;transition:.15s;background:rgba(255,255,255,.5);font-weight:500}
+.dlink:hover{background:var(--acc-soft);border-color:var(--acc);box-shadow:0 0 18px var(--acc-glow)}
+.dlink .arr{color:var(--acc)}
+
+/* HERO — na orbicie: jasny tekst na kosmosie */
+#wp0 .card{background:none;border:none;backdrop-filter:none;padding:0;width:min(700px,100%);box-shadow:none}
+#wp0 .card::before{display:none}
+.hero-k{font-family:var(--fm);font-size:11px;color:#ffb489;letter-spacing:3px;text-transform:uppercase;
+  margin-bottom:18px;display:inline-block;font-weight:600;background:rgba(6,12,26,.5);
+  border:1px solid rgba(255,255,255,.18);padding:7px 12px;backdrop-filter:blur(8px)}
+#wp0 h1{color:#f2f7fc;text-shadow:0 4px 40px rgba(0,0,0,.5)}
+h1{font-size:clamp(42px,7.4vw,80px);font-weight:700;letter-spacing:-2.5px;line-height:.96}
+h1 .thin{-webkit-text-stroke:1.5px #cfe0ef;color:transparent;font-weight:700}
+.hero-sub{margin-top:20px;font-size:15px;color:#cfe0ef;line-height:1.7;max-width:560px;
+  background:rgba(6,12,26,.5);border:1px solid rgba(255,255,255,.16);padding:14px 16px;backdrop-filter:blur(8px)}
+.hero-sub b{color:#fff;font-weight:600}
+.hero-meta{display:flex;gap:20px;margin-top:22px;font-family:var(--fm);font-size:10.5px;color:#9fb6cd;
+  letter-spacing:1px;flex-wrap:wrap;font-weight:500}
+.hero-meta b{color:#ffb489;font-weight:600}
+.hero-cta{margin-top:30px;display:inline-flex;align-items:center;gap:12px;font-family:var(--fm);
+  font-size:11px;letter-spacing:2px;color:#fff;text-decoration:none;border:1px solid var(--acc);
+  padding:14px 22px;transition:.2s;background:var(--acc);font-weight:600;box-shadow:0 10px 30px rgba(232,80,15,.45)}
+.hero-cta:hover{background:#f96420}
+.hero-cta .a{animation:drop 1.6s infinite}
+@keyframes drop{0%,100%{transform:translateY(-2px)}50%{transform:translateY(3px)}}
+
+/* siatki danych */
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--brd-2);border:1px solid var(--brd-2);margin-top:16px}
+.kv div{background:rgba(255,255,255,.72);padding:12px 13px}
+.kv .l{font-family:var(--fm);font-size:9.5px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:5px;font-weight:600}
+.kv .v{font-size:12px;color:var(--ink-dim);line-height:1.55}
+.kv .v b{color:var(--ink);font-weight:600}
+details.tech{margin-top:16px;border:1px solid var(--brd);background:rgba(255,255,255,.55)}
+details.tech summary{padding:11px 15px;cursor:pointer;list-style:none;font-family:var(--fm);font-size:11px;
+  color:var(--acc);letter-spacing:1.5px;text-transform:uppercase;user-select:none;font-weight:600}
+details.tech summary::-webkit-details-marker{display:none}
+details.tech summary::before{content:"[+] ";color:var(--ink-mute)}
+details.tech[open] summary::before{content:"[−] "}
+.tech-in{padding:4px 15px 15px;border-top:1px solid var(--brd-2)}
+.tech-in dl{display:grid;grid-template-columns:128px 1fr;gap:8px 12px;font-size:12px;line-height:1.55}
+.tech-in dt{font-family:var(--fm);font-size:10px;color:var(--acc);text-transform:uppercase;letter-spacing:.5px;padding-top:2px;font-weight:600}
+.tech-in dd{color:var(--ink-dim)}
+.timeline{margin-top:14px;border-left:2px solid var(--brd);padding-left:16px;display:flex;flex-direction:column;gap:15px}
+.tl{position:relative}
+.tl::before{content:"";position:absolute;left:-22px;top:5px;width:8px;height:8px;background:#fff;border:2px solid var(--acc)}
+.tl .w{font-family:var(--fm);font-size:10px;color:var(--acc);letter-spacing:1px;font-weight:600}
+.tl .t{font-size:13px;font-weight:700;margin:3px 0}
+.tl .h{font-size:12px;color:var(--ink-dim);line-height:1.5}
+
+.mini-studio{margin-top:16px;border:1px solid var(--brd);background:#e6edf3;position:relative}
+.mini-studio model-viewer{width:100%;height:280px;display:block;--poster-color:transparent}
+.mini-studio .fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+  font-family:var(--fm);font-size:11px;color:var(--ink-mute);text-align:center;padding:20px;line-height:1.8}
+.mini-studio.err .fallback{display:flex}
+.mini-studio.err model-viewer{visibility:hidden}
+
+.term{font-family:var(--fm);font-size:10.5px;line-height:1.75;color:var(--green);
+  background:var(--box);border:1px solid rgba(18,42,61,.4);padding:12px 14px;
+  min-height:90px;max-height:170px;overflow-y:auto;margin-top:14px}
+.term::before{content:"FLIGHT RECORDER";display:block;font-size:8.5px;letter-spacing:2px;color:var(--acc2);margin-bottom:6px}
+.term .err{color:#ff6b6b}.term .dim{color:#1f7d4e}
+
+.weather{border:1px solid var(--brd);background:rgba(255,255,255,.55);margin-top:16px}
+.wx-main{display:flex;border-bottom:1px solid var(--brd)}
+.wx-t{padding:16px 20px;border-right:1px solid var(--brd);font-family:var(--fm)}
+.wx-t .n{font-size:40px;font-weight:600;line-height:1}
+.wx-t .n small{font-size:17px;color:var(--acc)}
+.wx-t .l{font-size:9.5px;color:var(--ink-mute);letter-spacing:1.5px;text-transform:uppercase;margin-top:7px;font-weight:600}
+.wx-aux{flex:1;display:grid;grid-template-rows:1fr 1fr}
+.wx-aux div{display:flex;justify-content:space-between;align-items:center;padding:0 15px;font-family:var(--fm);font-size:11px;color:var(--ink-dim)}
+.wx-aux div+div{border-top:1px solid var(--brd-2)}
+.wx-aux b{color:var(--ink);font-weight:600}
+.weather .term{margin:0;border:0;border-top:1px solid var(--brd)}
+
+#board{display:grid;grid-template-columns:repeat(8,52px);grid-template-rows:repeat(8,52px);
+  border:3px solid var(--box);width:max-content;user-select:none;margin:16px auto 0;
+  box-shadow:0 14px 34px rgba(18,42,61,.25)}
+.sq{display:flex;align-items:center;justify-content:center;font-size:34px;line-height:1;position:relative;cursor:pointer}
+.sq.light{background:#1d3c57}.sq.dark{background:#0f2334}
+.sq .pc{pointer-events:none}
+.sq .pc.w{color:#fff;text-shadow:0 0 9px rgba(255,255,255,.95),0 0 2px #fff}
+.sq .pc.b{color:var(--acc2);text-shadow:0 0 13px rgba(255,110,40,.95),0 0 4px var(--acc2)}
+.sq.sel{outline:2px solid #fff;outline-offset:-2px;z-index:2}
+.sq.move::after{content:"";position:absolute;width:13px;height:13px;border-radius:50%;background:rgba(255,122,51,.6);box-shadow:0 0 10px var(--acc-glow)}
+.sq.capture::after{content:"";position:absolute;inset:3px;border:2px solid var(--acc2)}
+.sq.check{background:#5c1b1b!important}
+.coords{font-family:var(--fm);font-size:8.5px;color:#6d8aa3;position:absolute}
+.coords.file{bottom:2px;right:3px}.coords.rank{top:2px;left:3px}
+.chess-status{border:1px solid var(--brd);background:rgba(255,255,255,.6);padding:9px 13px;
+  font-family:var(--fm);font-size:11.5px;color:var(--ink-dim);display:flex;justify-content:space-between;margin-top:16px;font-weight:500}
+.chess-status b{color:var(--acc);font-weight:700}
+.btn-sm{padding:8px 13px;background:rgba(255,255,255,.55);border:1px solid var(--brd);color:var(--ink-dim);
+  font-family:var(--fm);font-size:10.5px;letter-spacing:.5px;margin-top:12px;transition:.15s;font-weight:600}
+.btn-sm:hover{border-color:var(--acc);color:var(--ink)}
+
+/* PRZYZIEMIENIE — pusty ekran */
+#wp7{min-height:135vh;align-items:flex-end;justify-content:center;display:flex;padding-bottom:8vh}
+.touch{text-align:center;font-family:var(--fm);pointer-events:none;
+  opacity:0;transform:translateY(14px);transition:opacity .9s,transform .9s}
+body.landed .touch{opacity:1;transform:none}
+.touch .big{font-size:clamp(54px,9vw,110px);font-weight:600;letter-spacing:-3px;color:rgba(18,42,61,.16);line-height:1}
+.touch .line{margin-top:10px;font-size:11px;letter-spacing:3px;color:var(--acc);font-weight:600;
+  background:var(--glass);border:1px solid var(--brd);display:inline-block;padding:9px 16px;backdrop-filter:blur(8px)}
+.touch .sub{margin-top:10px;font-size:10px;letter-spacing:2px;color:var(--ink-mute)}
+
+footer{position:relative;z-index:10;border-top:1px solid var(--brd);padding:22px 24px;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  font-family:var(--fm);font-size:10.5px;color:var(--ink-mute);letter-spacing:1px;
+  background:rgba(250,253,255,.78);backdrop-filter:blur(12px);font-weight:500}
+footer b{color:var(--acc);font-weight:600}
+
+@media (max-width:880px){
+  #alt,#rail{display:none}
+  .nav-btn{padding:0 10px;font-size:10.5px}
+  .nav-gh{display:none}
+  .dropdown{min-width:calc(100vw - 28px)}
+  .wp-sec{padding:96px 16px;min-height:120vh}
+  #board{grid-template-columns:repeat(8,11vw);grid-template-rows:repeat(8,11vw)}
+  .sq{font-size:7.6vw}
+  h1{letter-spacing:-1.5px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation:none!important;transition:none!important}
+  .card,.touch{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div id="skygrad" aria-hidden="true"></div>
+<div id="sky" aria-hidden="true"></div>
+<div id="haze" aria-hidden="true"></div>
+
+<!-- ══════════ NAV ══════════ -->
+<header class="nav">
+  <a class="nav-logo" href="index.html"><span class="dot"></span>MICHAŁ ANTKOWIAK <b>// MT-112</b></a>
+  <nav class="nav-links" aria-label="Światy">
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Elektronika <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <a class="dd jump" href="elektronika.html" data-jump="elektronika.html"><span class="t">Świat // noc</span><span class="n">Kopalnia kryształów ⇢ skok</span>
+          <span class="d">Zjazd szybem między świecącymi okazami.</span><span class="p">elektronika.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/hydroponika.html">
+          <span class="t">Embedded / PBL</span><span class="n">Laboratorium hydroponiki</span>
+          <span class="d">ESP32, uasyncio, DHT22, pompa 5V — pełny system upraw.</span>
+          <span class="p">projekty/hydroponika.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/hydroponika.html#naped">
+          <span class="t">Sterowanie</span><span class="n">Napęd rotacji — A4988</span>
+          <span class="d">Silnik krokowy + sterownik; obrót eliminujący fototropizm.</span>
+          <span class="p">hydroponika.html#naped</span></a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Programowanie <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <span class="dd jump here"><span class="t">Świat // dzień</span><span class="n">Solar City</span>
+          <span class="d">Jesteś tutaj. Deorbitacja nad solarpunkowym miastem.</span><span class="p">index.html</span></span>
+        <a class="dd" role="menuitem" href="projekty/szachy.html">
+          <span class="t">C++ / Algorytmika</span><span class="n">Środowisko silnika szachowego</span>
+          <span class="d">OOP w Qt Creator, Minimax D2, anty-repetycja.</span>
+          <span class="p">projekty/szachy.html</span></a>
+        <a class="dd" role="menuitem" href="#wp5">
+          <span class="t">JS / API</span><span class="n">WarsawWeather</span>
+          <span class="d">Open-Meteo, AbortController, degradacja do fallbacku.</span>
+          <span class="p">#wp5 · meteo</span></a>
+        <a class="dd" role="menuitem" href="#wp0">
+          <span class="t">Three.js</span><span class="n">Portfolio MA//DEORBIT</span>
+          <span class="d">Ten silnik światów: scroll-zniżanie, modele GLB z Blendera.</span>
+          <span class="p">#wp0 · start</span></a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Mechanika <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <a class="dd jump" href="mechanika.html" data-jump="mechanika.html"><span class="t">Świat // dzień</span><span class="n">Zakład produkcyjny ⇢ skok</span>
+          <span class="d">Nocna hala z linią montażową robotów.</span><span class="p">mechanika.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/inventor.html">
+          <span class="t">CAD / Mechanika</span><span class="n">Hala montażowa — Inventor</span>
+          <span class="d">Złożenie parametryczne, pasowania H8/h7 · H7/g6, dokumentacja ISO.</span>
+          <span class="p">projekty/inventor.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/hydroponika.html#mechanizm">
+          <span class="t">Konstrukcja</span><span class="n">Mechanizm rotacji upraw</span>
+          <span class="d">Łożysko kulkowe, wał, mocowania — mechanika hydroponiki.</span>
+          <span class="p">hydroponika.html#mechanizm</span></a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Doświadczenie <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <a class="dd jump" href="doswiadczenie.html" data-jump="doswiadczenie.html"><span class="t">Świat // świt</span><span class="n">Serpentyna ⇢ skok</span>
+          <span class="d">Górska droga-oś czasu: liceum → praca → studia.</span><span class="p">doswiadczenie.html</span></a>
+        <a class="dd" role="menuitem" href="doswiadczenie.html#wp1" data-jump="doswiadczenie.html#wp1">
+          <span class="t">Edukacja</span><span class="n">XII LO im. Słowackiego</span>
+          <span class="d">Profil mat-fiz z rozszerzoną algorytmiką.</span><span class="p">serpentyna · taras 1</span></a>
+        <a class="dd" role="menuitem" href="doswiadczenie.html#wp2" data-jump="doswiadczenie.html#wp2">
+          <span class="t">Praca</span><span class="n">Kurier miejski</span>
+          <span class="d">Logistyka pod presją czasu, niezawodność dostaw.</span><span class="p">serpentyna · taras 2</span></a>
+        <a class="dd" role="menuitem" href="doswiadczenie.html#wp3" data-jump="doswiadczenie.html#wp3">
+          <span class="t">Dydaktyka</span><span class="n">Korepetycje z matematyki</span>
+          <span class="d">Od 2024 — algebra i geometria, uczniowie LO.</span><span class="p">serpentyna · taras 3</span></a>
+        <a class="dd" role="menuitem" href="doswiadczenie.html#wp4" data-jump="doswiadczenie.html#wp4">
+          <span class="t">Studia</span><span class="n">PW Mechatronika + KN ONYKS</span>
+          <span class="d">mt-112; koło naukowe automatyki i embedded.</span><span class="p">serpentyna · taras 4</span></a>
+      </div>
+    </div>
+  </nav>
+  <a class="nav-gh" href="https://github.com/MichalAntkowiak" target="_blank" rel="noopener">github/MichalAntkowiak ↗</a>
+</header>
+
+<!-- ══════════ HUD ══════════ -->
+<div id="alt" aria-hidden="true">
+  <div class="bar"><div class="fill" id="alt-fill"></div></div>
+  <div class="read">
+    <div class="v"><span id="alt-v">408</span><small id="alt-u"> km</small></div>
+    <div class="l" id="alt-l">ORBITA LEO</div>
+    <div class="wp" id="alt-wp">WP.00 ORBITA</div>
+  </div>
+</div>
+
+<nav id="rail" aria-label="Waypointy">
+  <a href="#wp0" class="active"><span>WP.00 ORBITA</span><i class="p"></i></a>
+  <a href="#wp1"><span>WP.01 PILOT</span><i class="p"></i></a>
+  <a href="#wp2"><span>WP.02 MECHANIKA</span><i class="p"></i></a>
+  <a href="#wp3"><span>WP.03 LAB PBL</span><i class="p"></i></a>
+  <a href="#wp4"><span>WP.04 KOD</span><i class="p"></i></a>
+  <a href="#wp5"><span>WP.05 METEO</span><i class="p"></i></a>
+  <a href="#wp6"><span>WP.06 ARCHIWUM</span><i class="p"></i></a>
+  <a href="#wp7"><span>WP.07 PLAC P-07</span><i class="p"></i></a>
+</nav>
+
+<!-- ══════════ MISJA: DEORBITACJA ══════════ -->
+<main>
+
+  <!-- WP.00 ORBITA -->
+  <section class="wp-sec" id="wp0" data-wp="WP.00 ORBITA">
+    <div class="wrap side-l"><div class="card">
+      <span class="hero-k">Deorbit // z orbity na parking · Warszawa</span>
+      <h1>MICHAŁ<br>ANTKOWIAK<br><span class="thin">MECHATRONIKA</span></h1>
+      <p class="hero-sub">Student I roku na <b>Wydziale Mechatroniki Politechniki Warszawskiej</b> (mt-112),
+      członek KN <b>„ONYKS"</b>. Ta strona to jedno długie zniżanie przez moje projekty —
+      z orbity, przez chmury i góry, między wieżowcami, aż do lądowania na parkingu.
+      <b>Scroll w dół = zniżanie.</b></p>
+      <div class="hero-meta">
+        <span>PROFIL: <b>DEORBIT → PARKING</b></span>
+        <span>PUŁAP STARTOWY: <b>408 km</b></span>
+        <span>WARSTWY: <b>ORBITA · CHMURY · GÓRY · MIASTO</b></span>
+      </div>
+      <a class="hero-cta" href="#s-atmo">ROZPOCZNIJ DEORBITACJĘ <span class="a">▼</span></a>
+    </div></div>
+  </section>
+
+  <!-- przelot: wejście w atmosferę -->
+  <section class="wp-scenic" id="s-atmo" data-wp="WEJŚCIE W ATMOSFERĘ">
+    <span class="scenic-chip">▼ PRZELOT // <b>WEJŚCIE W ATMOSFERĘ</b> · 100 km → 12 km</span>
+  </section>
+
+  <!-- WP.01 PILOT -->
+  <section class="wp-sec" id="wp1" data-wp="WP.01 PILOT">
+    <div class="wrap side-r"><div class="card">
+      <div class="wp-tag">Waypoint 01 // pilot · stratosfera</div>
+      <h2>Kim jestem</h2>
+      <p>Buduję rzeczy na styku mechaniki, elektroniki i kodu. Bez marketingu — poniżej same
+      parametry, dokumentacja i działający kod.</p>
+      <div class="kv">
+        <div><span class="l">Koło naukowe</span><span class="v"><b>KN „ONYKS"</b> — automatyka i systemy embedded, rozwój projektów sprzętowych.</span></div>
+        <div><span class="l">Stack</span><span class="v">Autodesk Inventor · C++ (Qt) · Python · MicroPython · ESP32</span></div>
+        <div><span class="l">Praca</span><span class="v"><b>Korepetytor matematyki</b> (od 2024) — algebra, geometria. Wcześniej kurier gastronomiczny: logistyka pod presją czasu.</span></div>
+        <div><span class="l">Liceum</span><span class="v">XII LO im. J. Słowackiego, Warszawa — mat-fiz z rozszerzoną algorytmiką.</span></div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- WP.02 MECHANIKA -->
+  <section class="wp-sec" id="wp2" data-wp="WP.02 MECHANIKA">
+    <div class="wrap side-l"><div class="card">
+      <div class="wp-tag">Waypoint 02 // mechanika · nad chmurami</div>
+      <h2>Inventor — złożenie maszynowe</h2>
+      <p>Projektowanie parametryczne części i złożeń. Poprawne pasowania tolerancyjne podzespołów
+      (<code>H8/h7</code>, <code>H7/g6</code>) oraz czysta dokumentacja wykonawcza 2D zgodna z ISO —
+      4 arkusze: wspornik, płytka, koło pasowe, wałek.</p>
+      <div class="mini-studio" id="mv-wrap">
+        <model-viewer src="assets/Zespol1.glb" alt="Złożenie Zespol1"
+          camera-controls auto-rotate rotation-per-second="16deg" interaction-prompt="none"
+          shadow-intensity="0.9" exposure="1.05" loading="lazy"></model-viewer>
+        <div class="fallback">MODEL 3D NIEZAŁADOWANY<br>sprawdź plik <code style="color:var(--acc)">assets/Zespol1.glb</code> w repozytorium<br>(podgląd lokalny file:// blokuje wczytywanie — użyj GitHub Pages)</div>
+      </div>
+      <a class="dlink" href="projekty/inventor.html">Pełna hala montażowa <span class="arr">→</span></a>
+    </div></div>
+  </section>
+
+  <!-- WP.03 LAB PBL -->
+  <section class="wp-sec" id="wp3" data-wp="WP.03 LAB PBL">
+    <div class="wrap side-r"><div class="card">
+      <div class="wp-tag">Waypoint 03 // lab PBL · pod pokrywą chmur</div>
+      <h2>Autonomiczna doniczka hydroponiczna</h2>
+      <p>Interdyscyplinarny projekt zespołowy (Project-Based Learning): doniczka bezglebowa z zamkniętą
+      pętlą pomiarowo-wykonawczą. Mój wkład konstrukcyjny — autorski układ rotacji osiowej na łożysku
+      kulkowym: powolny obrót daje równomierną ekspozycję na światło i eliminuje fototropizm.</p>
+      <details class="tech">
+        <summary>Panel techniczny — hardware &amp; embedded</summary>
+        <div class="tech-in"><dl>
+          <dt>Jedn. centralna</dt><dd>ESP32 — koordynacja pętli pomiarowo-wykonawczej.</dd>
+          <dt>Sensoryka</dt><dd>Pojemnościowy czujnik wilgotności gleby (odporny na korozję kwasową podłoża) + DHT22 (AM2302).</dd>
+          <dt>Aktuatory</dt><dd>Pompa perystaltyczna 5V za kluczem tranzystorowym / przekaźnikiem optoizolowanym; silnik krokowy + A4988.</dd>
+          <dt>Software</dt><dd>MicroPython, <code>uasyncio</code> — odczyty czujników nie zamarzają podczas pracy silnika.</dd>
+        </dl></div>
+      </details>
+      <a class="dlink" href="projekty/hydroponika.html">Pełne studium przypadku <span class="arr">→</span></a>
+    </div></div>
+  </section>
+
+  <!-- przelot: grzbiet górski -->
+  <section class="wp-scenic" id="s-gory" data-wp="PRZELOT NAD GRANIĄ">
+    <span class="scenic-chip">▼ PRZELOT // <b>GRZBIET GÓRSKI</b> · 1800 m → 900 m</span>
+  </section>
+
+  <!-- WP.04 STREFA KODU -->
+  <section class="wp-sec" id="wp4" data-wp="WP.04 KOD">
+    <div class="wrap side-c"><div class="card">
+      <div class="wp-tag">Waypoint 04 // strefa kodu · przedgórze</div>
+      <h2>Silnik szachowy — makieta uruchomieniowa</h2>
+      <p>Silnik obiektowy w C++ (Qt Creator): <code>board.cpp</code>, <code>pawn.cpp</code>, <code>bishop.cpp</code>,
+      <code>rook.cpp</code>, <code>knight.cpp</code>, <code>queen.cpp</code>, <code>gameengine.cpp</code>.
+      Poniżej makieta JS: Minimax D2 (worst-case reduction), <code>evaluateBoard</code> z bonusem centrum,
+      kontrola szacha i anty-repetycja. Grasz Białymi.</p>
+      <div class="chess-status"><span>STATUS</span><b id="chess-status">Twój ruch (Białe)</b></div>
+      <div id="board" aria-label="Szachownica"></div>
+      <button class="btn-sm" id="btn-reset">[ RESET PARTII ]</button>
+      <div class="term" id="chess-term" aria-live="polite"></div>
+      <a class="dlink" href="https://github.com/MichalAntkowiak/ChessEngine_1" target="_blank" rel="noopener">ChessEngine_1 <span class="arr">↗</span></a>
+      <a class="dlink" href="projekty/szachy.html">Dokumentacja architektury <span class="arr">→</span></a>
+    </div></div>
+  </section>
+
+  <!-- WP.05 METEO -->
+  <section class="wp-sec" id="wp5" data-wp="WP.05 METEO">
+    <div class="wrap side-l"><div class="card">
+      <div class="wp-tag">Waypoint 05 // warunki lotu · nad miastem</div>
+      <h2>Monitor pogodowy Warszawy</h2>
+      <p>Aplikacja GUI w Pythonie (Tkinter + requests) na pakietach JSON z API Open-Meteo.
+      Poniżej żywy odpowiednik webowy: twardy <code>timeout</code> 2000 ms — gdy firewall lub brak
+      sieci zablokuje pakiet, żądanie jest przerywane i wchodzi lokalny cache awaryjny.</p>
+      <div class="weather">
+        <div class="wx-main">
+          <div class="wx-t"><div class="n"><span id="w-temp">--</span><small>°C</small></div><div class="l">Warszawa · live</div></div>
+          <div class="wx-aux">
+            <div><span>Ciśnienie</span><b id="w-press">-- hPa</b></div>
+            <div><span>Wilgotność</span><b id="w-hum">-- %</b></div>
+          </div>
+        </div>
+        <div class="term" id="w-term" aria-live="polite"></div>
+      </div>
+      <a class="dlink" href="https://github.com/MichalAntkowiak/WarsawWeather" target="_blank" rel="noopener">Repo WarsawWeather <span class="arr">↗</span></a>
+    </div></div>
+  </section>
+
+  <!-- przelot: kanion wieżowców -->
+  <section class="wp-scenic" id="s-kanion" data-wp="SOLAR CITY">
+    <span class="scenic-chip">▼ PRZELOT // <b>SOLAR CITY — ZIELONE WIEŻE</b> · 300 m → 90 m</span>
+  </section>
+
+  <!-- WP.06 ARCHIWUM -->
+  <section class="wp-sec" id="wp6" data-wp="WP.06 ARCHIWUM">
+    <div class="wrap side-r"><div class="card">
+      <div class="wp-tag">Waypoint 06 // archiwum · dzielnica niska</div>
+      <h2>Archiwum lotów</h2>
+      <div class="timeline">
+        <div class="tl"><div class="w">2025 → teraz</div><div class="t">Mechatronika, Politechnika Warszawska</div><div class="h">Wydział Mechatroniki, gr. mt-112. Członek KN „ONYKS" — automatyka i embedded.</div></div>
+        <div class="tl"><div class="w">2024 → teraz</div><div class="t">Korepetycje z matematyki</div><div class="h">Ugruntowana algebra i geometria — tłumaczenie trudnych rzeczy prostym językiem.</div></div>
+        <div class="tl"><div class="w">wcześniej</div><div class="t">Kurier gastronomiczny (dorywczo)</div><div class="h">Logistyka i organizacja czasu pod realną presją.</div></div>
+        <div class="tl"><div class="w">do 2025</div><div class="t">XII LO im. J. Słowackiego, Warszawa</div><div class="h">Profil matematyczno-fizyczny z rozszerzoną algorytmiką.</div></div>
+      </div>
+      <a class="dlink" href="https://github.com/MichalAntkowiak" target="_blank" rel="noopener">GitHub <span class="arr">↗</span></a>
+    </div></div>
+  </section>
+
+  <!-- WP.07 PARKING — czysty ekran lądowania -->
+  <section class="wp-sec" id="wp7" data-wp="WP.07 PARKING">
+    <div class="touch">
+      <div class="big">0.0 m</div>
+      <div class="line">PRZYZIEMIENIE POTWIERDZONE · MIEJSCE P-07 · SILNIKI: WYŁĄCZONE</div>
+      <div class="sub">MISJA ZAKOŃCZONA — <a href="#wp0" style="pointer-events:auto;color:var(--acc);font-weight:600">POWRÓT NA ORBITĘ ↑</a></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <span><b>MA//DEORBIT</b> · MICHAŁ ANTKOWIAK · MECHATRONIKA PW</span>
+  <span>ŚWIAT: 5 WARSTW PROCEDURALNYCH · THREE.JS · ZERO PLIKÓW MODELI</span>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   1. DEORBIT — kolumna świata: orbita→chmury→góry→miasto→parking
+      + dron biało-czarny (bryły obrotowe) z wygasającym obrotem
+   ══════════════════════════════════════════════════════════════ */
+(function(){
+  const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const holder=document.getElementById('sky');
+  if(!window.THREE){document.body.classList.add('no3d');return}
+  let renderer;
+  try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:true})}
+  catch(e){document.body.classList.add('no3d');return}
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+  renderer.setSize(innerWidth,innerHeight);
+  renderer.shadowMap.enabled=true;
+  renderer.shadowMap.type=THREE.PCFSoftShadowMap;   // miękkie cienie → głębia i plastyczność brył
+  holder.appendChild(renderer.domElement);
+
+  const scene=new THREE.Scene();
+  scene.fog=new THREE.Fog(0x0a1830,20,90);
+  const camera=new THREE.PerspectiveCamera(46,innerWidth/innerHeight,.1,400);
+  camera.position.set(0,.55,7.6);
+
+  const hemi=new THREE.HemisphereLight(0xeaf4ff,0x8fa4b6,.8);scene.add(hemi);
+  const sun=new THREE.DirectionalLight(0xfff1dc,1.3);sun.position.set(-7,9,4);scene.add(sun);
+  sun.castShadow=true;
+  sun.shadow.mapSize.set(1024,1024);
+  sun.shadow.camera.near=1;sun.shadow.camera.far=240;
+  sun.shadow.camera.left=-90;sun.shadow.camera.right=90;
+  sun.shadow.camera.top=90;sun.shadow.camera.bottom=-90;
+  sun.shadow.bias=-0.0006;sun.shadow.normalBias=0.05;
+  const sunTarget=new THREE.Object3D();scene.add(sunTarget);sun.target=sunTarget;
+  const fill=new THREE.DirectionalLight(0xbfd9ef,.35);fill.position.set(5,2,-3);scene.add(fill);
+
+  const isMobile=innerWidth<880;
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t)};
+  const easeOutBack=t=>{const c=.35;return 1+(c+1)*Math.pow(t-1,3)+c*Math.pow(t-1,2)};
+
+  /* ── tekstury proceduralne (canvas) ── */
+  function tex(draw,w=256,h=256){const c=document.createElement('canvas');c.width=w;c.height=h;
+    draw(c.getContext('2d'),w,h);return new THREE.CanvasTexture(c)}
+  const puffTex=()=>tex((x,w,h)=>{for(let i=0;i<16;i++){
+    const cx=52+Math.random()*152,cy=110+Math.random()*80,r=26+Math.random()*52;
+    const g=x.createRadialGradient(cx,cy,0,cx,cy,r);
+    g.addColorStop(0,'rgba(255,255,255,.9)');g.addColorStop(.55,'rgba(255,255,255,.45)');g.addColorStop(1,'rgba(255,255,255,0)');
+    x.fillStyle=g;x.fillRect(0,0,w,h)}});
+  const glowTex=tex((x,w,h)=>{const g=x.createRadialGradient(128,128,0,128,128,128);
+    g.addColorStop(0,'rgba(255,248,230,1)');g.addColorStop(.25,'rgba(255,240,205,.55)');g.addColorStop(1,'rgba(255,240,205,0)');
+    x.fillStyle=g;x.fillRect(0,0,w,h)});
+  const earthTex=tex((x,w,h)=>{
+    const oc=x.createLinearGradient(0,0,0,h);oc.addColorStop(0,'#16497e');oc.addColorStop(1,'#0d3560');
+    x.fillStyle=oc;x.fillRect(0,0,w,h);
+    for(let i=0;i<26;i++){ // kontynenty z nakładanych plam
+      const cx=Math.random()*w,cy=h*.18+Math.random()*h*.64,base=14+Math.random()*30;
+      x.fillStyle=['#3e7a4d','#57855a','#7a8f57'][i%3];
+      for(let k=0;k<7;k++){x.beginPath();
+        x.arc(cx+(Math.random()-.5)*base*1.6,cy+(Math.random()-.5)*base,base*(.4+Math.random()*.6),0,7);x.fill()}
+    }
+    x.fillStyle='rgba(240,248,255,.9)';x.fillRect(0,0,w,h*.07);x.fillRect(0,h*.93,w,h*.07); // czapy
+    x.globalAlpha=.5; // chmury
+    for(let i=0;i<40;i++){const cx=Math.random()*w,cy=Math.random()*h,r=8+Math.random()*22;
+      const g=x.createRadialGradient(cx,cy,0,cx,cy,r);
+      g.addColorStop(0,'rgba(255,255,255,.85)');g.addColorStop(1,'rgba(255,255,255,0)');
+      x.fillStyle=g;x.beginPath();x.ellipse(cx,cy,r*1.9,r*.6,0,0,7);x.fill()}
+    x.globalAlpha=1;
+  },512,512);
+  const windowsTex=()=>tex((x,w,h)=>{
+    x.fillStyle='#232e39';x.fillRect(0,0,w,h);
+    const cols=6,rows=18,cw=w/cols,rh=h/rows;
+    for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+      x.fillStyle=Math.random()<.28?'#ffd98a':(Math.random()<.5?'#37424e':'#2b3641');
+      x.fillRect(c*cw+3,r*rh+3,cw-6,rh-6)}
+  },128,384);
+
+  /* ══════════ KOLUMNA ŚWIATA ══════════ */
+  const R=170;                       // całkowite wzniesienie świata
+  const world=new THREE.Group();scene.add(world);
+  const yAt=pc=>-pc*R;               // y warstwy dla fazy p
+
+  /* — ORBITA: gwiazdy + Ziemia + satelita (poza kolumną, własne zaniki) — */
+  const starGeo=new THREE.BufferGeometry();
+  {const n=isMobile?400:900,pos=new Float32Array(n*3);
+   for(let i=0;i<n;i++){pos[i*3]=(Math.random()-.5)*160;pos[i*3+1]=(Math.random()-.5)*90;pos[i*3+2]=-30-Math.random()*80}
+   starGeo.setAttribute('position',new THREE.BufferAttribute(pos,3))}
+  const starMat=new THREE.PointsMaterial({color:0xffffff,size:.14,transparent:true,opacity:.95,sizeAttenuation:true,fog:false});
+  scene.add(new THREE.Points(starGeo,starMat));
+
+  const earthG=new THREE.Group();scene.add(earthG);
+  const earth=new THREE.Mesh(new THREE.SphereGeometry(30,48,36),
+    new THREE.MeshStandardMaterial({map:earthTex,roughness:.9,metalness:0,transparent:true}));
+  earth.rotation.z=.4;earthG.add(earth);
+  const atmo=new THREE.Mesh(new THREE.SphereGeometry(30.9,48,36),
+    new THREE.MeshBasicMaterial({color:0x7fc4ff,transparent:true,opacity:.28,side:THREE.BackSide,fog:false}));
+  earthG.add(atmo);
+  earthG.position.set(0,-33.5,-42);
+
+  const sat=new THREE.Group();scene.add(sat);
+  {const bus=new THREE.Mesh(new THREE.BoxGeometry(.5,.5,.8),new THREE.MeshStandardMaterial({color:0xd8dee4,roughness:.4,metalness:.6}));
+   sat.add(bus);
+   const pm=new THREE.MeshStandardMaterial({color:0x1d4f8f,roughness:.3,metalness:.7});
+   [-1,1].forEach(s=>{const p=new THREE.Mesh(new THREE.BoxGeometry(2.2,.04,.7),pm);p.position.x=s*1.5;sat.add(p)});
+   const dish=new THREE.Mesh(new THREE.SphereGeometry(.22,12,8,0,7,0,1.2),new THREE.MeshStandardMaterial({color:0xeef2f5,side:THREE.DoubleSide}));
+   dish.position.y=.42;sat.add(dish)}
+  sat.position.set(-7.5,2.6,-16);sat.scale.setScalar(.9);
+
+  const sunSpr=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,transparent:true,opacity:0,depthWrite:false,fog:false}));
+  sunSpr.position.set(-18,14,-52);sunSpr.scale.set(34,34,1);scene.add(sunSpr);
+
+  /* — CHMURY (p≈.30) — */
+  const cloudA=puffTex(),cloudB=puffTex();
+  const clouds=new THREE.Group();world.add(clouds);
+  function addCloud(t,x,y,z,s,op,tint){
+    const m=new THREE.Mesh(new THREE.PlaneGeometry(1,1),
+      new THREE.MeshBasicMaterial({map:t,transparent:true,opacity:op,depthWrite:false,color:tint}));
+    m.position.set(x,y,z);m.scale.set(s,s*.62,1);m.userData.drift=(Math.random()-.5)*.14;
+    clouds.add(m);return m}
+  for(let i=0;i<(isMobile?24:50);i++)
+    addCloud(Math.random()<.5?cloudA:cloudB,(Math.random()-.5)*80,yAt(.30)+(Math.random()-.5)*13,-11-Math.random()*36,
+      10+Math.random()*16,.5+Math.random()*.4,0xffffff);
+  for(let i=0;i<(isMobile?4:7);i++)
+    addCloud(cloudB,(Math.random()-.5)*15,yAt(.30)+(Math.random()-.5)*8,-3.4-Math.random()*4.5,
+      7+Math.random()*6,.85,0xffffff);
+  for(let i=0;i<(isMobile?5:10);i++) // rzadkie chmury niskie nad górami
+    addCloud(cloudA,(Math.random()-.5)*90,yAt(.52)+(Math.random()-.5)*6,-24-Math.random()*26,9+Math.random()*8,.3,0xf2f8fc);
+
+  /* — PTAKI (p≈.47) i BALON (p≈.58): życie w kadrze — */
+  const birds=new THREE.Group();world.add(birds);
+  const birdMat=new THREE.MeshBasicMaterial({color:0x2c343c});
+  for(let i=0;i<(isMobile?3:6);i++){
+    const b=new THREE.Group();
+    const body=new THREE.Mesh(new THREE.BoxGeometry(.14,.05,.34),birdMat);b.add(body);
+    const wings=[];
+    [-1,1].forEach(s=>{const hold=new THREE.Group();b.add(hold);
+      const w=new THREE.Mesh(new THREE.BoxGeometry(.72,.02,.16),birdMat);
+      w.position.x=s*.38;hold.add(w);wings.push({hold,s})});
+    b.position.set(-24+Math.random()*20,56+(Math.random()-.5)*6,-24-Math.random()*14);
+    b.userData={wings,ph:Math.random()*6,vx:.7+Math.random()*.5};
+    birds.add(b)}
+  const balloon=new THREE.Group();world.add(balloon);
+  {const strT=tex((x,w,h)=>{for(let i=0;i<8;i++){x.fillStyle=i%2?'#e8500f':'#f4f7f9';x.fillRect(i*w/8,0,w/8,h)}});
+   const env=new THREE.Mesh(new THREE.SphereGeometry(2.1,20,16),
+     new THREE.MeshStandardMaterial({map:strT,roughness:.7}));
+   env.scale.y=1.12;balloon.add(env);
+   const neck=new THREE.Mesh(new THREE.CylinderGeometry(.55,.9,.8,10),
+     new THREE.MeshStandardMaterial({color:0xd9dde1,roughness:.8}));
+   neck.position.y=-2.35;balloon.add(neck);
+   const basket=new THREE.Mesh(new THREE.BoxGeometry(.8,.55,.8),
+     new THREE.MeshStandardMaterial({color:0x7a5c3a,roughness:1}));
+   basket.position.y=-3.6;balloon.add(basket);
+   const ropeM=new THREE.MeshBasicMaterial({color:0x4a4038});
+   [[-.35,-.35],[.35,-.35],[-.35,.35],[.35,.35]].forEach(([rx,rz])=>{
+     const rope=new THREE.Mesh(new THREE.CylinderGeometry(.015,.015,.95,4),ropeM);
+     rope.position.set(rx,-2.86,rz);balloon.add(rope)});
+   balloon.position.set(58,72,-150)}
+
+  /* — MEGAŚWIAT GRUNTU: góry + dolina + SOLAR CITY (jedna ciągła scena) — */
+  const GROUND_FINAL=-2.15;
+  const gw=MAWORLD.buildGroundWorld(THREE,{isMobile});
+  const ground=gw.group;world.add(ground);
+  ground.position.y=GROUND_FINAL-R;      // world.y=R przy p=1 → plac na GROUND_FINAL
+  const beacons=gw.beacons, tram=gw.tram, spins=gw.spins;
+  ground.add(birds);ground.add(balloon); // życie w kadrze osadzone w tym samym świecie
+
+  /* wieże hero z Blendera (city_hero.glb): klonujemy tower_spiral / tower_drop
+     na pozycje heroSpots i chowamy fallback proceduralny. Fail = fallback zostaje. */
+  if(window.THREE&&THREE.GLTFLoader&&gw.heroSpots&&gw.heroSpots.length){
+    new THREE.GLTFLoader().load('assets/city_hero.glb',gltf=>{
+      const spiral=gltf.scene.getObjectByName('tower_spiral');
+      const drop=gltf.scene.getObjectByName('tower_drop');
+      if(!spiral&&!drop)return;
+      const heroLayer=new THREE.Group();ground.add(heroLayer);
+      gw.heroSpots.forEach(sp=>{
+        const src=(sp.kind==='spiral'?spiral:drop)||spiral||drop;
+        const node=src.clone(true);
+        node.position.set(sp.x,0,sp.z);        // tower_drop miał offset x=30 w pliku → nadpisujemy
+        node.scale.setScalar(sp.s||1);
+        node.rotation.y=Math.random()*Math.PI*2;
+        heroLayer.add(node);
+      });
+      MAWORLD.mergeGroup(THREE,heroLayer,ground);   // klony → kilka draw calli
+      heroLayer.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
+      if(gw.heroFallback)gw.heroFallback.visible=false;
+    },undefined,err=>{/* cichy fallback proceduralny */});
+  }
+
+  /* SZCZEGÓŁOWE BUDYNKI z Blendera (city_kit.glb): dla każdego kitSpot klonujemy
+     pasujący typ (setback/glass/mid/low1/low2), skalujemy do wymiarów i chowamy
+     proceduralny fallback. Fail = zostają bryły proceduralne (kitFallback). */
+  const KIT_REF={ // wymiary referencyjne modeli (W×H×D w metrach sceny)
+    setback:[9,40,9], glass:[7,46,7], mid:[10,20,9], low1:[8,7,7], low2:[7,5.5,6]};
+  if(window.THREE&&THREE.GLTFLoader&&gw.kitSpots&&gw.kitSpots.length){
+    new THREE.GLTFLoader().load('assets/city_kit.glb',gltf=>{
+      const src={};['setback','glass','mid','low1','low2'].forEach(t=>{
+        src[t]=gltf.scene.getObjectByName('kit_'+t);});
+      if(!src.setback&&!src.mid)return;
+      const kitLayer=new THREE.Group();ground.add(kitLayer);
+      let placed=0;
+      gw.kitSpots.forEach(sp=>{
+        const base=src[sp.type]; if(!base)return;
+        const ref=KIT_REF[sp.type];
+        const node=base.clone(true);
+        node.position.set(sp.x,0,sp.z);
+        node.scale.set(sp.w/ref[0], sp.h/ref[1], sp.d/ref[2]);
+        node.rotation.y=(Math.random()<.5?0:Math.PI);   // wariacja frontu
+        kitLayer.add(node);placed++;
+      });
+      MAWORLD.mergeGroup(THREE,kitLayer,ground);   // 25 budynków → kilka draw calli
+      kitLayer.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
+      if(placed&&gw.kitFallback)gw.kitFallback.visible=false;
+    },undefined,err=>{/* cichy fallback proceduralny */});
+  }
+
+  /* GÓRY z Blendera (mountains.glb): skaliste pasmo w tle doliny, zastępuje
+     proceduralne wzgórza terenu w dalekim planie (teren zostaje pod spodem). */
+  if(window.THREE&&THREE.GLTFLoader){
+    new THREE.GLTFLoader().load('assets/mountains.glb',gltf=>{
+      const m=gltf.scene;
+      m.position.set(0,-2.0,-95);   // dalej w głąb — wieże nie giną w skale
+      const mtnLayer=new THREE.Group();ground.add(mtnLayer);
+      [...m.children].forEach(c=>mtnLayer.add(c));
+      mtnLayer.position.copy(m.position);
+      MAWORLD.mergeGroup(THREE,mtnLayer,ground);   // grań → kilka draw calli
+      mtnLayer.traverse(o=>{if(o.isMesh)o.receiveShadow=true;});
+    },undefined,err=>{/* teren proceduralny zostaje */});
+  }
+
+  MAWORLD.mergeStatic(THREE,ground);     // statyka → kilka draw calli (hero/kit/góry/fallback pomijane: dyn)
+
+  /* cienie: teren/plac odbierają; cień rzucają tylko DUŻE bryły (budynki, wieże,
+     góry) — nie drobnica liści/kwiatów, by nie mnożyć kosztu shadow-mapy.
+     Próg wielkości liczony z bounding-boxa mesha. */
+  const _bb=new THREE.Box3(),_sz=new THREE.Vector3();
+  ground.traverse(o=>{
+    if(!o.isMesh)return;
+    const g=o.geometry;const nm=(o.name||'').toLowerCase();
+    if((g&&g.type==='PlaneGeometry')||/terr|plac|road|sidewalk|lot/.test(nm)){o.receiveShadow=true;return;}
+    o.receiveShadow=true;
+    try{_bb.setFromObject(o);_bb.getSize(_sz);
+      if(Math.max(_sz.x,_sz.y,_sz.z)>4)o.castShadow=true;}   // tylko obiekty >4 j.
+    catch(e){}
+  });
+
+  /* ══════════ DRON — fallback proceduralny (world.js), potem GLB z Blendera ══════════ */
+  const {droneYaw,drone,props}=MAWORLD.buildDrone(THREE);
+  scene.add(droneYaw);
+  let FOOT_Y=new THREE.Box3().setFromObject(drone).min.y;
+  const PAD_H=0.06;                                          // wysokość platformy vertiportu
+  let LAND_Y=GROUND_FINAL+PAD_H-FOOT_Y;                     // styk stopek z platformą
+
+  /* podmiana na model z Blendera (drone.glb): zachowujemy węzeł `drone`,
+     czyścimy dzieci proceduralne, wstawiamy scenę GLB i odbudowujemy props[]
+     z węzłów prop_0..3 (+ dysk rozmycia i strobo). Fail = zostaje fallback. */
+  if(window.THREE&&THREE.GLTFLoader){
+    new THREE.GLTFLoader().load('assets/drone.glb',gltf=>{
+      const src=gltf.scene.getObjectByName('drone')||gltf.scene;
+      while(drone.children.length)drone.remove(drone.children[0]);
+      props.length=0;
+      // przenosimy dzieci węzła 'drone' z GLB do naszego węzła 'drone'
+      [...src.children].forEach(c=>drone.add(c));
+      // odbuduj props[] z węzłów prop_0..3
+      let idx=0;
+      drone.children.filter(o=>/^prop_\d/.test(o.name))
+        .sort((a,b)=>a.name.localeCompare(b.name))
+        .forEach(prop=>{
+          const disc=new THREE.Mesh(new THREE.CircleGeometry(.42,20),
+            new THREE.MeshBasicMaterial({color:0xdfe6ec,transparent:true,opacity:0,
+              side:THREE.DoubleSide,depthWrite:false}));
+          disc.rotation.x=-Math.PI/2;prop.add(disc);
+          const o={prop,disc,dir:(idx%2?1:-1)};
+          const st=drone.getObjectByName('strobe_'+idx)
+                 ||drone.getObjectByName('strobe_'+(idx+2));
+          if(st)o.strobe=st;
+          props.push(o);idx++;
+        });
+      // strobo znajdź po prefiksie, gdyby indeksy się nie zgrały
+      if(!props.some(p=>p.strobe)){
+        const strobes=[];drone.traverse(o=>{if(/^strobe/.test(o.name))strobes.push(o)});
+        strobes.forEach((st,i)=>{if(props[i])props[i].strobe=st});
+      }
+      FOOT_Y=new THREE.Box3().setFromObject(drone).min.y;
+      LAND_Y=GROUND_FINAL+PAD_H-FOOT_Y;
+    },undefined,err=>{/* file:// lub brak pliku → cichy fallback proceduralny */});
+  }
+
+  /* ── pył przyziemienia ── */
+  const DUST_N=42,dustPos=new Float32Array(DUST_N*3),dustVel=[];
+  for(let i=0;i<DUST_N;i++){const a=Math.random()*Math.PI*2,sp=.9+Math.random()*1.6;
+    dustVel.push([Math.cos(a)*sp,.35+Math.random()*.5,Math.sin(a)*sp]);dustPos.set([0,-2.12,0],i*3)}
+  const dustGeo=new THREE.BufferGeometry();
+  dustGeo.setAttribute('position',new THREE.BufferAttribute(dustPos,3));
+  const dustMat=new THREE.PointsMaterial({color:0x9aa4ab,size:.13,transparent:true,opacity:0,depthWrite:false});
+  scene.add(new THREE.Points(dustGeo,dustMat));
+  let dustT=-1;
+
+  /* ── smugi prędkości ── */
+  const streakMat=new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:0});
+  function streaks(){const N=isMobile?24:52,pos=new Float32Array(N*6);
+    for(let i=0;i<N;i++){const x=(Math.random()-.5)*18,z=-2-Math.random()*13,y=(Math.random()-.5)*10,L=.6+Math.random()*1.2;
+      pos.set([x,y,z,x,y+L,z],i*6)}
+    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    const l=new THREE.LineSegments(g,streakMat);scene.add(l);return l}
+  const S_SPAN=12,stA=streaks(),stB=streaks();stB.position.y=S_SPAN;
+
+  /* ── kolory mgły/haze wg fazy ── */
+  const FOG_STOPS=[[0,0x060a18],[.13,0x0d2440],[.30,0x4c88c4],[.50,0x7fadd8],[.68,0x93bede],[.85,0xa6c8e0],[1,0xb2cede]];
+  const fogA=new THREE.Color(),fogB=new THREE.Color();
+  function fogColorAt(p){
+    for(let i=0;i<FOG_STOPS.length-1;i++){
+      const[a,ca]=FOG_STOPS[i],[b,cb]=FOG_STOPS[i+1];
+      if(p<=b){fogA.setHex(ca);fogB.setHex(cb);return fogA.lerp(fogB,(p-a)/(b-a))}}
+    return fogA.setHex(FOG_STOPS[FOG_STOPS.length-1][1])}
+
+  /* ── sterowanie ── */
+  let targetP=0,p=0,prevP=0,mx=0,my=0;
+  const maxScroll=()=>Math.max(1,document.documentElement.scrollHeight-innerHeight);
+  addEventListener('scroll',()=>{targetP=scrollY/maxScroll()},{passive:true});
+  addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5},{passive:true});
+  addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+  targetP=scrollY/maxScroll();
+
+  const skygrad=document.getElementById('skygrad'),haze=document.getElementById('haze');
+  const altV=document.getElementById('alt-v'),altU=document.getElementById('alt-u'),
+        altL=document.getElementById('alt-l'),altF=document.getElementById('alt-fill');
+  function altText(p){
+    if(p<.12){return[Math.round(408-(p/.12)*308)+'',' km','ORBITA LEO']}
+    if(p<.24){return[(100-((p-.12)/.12)*88).toFixed(0),' km','REENTRY']}
+    if(p<.46){return[(12-((p-.24)/.22)*10).toFixed(1),' km','TROPOSFERA']}
+    if(p<.64){return[Math.round(2000-((p-.46)/.18)*1400)+'',' m','AGL · GÓRY']}
+    if(p<.86){return[Math.round(600-((p-.64)/.22)*480)+'',' m','AGL · MIASTO']}
+    const m=Math.max(0,120*(1-(p-.86)/.14));
+    return[m<10?m.toFixed(1):Math.round(m)+'',' m','AGL · LĄDOWANIE']}
+
+  renderer.compile(scene,camera);      // prekompilacja shaderów → bez zacięć na starcie
+  const clock=new THREE.Clock();
+  let pitch=0,roll=0,propSpeed=20,fov=46,perfN=0,perfAcc=0,perfShadowOff=false;
+  const YAW0=Math.PI*.9;   // heading startowy karuzeli
+
+  function frame(){
+    const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime;
+    p+=(targetP-p)*.07;
+    const vel=p-prevP;prevP=p;
+    const touch=smooth(.9,.985,p);
+    const eTouch=easeOutBack(touch);
+    const landed=touch>.995;
+
+    /* świat */
+    world.position.y=p*R;
+    clouds.children.forEach(m=>{m.position.x+=m.userData.drift*dt});
+
+    /* cień słońca podąża za widoczną częścią miasta (środek akcji ~ dron);
+       aktywny dopiero gdy zbliżamy się do miasta (oszczędza GPU na orbicie) */
+    const cityVis = p>0.42 && !perfShadowOff;
+    if(sun.castShadow!==cityVis)sun.castShadow=cityVis;
+    if(cityVis){const fx=droneYaw.position.x, fy=droneYaw.position.y, fz=droneYaw.position.z;
+     sunTarget.position.set(fx,fy,fz);
+     sun.position.set(fx-42,fy+58,fz+26);}
+
+    /* orbita: zaniki i parallaksa */
+    const leave=smooth(.05,.2,p);
+    starMat.opacity=.95*(1-leave);
+    earth.material.opacity=1-smooth(.10,.24,p);
+    atmo.material.opacity=.28*(1-smooth(.10,.24,p));
+    earthG.position.y=-33.5-p*30;
+    sat.position.y=2.6-p*46;sat.rotation.y=t*.2;sat.rotation.x=Math.sin(t*.13)*.3;
+    sunSpr.material.opacity=smooth(.1,.28,p)*.95;
+
+    /* miganie: beacony miasta + strobo drona */
+    const blink=(t%1.1)<.09;
+    beacons.forEach(b=>b.material.color.setHex(blink?0xff3b30:0x5a1512));
+
+    /* dron: stała, wolna karuzela — nigdy nie przyspiesza od scrolla,
+       kręci się także po wylądowaniu (pokaz na P-07) */
+    droneYaw.rotation.y=YAW0+t*.13;
+    pitch+=(clamp(vel*46,-.5,.5)*(1-touch)-pitch)*.08;
+    roll +=((Math.sin(t*.7)*.04+clamp(vel*18,-.22,.22))*(1-touch)-roll)*.06;
+    drone.rotation.x=pitch;drone.rotation.z=roll;
+    drone.position.y=Math.sin(t*1.5)*.05*(1-touch)+eTouch*LAND_Y;
+
+    /* turbiny wiatrowe */
+    spins.forEach(r=>r.rotation.z+=dt*1.15);
+
+    /* tramwaj kursuje po ulicy */
+    if(tram){tram.position.x+=tram.userData.v*dt;
+      if(tram.position.x>tram.userData.max)tram.position.x=tram.userData.min}
+
+    /* ptaki: klucz macha skrzydłami i sunie w bok */
+    birds.children.forEach(b=>{
+      b.position.x+=b.userData.vx*dt;
+      if(b.position.x>26)b.position.x=-26;
+      const f=Math.sin(t*8+b.userData.ph)*.55;
+      b.userData.wings.forEach(w=>w.hold.rotation.z=f*w.s)});
+    /* balon: łagodny dryf i kołysanie */
+    balloon.position.x=58+Math.sin(t*.15)*2.2;
+    balloon.rotation.z=Math.sin(t*.4)*.03;
+
+    /* śmigła */
+    const tgt=(20+Math.abs(vel)*1050)*(1-touch)+(landed?0:1.5);
+    propSpeed+=(tgt-propSpeed)*(landed?.03:.06);
+    const blur=clamp((propSpeed-9)/26,0,1);
+    const strobeOn=(t%1.3)<.07;
+    props.forEach(o=>{o.prop.rotation.y+=o.dir*propSpeed*dt;
+      o.disc.material.opacity=blur*.3;
+      if(o.strobe)o.strobe.material.color.setHex(strobeOn?0xffffff:0x8a97a3)});
+
+    /* pył */
+    if(touch>.96&&dustT<0)dustT=t;
+    if(dustT>0){const life=(t-dustT)/1.3;
+      if(life<1){const pos=dustGeo.attributes.position;
+        for(let i=0;i<DUST_N;i++)pos.setXYZ(i,dustVel[i][0]*life*2.2,
+          -2.12+dustVel[i][1]*life*(1-life)*2.2,dustVel[i][2]*life*2.2);
+        pos.needsUpdate=true;dustMat.opacity=.5*(1-life)}
+      else dustMat.opacity=0}
+
+    /* smugi */
+    const sVel=clamp(Math.abs(vel)*240,0,1);
+    streakMat.opacity=sVel*.5*(1-touch);
+    const dy=vel*380;
+    [stA,stB].forEach(s=>{s.position.y+=dy;
+      if(s.position.y>S_SPAN)s.position.y-=S_SPAN*2;
+      if(s.position.y<-S_SPAN)s.position.y+=S_SPAN*2});
+
+    /* atmosfera renderingu: mgła + światło wg fazy */
+    const fc=fogColorAt(p);scene.fog.color.copy(fc);
+    scene.fog.near=14+leave*8;scene.fog.far=60+smooth(.35,1,p)*340+(1-leave)*120;
+    hemi.intensity=.35+leave*.5;
+    sun.intensity=.6+smooth(.1,.3,p)*.8;
+
+    /* kamera */
+    const tgtFov=46+clamp(Math.abs(vel)*2400,0,13);
+    fov+=(tgtFov-fov)*.08;camera.fov=fov;camera.updateProjectionMatrix();
+    camera.position.x+=(mx*1.0-camera.position.x)*.05;
+    const camY=.55+my*-.4-touch*1.05;
+    camera.position.y+=(camY-camera.position.y)*.06;
+    camera.position.z+=(7.6-touch*1.8-camera.position.z)*.05;
+    camera.lookAt(0,drone.position.y*.6-touch*.4,0);
+    camera.rotation.z+=-roll*.5;
+
+    /* HUD + niebo CSS */
+    const[av,au,al]=altText(p);
+    altV.textContent=av;altU.textContent=au;altL.textContent=al;
+    altF.style.height=(100*(1-p))+'%';
+    skygrad.style.backgroundPosition='0% '+(p*100)+'%';
+    haze.style.opacity=smooth(.8,1,p)*.9;
+    document.body.classList.toggle('landed',landed);
+
+    /* adaptacyjna jakość: klatka >24 ms przez ~2 s → najpierw wyłącz cienie,
+       potem zejdź z DPR do 1.0 (cienie są najbardziej kosztowną ozdobą) */
+    perfN++;perfAcc+=dt;
+    if(perfN===120){
+      const slow=perfAcc/perfN>.024;
+      if(slow&&renderer.shadowMap.enabled){
+        renderer.shadowMap.enabled=false;sun.castShadow=false;perfShadowOff=true;
+      } else if(slow&&renderer.getPixelRatio()>1){
+        renderer.setPixelRatio(1);renderer.setSize(innerWidth,innerHeight);
+      }
+      perfN=0;perfAcc=0}
+
+    renderer.render(scene,camera);
+    if(!reduced)requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   2. UI: waypointy, reveal, dropdown, fallbacki
+   ══════════════════════════════════════════════════════════════ */
+(function(){
+  const links=[...document.querySelectorAll('#rail a')];
+  const wpLbl=document.getElementById('alt-wp');
+  const io=new IntersectionObserver(es=>{es.forEach(e=>{
+    if(e.isIntersecting){
+      const id='#'+e.target.id;
+      links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')===id));
+      wpLbl.textContent=e.target.dataset.wp}})},
+    {rootMargin:'-45% 0px -45% 0px'});
+  document.querySelectorAll('.wp-sec,.wp-scenic').forEach(s=>io.observe(s));
+
+  const io2=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('in');io2.unobserve(e.target)}}),{threshold:.18});
+  document.querySelectorAll('.card').forEach(c=>io2.observe(c));
+
+  document.querySelectorAll('.nav-item').forEach(it=>{
+    const btn=it.querySelector('.nav-btn');if(!btn)return;
+    btn.addEventListener('click',e=>{e.stopPropagation();
+      const open=it.classList.contains('open');
+      document.querySelectorAll('.nav-item.open').forEach(o=>o.classList.remove('open'));
+      it.classList.toggle('open',!open);btn.setAttribute('aria-expanded',String(!open))});
+    it.addEventListener('mouseenter',()=>{it.classList.add('open');btn.setAttribute('aria-expanded','true')});
+    it.addEventListener('mouseleave',()=>{it.classList.remove('open');btn.setAttribute('aria-expanded','false')});
+  });
+  document.addEventListener('click',()=>document.querySelectorAll('.nav-item.open')
+    .forEach(o=>{o.classList.remove('open');const b=o.querySelector('.nav-btn');if(b)b.setAttribute('aria-expanded','false')}));
+  if(window.MAHYPER){MAHYPER.arrive();
+    document.querySelectorAll('[data-jump]').forEach(a=>{
+      a.addEventListener('click',e=>{e.preventDefault();MAHYPER.jump(a.dataset.jump)})});}
+
+  const mv=document.querySelector('#mv-wrap model-viewer');
+  if(mv)mv.addEventListener('error',()=>document.getElementById('mv-wrap').classList.add('err'));
+
+  if(document.body.classList.contains('no3d')){
+    const v=document.getElementById('alt-v'),f=document.getElementById('alt-fill');
+    const upd=()=>{const p=scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight);
+      v.textContent=Math.max(0,Math.round(408*(1-p)));f.style.height=(100*(1-p))+'%';
+      document.getElementById('skygrad').style.backgroundPosition='0% '+(p*100)+'%';
+      document.body.classList.toggle('landed',p>.97)};
+    addEventListener('scroll',upd,{passive:true});upd();
+  }
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   3. METEO — Open-Meteo · timeout 2000 ms + cache offline
+   ══════════════════════════════════════════════════════════════ */
+(function(){
+  const $t=document.getElementById('w-temp'),$p=document.getElementById('w-press'),
+        $h=document.getElementById('w-hum'),term=document.getElementById('w-term');
+  const log=(m,c)=>{const d=document.createElement('div');if(c)d.className=c;
+    d.textContent=`[${new Date().toLocaleTimeString('pl-PL')}] ${m}`;
+    term.appendChild(d);term.scrollTop=term.scrollHeight};
+  const FB={temp:13,press:1015,hum:58};
+  (async()=>{
+    log('INIT :: GET → api.open-meteo.com (Warszawa 52.23N 21.01E)','dim');
+    const ctrl=new AbortController();const tm=setTimeout(()=>ctrl.abort(),2000);
+    try{
+      const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.2297&longitude=21.0122&current=temperature_2m,relative_humidity_2m,surface_pressure',{signal:ctrl.signal});
+      clearTimeout(tm);
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      const c=(await r.json()).current;
+      $t.textContent=Math.round(c.temperature_2m*10)/10;
+      $p.textContent=Math.round(c.surface_pressure)+' hPa';
+      $h.textContent=Math.round(c.relative_humidity_2m)+' %';
+      log('OK :: pakiet JSON odebrany, dane LIVE zsynchronizowane');
+    }catch(err){
+      clearTimeout(tm);
+      log('ERR :: '+(err.name==='AbortError'?'TIMEOUT >2000ms (firewall / brak sieci)':err.message),'err');
+      log('FALLBACK :: przejście w tryb OFFLINE CACHE — dane lokalne','err');
+      $t.textContent=FB.temp;$p.textContent=FB.press+' hPa';$h.textContent=FB.hum+' %';
+      log('OK :: podstawiono cache: 13°C / 1015 hPa / 58%');
+    }
+  })();
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   4. SILNIK SZACHOWY — Minimax D2 · anti-repetition · notacja alg.
+   ══════════════════════════════════════════════════════════════ */
+(function(){
+  const GLYPH={P:'♟',N:'♞',B:'♝',R:'♜',Q:'♛',K:'♚'};
+  const VAL={P:10,N:30,B:30,R:50,Q:90,K:900};
+  const CENTER={'3,3':3,'3,4':3,'4,3':3,'4,4':3,
+    '2,2':1,'2,3':1,'2,4':1,'2,5':1,'3,2':1,'3,5':1,
+    '4,2':1,'4,5':1,'5,2':1,'5,3':1,'5,4':1,'5,5':1};
+  const FILES='abcdefgh',alg=(r,c)=>FILES[c]+(8-r);
+  const boardEl=document.getElementById('board'),
+        termEl=document.getElementById('chess-term'),
+        statusEl=document.getElementById('chess-status');
+  let B,turn,sel,legal,gameOver;
+  const log=(m,c)=>{const d=document.createElement('div');if(c)d.className=c;d.textContent=m;
+    termEl.appendChild(d);termEl.scrollTop=termEl.scrollHeight};
+  const setStatus=s=>statusEl.textContent=s;
+  const IN=(r,c)=>r>=0&&r<8&&c>=0&&c<8;
+  function initBoard(){
+    const back=['R','N','B','Q','K','B','N','R'];
+    B=Array.from({length:8},()=>Array(8).fill(null));
+    for(let c=0;c<8;c++){B[0][c]={t:back[c],c:'b'};B[1][c]={t:'P',c:'b'};B[6][c]={t:'P',c:'w'};B[7][c]={t:back[c],c:'w'}}
+    turn='w';sel=null;legal=[];gameOver=false;termEl.innerHTML='';
+    log('[SYSTEM] Inicjalizacja planszy. Grasz Białymi.');
+    setStatus('Twój ruch (Białe)');render();
+  }
+  function ray(B,r,c,drs,me,out){
+    for(const[dr,dc]of drs){let rr=r+dr,cc=c+dc;
+      while(IN(rr,cc)){
+        if(!B[rr][cc])out.push([rr,cc]);
+        else{if(B[rr][cc].c!==me)out.push([rr,cc]);break}
+        rr+=dr;cc+=dc}}
+  }
+  function pseudoMoves(B,r,c){
+    const p=B[r][c];if(!p)return[];
+    const me=p.c,out=[];
+    switch(p.t){
+      case'P':{const dir=me==='w'?-1:1,st=me==='w'?6:1;
+        if(IN(r+dir,c)&&!B[r+dir][c]){out.push([r+dir,c]);
+          if(r===st&&!B[r+2*dir][c])out.push([r+2*dir,c])}
+        for(const dc of[-1,1]){const rr=r+dir,cc=c+dc;
+          if(IN(rr,cc)&&B[rr][cc]&&B[rr][cc].c!==me)out.push([rr,cc])}break}
+      case'N':for(const[dr,dc]of[[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]]){
+        const rr=r+dr,cc=c+dc;if(IN(rr,cc)&&(!B[rr][cc]||B[rr][cc].c!==me))out.push([rr,cc])}break;
+      case'B':ray(B,r,c,[[-1,-1],[-1,1],[1,-1],[1,1]],me,out);break;
+      case'R':ray(B,r,c,[[-1,0],[1,0],[0,-1],[0,1]],me,out);break;
+      case'Q':ray(B,r,c,[[-1,-1],[-1,1],[1,-1],[1,1],[-1,0],[1,0],[0,-1],[0,1]],me,out);break;
+      case'K':for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){if(!dr&&!dc)continue;
+        const rr=r+dr,cc=c+dc;if(IN(rr,cc)&&(!B[rr][cc]||B[rr][cc].c!==me))out.push([rr,cc])}break;
+    }
+    return out;
+  }
+  function isKingInCheck(B,color){
+    let kr=-1,kc=-1;
+    for(let r=0;r<8;r++)for(let c=0;c<8;c++){const p=B[r][c];if(p&&p.t==='K'&&p.c===color){kr=r;kc=c}}
+    if(kr<0)return true;
+    const en=color==='w'?'b':'w';
+    for(let r=0;r<8;r++)for(let c=0;c<8;c++){const p=B[r][c];
+      if(p&&p.c===en)for(const[rr,cc]of pseudoMoves(B,r,c))if(rr===kr&&cc===kc)return true}
+    return false;
+  }
+  const applyMove=(B,f,t)=>{const nb=B.map(r=>r.map(p=>p?{...p}:null));
+    const p=nb[f[0]][f[1]];nb[t[0]][t[1]]=p;nb[f[0]][f[1]]=null;
+    if(p.t==='P'&&(t[0]===0||t[0]===7))p.t='Q';return nb};
+  const legalMoves=(B,r,c)=>{const p=B[r][c];if(!p)return[];
+    return pseudoMoves(B,r,c).filter(m=>!isKingInCheck(applyMove(B,[r,c],m),p.c))};
+  function allLegal(B,col){const out=[];
+    for(let r=0;r<8;r++)for(let c=0;c<8;c++){const p=B[r][c];
+      if(p&&p.c===col)for(const m of legalMoves(B,r,c))out.push({from:[r,c],to:m})}
+    return out}
+  function evaluateBoard(B){let s=0;
+    for(let r=0;r<8;r++)for(let c=0;c<8;c++){const p=B[r][c];if(!p)continue;
+      const v=VAL[p.t]+(CENTER[r+','+c]||0);s+=p.c==='b'?v:-v}
+    return s}
+  function botMove(){
+    const moves=allLegal(B,'b');
+    if(!moves.length){endGame('b');return}
+    let best=-Infinity;const scored=[];
+    for(const mv of moves){
+      const b1=applyMove(B,mv.from,mv.to);
+      const rep=allLegal(b1,'w');
+      let worst=Infinity;
+      if(!rep.length){worst=isKingInCheck(b1,'w')?10000:0}
+      else for(const rp of rep){const s=evaluateBoard(applyMove(b1,rp.from,rp.to));if(s<worst)worst=s}
+      scored.push({mv,score:worst});if(worst>best)best=worst}
+    const pool=scored.filter(s=>s.score===best);
+    const pick=pool[Math.floor(Math.random()*pool.length)].mv;
+    B=applyMove(B,pick.from,pick.to);
+    log(`[ENGINE] Ruch silnika: ${alg(...pick.from)} -> ${alg(...pick.to)}`);
+    if(pool.length>1)log(`[ENGINE] Anti-repetition: wylosowano 1 z ${pool.length} ruchów o wadze ${best}.`,'dim');
+    turn='w';postMove('w');render();
+  }
+  function postMove(col){
+    if(isKingInCheck(B,col)){
+      if(!allLegal(B,col).length){endGame(col);return}
+      log(`[SYSTEM] Szach na Króla ${col==='w'?'Białych':'Czarnych'}!`);
+      setStatus(col==='w'?'SZACH — broń Króla':'Szach na bota');
+    }else if(!allLegal(B,col).length){gameOver=true;setStatus('PAT — remis');log('[SYSTEM] Pat. Remis.')}
+    else setStatus(col==='w'?'Twój ruch (Białe)':'Silnik analizuje…');
+  }
+  function endGame(loser){gameOver=true;
+    const w=loser==='w'?'ENGINE (Czarne)':'GRACZ (Białe)';
+    setStatus('MAT — wygrywa '+w);log(`[SYSTEM] Szach-mat. Zwycięzca: ${w}.`)}
+  function render(){
+    boardEl.innerHTML='';
+    const chk=isKingInCheck(B,turn)?turn:null;
+    for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+      const sq=document.createElement('div');
+      sq.className='sq '+((r+c)%2?'dark':'light');
+      const p=B[r][c];
+      if(p){const s=document.createElement('span');s.className='pc '+p.c;s.textContent=GLYPH[p.t];
+        sq.appendChild(s);if(p.t==='K'&&p.c===chk)sq.classList.add('check')}
+      if(sel&&sel[0]===r&&sel[1]===c)sq.classList.add('sel');
+      if(legal.some(m=>m[0]===r&&m[1]===c))sq.classList.add(p?'capture':'move');
+      if(c===0){const k=document.createElement('span');k.className='coords rank';k.textContent=8-r;sq.appendChild(k)}
+      if(r===7){const k=document.createElement('span');k.className='coords file';k.textContent=FILES[c];sq.appendChild(k)}
+      sq.addEventListener('click',()=>onSquare(r,c));
+      boardEl.appendChild(sq)}
+  }
+  function onSquare(r,c){
+    if(gameOver||turn!=='w')return;
+    const p=B[r][c];
+    if(sel){
+      if(legal.some(m=>m[0]===r&&m[1]===c)){
+        const f=sel;B=applyMove(B,f,[r,c]);
+        log(`[GRACZ] Ruch zaakceptowany: ${alg(...f)} -> ${alg(r,c)}`);
+        sel=null;legal=[];turn='b';postMove('b');render();
+        if(!gameOver)setTimeout(botMove,420);return}
+      if(p&&p.c==='w'){sel=[r,c];legal=legalMoves(B,r,c);render();return}
+      if(sel&&!(sel[0]===r&&sel[1]===c))
+        log(`[GRACZ] Ruch odrzucony: ${alg(...sel)} -> ${alg(r,c)} (nielegalny / odsłania Króla)`,'err');
+      sel=null;legal=[];render();
+    }else if(p&&p.c==='w'){sel=[r,c];legal=legalMoves(B,r,c);if(!legal.length)sel=null;render()}
+  }
+  document.getElementById('btn-reset').addEventListener('click',initBoard);
+  initBoard();
+})();
+</script>
+</body>
+</html>
