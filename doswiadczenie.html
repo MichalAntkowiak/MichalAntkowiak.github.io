@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doświadczenie — Małe Planety · Michał Antkowiak</title>
+<meta name="description" content="Oś czasu jako miniaturowe planety w kosmosie: liceum, praca, dydaktyka, studia. Zjazd dronem od planety do planety.">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+/* paleta kosmiczna */
+body{background:#0a0820}
+#sky-css{position:fixed;inset:0;z-index:0;background:
+  radial-gradient(700px 500px at 26% 30%, rgba(255,240,208,.35) 0%, rgba(255,240,208,0) 55%),
+  radial-gradient(900px 700px at 70% 80%, rgba(106,74,154,.25) 0%, transparent 60%),
+  linear-gradient(#05030f 0%, #0a0820 25%, #120e30 50%, #1a1642 75%, #241e55 100%)}
+.dd.jump .n{color:var(--acc)}
+.dd.jump .t{color:#c9a8f0}
+.dd.here{opacity:.55;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="sky-css" aria-hidden="true"></div>
+<div id="sky" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav-logo" href="index.html" data-jump="index.html"><span class="dot"></span>MICHAŁ ANTKOWIAK <b>// MT-112</b></a>
+  <nav class="nav-links" aria-label="Światy">
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Elektronika <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <a class="dd jump" href="elektronika.html" data-jump="elektronika.html"><span class="t">Świat // noc</span><span class="n">Zatoka Anten ⇢ skok</span>
+          <span class="d">Klifowe obserwatorium: czasza, triangulacja, latarnia.</span><span class="p">elektronika.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/triangulacja.html">
+          <span class="t">Sygnały / ML</span><span class="n">Triangulacja 2D falami Wi-Fi</span>
+          <span class="d">3× ESP32, CSI 2.4 GHz → ważony KNN + filtr Kalmana.</span>
+          <span class="p">projekty/triangulacja.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/dron.html">
+          <span class="t">FPV / Embedded</span><span class="n">dron_1 — Micro-Whoop 85 mm</span>
+          <span class="d">Betaflight + Bluejay; lekcje lutowania, PID i Airmode.</span>
+          <span class="p">projekty/dron.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/hydroponika.html">
+          <span class="t">Embedded / PBL</span><span class="n">Laboratorium hydroponiki</span>
+          <span class="d">ESP32, uasyncio, DHT22, pompa 5V — pełny system upraw.</span>
+          <span class="p">projekty/hydroponika.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/hydroponika.html#naped">
+          <span class="t">Sterowanie</span><span class="n">Napęd rotacji — A4988</span>
+          <span class="d">Silnik krokowy + sterownik; powolny obrót eliminujący fototropizm.</span>
+          <span class="p">hydroponika.html#naped</span></a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Programowanie <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <a class="dd jump" href="index.html" data-jump="index.html"><span class="t">Świat // dzień</span><span class="n">Solar City ⇢ skok</span>
+          <span class="d">Deorbitacja nad solarpunkowym miastem.</span><span class="p">index.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/szachy.html">
+          <span class="t">C++ / Algorytmika</span><span class="n">Środowisko silnika szachowego</span>
+          <span class="d">OOP w Qt Creator, Minimax D2, anty-repetycja.</span>
+          <span class="p">projekty/szachy.html</span></a>
+        <a class="dd" role="menuitem" href="index.html#wp5">
+          <span class="t">JS / API</span><span class="n">WarsawWeather</span>
+          <span class="d">Open-Meteo, AbortController, degradacja do fallbacku.</span>
+          <span class="p">index.html#wp5</span></a>
+        <a class="dd" role="menuitem" href="index.html">
+          <span class="t">Three.js</span><span class="n">Portfolio MA//DEORBIT</span>
+          <span class="d">Ten silnik światów: scroll-zniżanie, modele GLB z Blendera.</span>
+          <span class="p">index.html</span></a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Mechanika <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <a class="dd jump" href="mechanika.html" data-jump="mechanika.html"><span class="t">Świat // dzień</span><span class="n">Parowozownia ⇢ skok</span>
+          <span class="d">Stacja parowa w zachodzie: obrotnica, secesyjne lilie, semafory.</span><span class="p">mechanika.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/inventor.html">
+          <span class="t">CAD / Mechanika</span><span class="n">Hala montażowa — Inventor</span>
+          <span class="d">Złożenie parametryczne, pasowania H8/h7 · H7/g6, dokumentacja ISO.</span>
+          <span class="p">projekty/inventor.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/hydroponika.html#mechanizm">
+          <span class="t">Konstrukcja</span><span class="n">Mechanizm rotacji upraw</span>
+          <span class="d">Łożysko kulkowe, wał, mocowania — mechaniczna strona hydroponiki.</span>
+          <span class="p">hydroponika.html#mechanizm</span></a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Doświadczenie <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <span class="dd jump here"><span class="t">Świat // świt</span><span class="n">Małe Planety</span>
+          <span class="d">Jesteś tutaj. Planetki-etapy w kosmosie, orbity i komety.</span><span class="p">doswiadczenie.html</span></span>
+        <a class="dd" role="menuitem" href="#wp1">
+          <span class="t">Edukacja</span><span class="n">XII LO im. Słowackiego</span>
+          <span class="d">Profil mat-fiz z rozszerzoną algorytmiką.</span><span class="p">#wp1 · liceum</span></a>
+        <a class="dd" role="menuitem" href="#wp2">
+          <span class="t">Praca</span><span class="n">Kurier miejski</span>
+          <span class="d">Logistyka pod presją czasu, niezawodność dostaw.</span><span class="p">#wp2 · kurier</span></a>
+        <a class="dd" role="menuitem" href="#wp3">
+          <span class="t">Dydaktyka</span><span class="n">Korepetycje z matematyki</span>
+          <span class="d">Od 2024 — algebra i geometria, uczniowie LO.</span><span class="p">#wp3 · korepetycje</span></a>
+        <a class="dd" role="menuitem" href="#wp4">
+          <span class="t">Studia</span><span class="n">PW Mechatronika + KN ONYKS</span>
+          <span class="d">mt-112; koło naukowe automatyki i embedded.</span><span class="p">#wp4 · studia</span></a>
+      </div>
+    </div>
+  </nav>
+  <a class="nav-gh" href="https://github.com/MichalAntkowiak" target="_blank" rel="noopener">github/MichalAntkowiak ↗</a>
+</header>
+
+<div id="alt" aria-hidden="true">
+  <div class="bar"><div class="fill" id="alt-fill"></div></div>
+  <div class="read">
+    <div class="v"><span id="alt-v">320</span><small id="alt-u"> m</small></div>
+    <div class="l" id="alt-l">MAŁE PLANETY</div>
+    <div class="wp" id="alt-wp">WP.00 ZRZUT</div>
+  </div>
+</div>
+
+<nav id="rail" aria-label="Waypointy">
+  <a href="#wp0" class="active"><span>WP.00 ZRZUT</span><i class="p"></i></a>
+  <a href="#wp1"><span>WP.01 LICEUM</span><i class="p"></i></a>
+  <a href="#wp2"><span>WP.02 KURIER</span><i class="p"></i></a>
+  <a href="#wp3"><span>WP.03 KOREPETYCJE</span><i class="p"></i></a>
+  <a href="#wp4"><span>WP.04 STUDIA</span><i class="p"></i></a>
+  <a href="#wp5"><span>WP.05 PAD</span><i class="p"></i></a>
+</nav>
+
+<main>
+  <section class="wp-sec" id="wp0" data-wp="WP.00 ZRZUT">
+    <div class="wrap side-l"><div class="card">
+      <span class="hero-k">Świat 4/4 // doświadczenie · kosmos</span>
+      <h1>MAŁE<br>PLANETY<br><span class="thin">OŚ CZASU</span></h1>
+      <p class="hero-sub">Miniaturowe planetki jak z Małego Księcia — każda to jeden etap drogi,
+      spięte orbitami i kometami. Na planecie kuriera sterowiec przy maszcie, na planecie
+      studiów obraca się zębatka. <b>Scroll w dół = zjazd od najdalszej planety do bazowej.</b></p>
+      <div class="hero-meta">
+        <span>PROFIL: <b>PLANETA STUDIÓW → BAZA</b></span>
+        <span>PUŁAP: <b>320 m</b></span>
+        <span>TRYB: <b>MIĘDZY GWIAZDAMI</b></span>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="wp-sec" id="wp4" data-wp="WP.04 STUDIA">
+    <div class="wrap side-r"><div class="card">
+      <div class="wp-tag">Planeta 4 // najdalsza · 2025—teraz</div>
+      <h2>PW Mechatronika + KN „ONYKS"</h2>
+      <p>Wydział Mechatroniki Politechniki Warszawskiej, grupa <b>mt-112</b>. Na najdalszej
+      planecie — bo stąd widać całą trasę między światami.</p>
+      <div class="kv">
+        <div><span class="l">Koło naukowe</span><span class="v"><b>KN „ONYKS"</b> — automatyka i systemy embedded; rozwój projektów sprzętowych.</span></div>
+        <div><span class="l">Profil</span><span class="v">Styk mechaniki, elektroniki i kodu — dokładnie to, co widzisz w pozostałych światach.</span></div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="wp-sec" id="wp3" data-wp="WP.03 KOREPETYCJE">
+    <div class="wrap side-l"><div class="card">
+      <div class="wp-tag">Planeta 3 // dydaktyka · od 2024</div>
+      <h2>Korepetycje z matematyki</h2>
+      <p>Algebra i geometria dla licealistów. Tablica, kreda i cierpliwość — uczenie innych
+      to najlepszy test własnego zrozumienia.</p>
+      <div class="kv">
+        <div><span class="l">Zakres</span><span class="v">Poziom podstawowy i rozszerzony; przygotowanie do sprawdzianów i matury.</span></div>
+        <div><span class="l">Co daje</span><span class="v">Umiejętność tłumaczenia trudnych rzeczy prosto — przydaje się też w dokumentacji projektów.</span></div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="wp-sec" id="wp2" data-wp="WP.02 KURIER">
+    <div class="wrap side-r"><div class="card">
+      <div class="wp-tag">Planeta 2 // praca · logistyka</div>
+      <h2>Kurier miejski</h2>
+      <p>Dostawy gastronomiczne w Warszawie: trasa, czas, niezawodność. Mniej romantyczne
+      niż roboty, ale uczy planowania pod presją jak mało co.</p>
+      <div class="kv">
+        <div><span class="l">Twarde</span><span class="v">Optymalizacja tras w czasie rzeczywistym; punktualność jako KPI.</span></div>
+        <div><span class="l">Miękkie</span><span class="v">Kontakt z klientem, odpowiedzialność za powierzone zlecenia.</span></div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="wp-sec" id="wp1" data-wp="WP.01 LICEUM">
+    <div class="wrap side-l"><div class="card">
+      <div class="wp-tag">Planeta 1 // edukacja · matura 2025</div>
+      <h2>XII LO im. J. Słowackiego</h2>
+      <p>Warszawa, profil <b>mat-fiz</b> z rozszerzoną algorytmiką — tu zaczęła się droga —
+      pierwsza planeta na trasie.</p>
+      <div class="kv">
+        <div><span class="l">Rozszerzenia</span><span class="v">Matematyka · fizyka · informatyka (algorytmika).</span></div>
+        <div><span class="l">Efekt</span><span class="v">Fundament pod silnik szachowy w C++ i całą resztę.</span></div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="wp-sec" id="wp5" data-wp="WP.05 PAD P-D1">
+    <div class="wrap side-c"><div class="card">
+      <div class="wp-tag">Planeta bazowa // przyziemienie</div>
+      <h2>Planeta bazowa · pad P-D1</h2>
+      <p>Dron osiadł na biegunie planetki, przy drogowskazie i kwiatach.
+      Oś czasu przeczytana od najdalszej planety do bazy — a dalej? Dalej są projekty.</p>
+      <div class="hero-meta">
+        <span><a class="btn" href="elektronika.html" data-jump="elektronika.html">SKOK: SERCE REAKTORA ⇢</a></span>
+        <span><a class="btn" href="index.html" data-jump="index.html">SKOK: SOLAR CITY ⇢</a></span>
+      </div>
+    </div></div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <span>© 2026 Michał Antkowiak · Mechatronika PW</span>
+  <span class="mono">ŚWIAT: DOŚWIADCZENIE // MAŁE PLANETY</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="assets/world.js"></script>
+<script src="assets/GLTFLoader.js"></script>
+<script src="assets/hyper.js"></script>
+<script src="assets/biome.js"></script>
+<script>window.__BIOME_NAME__="MABIOME_RIDGE";</script>
+<script src="assets/biomes/ridge.js"></script>
+<script>window.__BIOME__=window[window.__BIOME_NAME__]||null;</script>
+<script>
+(function(){
+'use strict';
+function guard(name,fn){try{fn()}catch(e){console.error('[MA] '+name+':',e)}}
+
+/* 1) przylot z nadprzestrzeni — izolowany: awaria nie może zabić świata */
+guard('hyper.arrive',function(){ if(window.MAHYPER) MAHYPER.arrive(); });
+
+/* 2) dropdowny nawigacji */
+guard('nav',function(){
+  document.querySelectorAll('.nav-item').forEach(function(it){
+    var btn=it.querySelector('.nav-btn'); if(!btn) return;
+    btn.addEventListener('click',function(e){e.stopPropagation();
+      var open=it.classList.contains('open');
+      document.querySelectorAll('.nav-item.open').forEach(function(o){o.classList.remove('open')});
+      it.classList.toggle('open',!open);
+      btn.setAttribute('aria-expanded',String(!open));
+    });
+    it.addEventListener('mouseenter',function(){it.classList.add('open');btn.setAttribute('aria-expanded','true')});
+    it.addEventListener('mouseleave',function(){it.classList.remove('open');btn.setAttribute('aria-expanded','false')});
+  });
+  document.addEventListener('click',function(){
+    document.querySelectorAll('.nav-item.open').forEach(function(o){
+      o.classList.remove('open');
+      var b=o.querySelector('.nav-btn'); if(b) b.setAttribute('aria-expanded','false');
+    });
+  });
+});
+
+/* 3) hiperskoki — z twardym fallbackiem na zwykłą nawigację */
+guard('jumps',function(){
+  document.querySelectorAll('[data-jump]').forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      var url=a.dataset.jump||a.getAttribute('href');
+      try{ if(window.MAHYPER){ MAHYPER.jump(url); return } }catch(err){ console.error('[MA] jump:',err) }
+      location.href=url;                       // awaryjnie: zwykłe przejście
+    });
+  });
+});
+
+/* 4) ŚWIAT — zawsze na końcu i zawsze wykonywany */
+guard('biome',function(){
+  if(!window.MABIOME||!window.__BIOME__){document.body.classList.add('no3d');return}
+  MABIOME.run(window.__BIOME__);
+});
+})();
+</script>
+</body>
+</html>

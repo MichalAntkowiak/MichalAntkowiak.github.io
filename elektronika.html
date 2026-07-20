@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elektronika — Zatoka Anten · Michał Antkowiak</title>
+<meta name="description" content="Świat embedded: ESP32, sterowniki, czujniki. Zjazd dronem nad zatoką pełną anten: czasza, triangulacja Wi-Fi, latarnia.">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+/* paleta zmierzchu nad zatoką */
+body{background:#d98d84}
+#sky-css{position:fixed;inset:0;z-index:0;background:
+  radial-gradient(760px 420px at 30% 88%, rgba(255,180,106,.55) 0%, rgba(255,180,106,0) 58%),
+  radial-gradient(1400px 420px at 50% 104%, rgba(35,86,106,.65) 0%, rgba(35,86,106,0) 70%),
+  linear-gradient(#120a24 0%, #35194a 28%, #6e3b66 52%, #b96a7e 76%, #d98d84 100%)}
+.dd.jump .n{color:var(--acc)}
+.dd.jump .t{color:#ffb46a}
+.dd.here{opacity:.55;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="sky-css" aria-hidden="true"></div>
+<div id="sky" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav-logo" href="index.html" data-jump="index.html"><span class="dot"></span>MICHAŁ ANTKOWIAK <b>// MT-112</b></a>
+  <nav class="nav-links" aria-label="Światy">
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Elektronika <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <span class="dd jump here"><span class="t">Świat // zmierzch</span><span class="n">Zatoka Anten</span>
+          <span class="d">Jesteś tutaj. Klifowe obserwatorium: czasza, nadajniki, latarnia.</span><span class="p">elektronika.html</span></span>
+        <a class="dd" role="menuitem" href="projekty/triangulacja.html">
+          <span class="t">Sygnały / ML</span><span class="n">Triangulacja 2D falami Wi-Fi</span>
+          <span class="d">3× ESP32, CSI 2.4 GHz → ważony KNN + filtr Kalmana.</span>
+          <span class="p">projekty/triangulacja.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/dron.html">
+          <span class="t">FPV / Embedded</span><span class="n">dron_1 — Micro-Whoop 85 mm</span>
+          <span class="d">Betaflight + Bluejay; lekcje lutowania, PID i Airmode.</span>
+          <span class="p">projekty/dron.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/hydroponika.html">
+          <span class="t">Embedded / PBL</span><span class="n">Laboratorium hydroponiki</span>
+          <span class="d">ESP32, uasyncio, DHT22, pompa 5V — pełny system upraw.</span>
+          <span class="p">projekty/hydroponika.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/hydroponika.html#naped">
+          <span class="t">Sterowanie</span><span class="n">Napęd rotacji — A4988</span>
+          <span class="d">Silnik krokowy + sterownik; powolny obrót eliminujący fototropizm.</span>
+          <span class="p">hydroponika.html#naped</span></a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Programowanie <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <a class="dd jump" href="index.html" data-jump="index.html"><span class="t">Świat // dzień</span><span class="n">Solar City ⇢ skok</span>
+          <span class="d">Deorbitacja nad solarpunkowym miastem.</span><span class="p">index.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/szachy.html">
+          <span class="t">C++ / Algorytmika</span><span class="n">Środowisko silnika szachowego</span>
+          <span class="d">OOP w Qt Creator, Minimax D2, anty-repetycja.</span>
+          <span class="p">projekty/szachy.html</span></a>
+        <a class="dd" role="menuitem" href="index.html#wp5">
+          <span class="t">JS / API</span><span class="n">WarsawWeather</span>
+          <span class="d">Open-Meteo, AbortController, degradacja do fallbacku.</span>
+          <span class="p">index.html#wp5</span></a>
+        <a class="dd" role="menuitem" href="index.html">
+          <span class="t">Three.js</span><span class="n">Portfolio MA//DEORBIT</span>
+          <span class="d">Ten silnik światów: scroll-zniżanie, modele GLB z Blendera.</span>
+          <span class="p">index.html</span></a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Mechanika <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <a class="dd jump" href="mechanika.html" data-jump="mechanika.html"><span class="t">Świat // złota godzina</span><span class="n">Parowozownia ⇢ skok</span>
+          <span class="d">Stacja parowa w zachodzie: obrotnica, secesyjne lilie, semafory.</span><span class="p">mechanika.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/inventor.html">
+          <span class="t">CAD / Mechanika</span><span class="n">Hala montażowa — Inventor</span>
+          <span class="d">Złożenie parametryczne, pasowania H8/h7 · H7/g6, dokumentacja ISO.</span>
+          <span class="p">projekty/inventor.html</span></a>
+        <a class="dd" role="menuitem" href="projekty/hydroponika.html#mechanizm">
+          <span class="t">Konstrukcja</span><span class="n">Mechanizm rotacji upraw</span>
+          <span class="d">Łożysko kulkowe, wał, mocowania — mechaniczna strona hydroponiki.</span>
+          <span class="p">hydroponika.html#mechanizm</span></a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <button class="nav-btn" aria-haspopup="true" aria-expanded="false">Doświadczenie <span class="caret">▼</span></button>
+      <div class="dropdown" role="menu">
+        <a class="dd jump" href="doswiadczenie.html" data-jump="doswiadczenie.html"><span class="t">Świat // świt</span><span class="n">Małe Planety ⇢ skok</span>
+          <span class="d">Planetki-etapy w kosmosie: liceum → praca → studia.</span><span class="p">doswiadczenie.html</span></a>
+        <a class="dd" role="menuitem" href="doswiadczenie.html#wp1" data-jump="doswiadczenie.html#wp1">
+          <span class="t">Edukacja</span><span class="n">XII LO im. Słowackiego</span>
+          <span class="d">Profil mat-fiz z rozszerzoną algorytmiką.</span><span class="p">doswiadczenie.html#wp1</span></a>
+        <a class="dd" role="menuitem" href="doswiadczenie.html#wp2" data-jump="doswiadczenie.html#wp2">
+          <span class="t">Praca</span><span class="n">Kurier miejski</span>
+          <span class="d">Logistyka pod presją czasu, niezawodność dostaw.</span><span class="p">doswiadczenie.html#wp2</span></a>
+        <a class="dd" role="menuitem" href="doswiadczenie.html#wp3" data-jump="doswiadczenie.html#wp3">
+          <span class="t">Dydaktyka</span><span class="n">Korepetycje z matematyki</span>
+          <span class="d">Od 2024 — algebra i geometria, uczniowie LO.</span><span class="p">doswiadczenie.html#wp3</span></a>
+        <a class="dd" role="menuitem" href="doswiadczenie.html#wp4" data-jump="doswiadczenie.html#wp4">
+          <span class="t">Studia</span><span class="n">PW Mechatronika + KN ONYKS</span>
+          <span class="d">mt-112; koło naukowe automatyki i embedded.</span><span class="p">doswiadczenie.html#wp4</span></a>
+      </div>
+    </div>
+  </nav>
+  <a class="nav-gh" href="https://github.com/MichalAntkowiak" target="_blank" rel="noopener">github/MichalAntkowiak ↗</a>
+</header>
+
+<div id="alt" aria-hidden="true">
+  <div class="bar"><div class="fill" id="alt-fill"></div></div>
+  <div class="read">
+    <div class="v"><span id="alt-v">200</span><small id="alt-u"> m</small></div>
+    <div class="l" id="alt-l">ZATOKA ANTEN</div>
+    <div class="wp" id="alt-wp">WP.00 ZRZUT</div>
+  </div>
+</div>
+
+<nav id="rail" aria-label="Waypointy">
+  <a href="#wp0" class="active"><span>WP.00 ZRZUT</span><i class="p"></i></a>
+  <a href="#wp1"><span>WP.01 TRIANGULACJA</span><i class="p"></i></a>
+  <a href="#wp2"><span>WP.02 DRON FPV</span><i class="p"></i></a>
+  <a href="#wp3"><span>WP.03 EMBEDDED</span><i class="p"></i></a>
+  <a href="#wp4"><span>WP.04 PAD</span><i class="p"></i></a>
+</nav>
+
+<main>
+  <section class="wp-sec" id="wp0" data-wp="WP.00 ZRZUT">
+    <div class="wrap side-l"><div class="card">
+      <span class="hero-k">Świat 1/4 // elektronika · zmierzch</span>
+      <h1>ZATOKA<br>ANTEN<br><span class="thin">SYGNAŁY</span></h1>
+      <p class="hero-sub">Klifowe obserwatorium nad morzem o fioletowym zmierzchu. Wielka czasza
+      śledzi niebo, a <b>trzy nadajniki triangulują sygnał</b> rozchodzącymi się pierścieniami fal —
+      dokładnie jak w moim projekcie Wi-Fi CSI. Latarnia omiata zatokę, kolejka pełznie po klifie.
+      <b>Scroll w dół = zjazd z pułapu masztów na lądowisko przy bunkrze.</b></p>
+      <div class="hero-meta">
+        <span>PROFIL: <b>MASZTY → KLIF</b></span>
+        <span>PUŁAP: <b>200 m</b></span>
+        <span>TRYB: <b>TRIANGULACJA</b></span>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="wp-sec" id="wp1" data-wp="WP.01 TRIANGULACJA">
+    <div class="wrap side-r"><div class="card">
+      <div class="wp-tag">Waypoint 01 // lokalizacja falami radiowymi</div>
+      <h2>Triangulacja 2D falami Wi-Fi</h2>
+      <p>Trzy słupy z pulsującymi pierścieniami na cyplu to nie dekoracja — to scena mojego
+      projektu: pasywna lokalizacja człowieka w pokoju na bazie <b>CSI Wi-Fi 2.4 GHz</b>,
+      bez żadnego nadajnika przy osobie.</p>
+      <div class="kv">
+        <div><span class="l">Sprzęt</span><span class="v"><b>3× ESP32</b> jako nadajniki + odbiornik CSI na USB (~100 Hz, 55 000+ wierszy danych).</span></div>
+        <div><span class="l">Cechy</span><span class="v">Fuzja ramek po MAC → wektor <b>192</b> amplitud (3×64 podnośne) z normalizacją L2 przeciw AGC.</span></div>
+        <div><span class="l">Pipeline</span><span class="v">Ważony <b>KNN</b> na siatce 22 punktów kalibracji → <b>filtr Kalmana 2D</b> gasi skoki wielodrogowe.</span></div>
+      </div>
+      <a class="btn" href="projekty/triangulacja.html">Pełny opis projektu → triangulacja.html</a>
+    </div></div>
+  </section>
+
+  <section class="wp-sec" id="wp2" data-wp="WP.02 DRON FPV">
+    <div class="wrap side-l"><div class="card">
+      <div class="wp-tag">Waypoint 02 // hangar FPV</div>
+      <h2>dron_1 — Custom Micro-Whoop 85 mm</h2>
+      <p>Dron, który Cię tu oprowadza, ma pierwowzór na moim biurku: własna konstrukcja
+      klasy 85 mm. Faza 1 skończyła się <b>spalonym kontrolerem lotu</b> przy lutowaniu —
+      faza 2 lata i uczy strojenia PID.</p>
+      <div class="kv">
+        <div><span class="l">Płatowiec</span><span class="v">Rama Mobula8, silniki <b>EX1103 11000KV</b>, śmigła Gemfan tri-blade w układzie Props-Out, kamera C02.</span></div>
+        <div><span class="l">Firmware</span><span class="v"><b>Betaflight 4.3.2</b> + ESC <b>Bluejay</b>: DSHOT300, Bidirectional DShot, filtry RPM.</span></div>
+        <div><span class="l">Sterowanie</span><span class="v">ExpressLRS (AETR1234), Airmode, deadband 15, <b>Flip Over After Crash</b> na AUX3.</span></div>
+      </div>
+      <a class="btn" href="projekty/dron.html">Historia budowy → dron.html</a>
+    </div></div>
+  </section>
+
+  <section class="wp-sec" id="wp3" data-wp="WP.03 EMBEDDED">
+    <div class="wrap side-r"><div class="card">
+      <div class="wp-tag">Waypoint 03 // system embedded</div>
+      <h2>Laboratorium hydroponiki</h2>
+      <p>Kompletny system uprawy sterowany <b>ESP32</b>: pomiary, dozowanie wody i powolna
+      rotacja doniczki — wszystko w nieblokującej pętli zadań.</p>
+      <div class="kv">
+        <div><span class="l">MCU</span><span class="v"><b>ESP32</b> — MicroPython, <b>uasyncio</b>: równoległe zadania czujników i aktuatorów bez wątków.</span></div>
+        <div><span class="l">Sensoryka</span><span class="v"><b>DHT22</b> (temp/RH) z filtrowaniem odczytów i obsługą błędów magistrali.</span></div>
+        <div><span class="l">Napęd</span><span class="v">Krokowiec ze sterownikiem <b>A4988</b> — mikrokroki i łagodne rampy eliminują fototropizm bez szarpnięć.</span></div>
+      </div>
+      <a class="btn" href="projekty/hydroponika.html">Pełna dokumentacja → hydroponika.html</a>
+    </div></div>
+  </section>
+
+  <section class="wp-sec" id="wp4" data-wp="WP.04 PAD P-E1">
+    <div class="wrap side-c"><div class="card">
+      <div class="wp-tag">Waypoint 04 // przyziemienie</div>
+      <h2>Lądowisko na klifie P-E1</h2>
+      <p>Dron osiadł przy bunkrze kontrolnym: nad Tobą sunie wielka czasza, na cyplu pulsują
+      pierścienie nadajników, w dole mrugają boje, a latarnia rytmicznie omiata zatokę.</p>
+      <div class="hero-meta">
+        <span><a class="btn" href="projekty/triangulacja.html">PROJEKT TRIANGULACJI →</a></span>
+        <span><a class="btn" href="mechanika.html" data-jump="mechanika.html">SKOK: PAROWOZOWNIA ⇢</a></span>
+      </div>
+    </div></div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <span>© 2026 Michał Antkowiak · Mechatronika PW</span>
+  <span class="mono">ŚWIAT: ELEKTRONIKA // ZATOKA ANTEN</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="assets/world.js"></script>
+<script src="assets/GLTFLoader.js"></script>
+<script src="assets/hyper.js"></script>
+<script src="assets/biome.js"></script>
+<script>window.__BIOME_NAME__="MABIOME_CIRCUIT";</script>
+<script src="assets/biomes/circuit.js"></script>
+<script>window.__BIOME__=window[window.__BIOME_NAME__]||null;</script>
+<script>
+(function(){
+'use strict';
+function guard(name,fn){try{fn()}catch(e){console.error('[MA] '+name+':',e)}}
+
+/* 1) przylot z nadprzestrzeni — izolowany: awaria nie może zabić świata */
+guard('hyper.arrive',function(){ if(window.MAHYPER) MAHYPER.arrive(); });
+
+/* 2) dropdowny nawigacji */
+guard('nav',function(){
+  document.querySelectorAll('.nav-item').forEach(function(it){
+    var btn=it.querySelector('.nav-btn'); if(!btn) return;
+    btn.addEventListener('click',function(e){e.stopPropagation();
+      var open=it.classList.contains('open');
+      document.querySelectorAll('.nav-item.open').forEach(function(o){o.classList.remove('open')});
+      it.classList.toggle('open',!open);
+      btn.setAttribute('aria-expanded',String(!open));
+    });
+    it.addEventListener('mouseenter',function(){it.classList.add('open');btn.setAttribute('aria-expanded','true')});
+    it.addEventListener('mouseleave',function(){it.classList.remove('open');btn.setAttribute('aria-expanded','false')});
+  });
+  document.addEventListener('click',function(){
+    document.querySelectorAll('.nav-item.open').forEach(function(o){
+      o.classList.remove('open');
+      var b=o.querySelector('.nav-btn'); if(b) b.setAttribute('aria-expanded','false');
+    });
+  });
+});
+
+/* 3) hiperskoki — z twardym fallbackiem na zwykłą nawigację */
+guard('jumps',function(){
+  document.querySelectorAll('[data-jump]').forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      var url=a.dataset.jump||a.getAttribute('href');
+      try{ if(window.MAHYPER){ MAHYPER.jump(url); return } }catch(err){ console.error('[MA] jump:',err) }
+      location.href=url;                       // awaryjnie: zwykłe przejście
+    });
+  });
+});
+
+/* 4) ŚWIAT — zawsze na końcu i zawsze wykonywany */
+guard('biome',function(){
+  if(!window.MABIOME||!window.__BIOME__){document.body.classList.add('no3d');return}
+  MABIOME.run(window.__BIOME__);
+});
+})();
+</script>
+</body>
+</html>
