@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zatoka Anten — Triangulacja 2D falami Wi-Fi // M. Antkowiak</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3eef8;--bg-2:#eae3f2;--panel:#faf7fd;--line:#d3c4de;--line-soft:#e0d7e9;
+  --acc:#8a2fb8;--acc-dim:#c495db;--acc-glow:rgba(138,47,184,.28);
+  --txt:#2b1338;--txt-dim:#5d4675;--txt-mute:#8f7da5;--term-green:#35d07f;
+  --font-d:'Space Grotesk',system-ui,sans-serif;--font-m:'Fira Code',ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font-family:var(--font-d);-webkit-font-smoothing:antialiased}
+::selection{background:var(--acc);color:#fff}
+a{color:inherit}
+.nav{
+  position:sticky;top:0;z-index:50;height:56px;display:flex;align-items:center;gap:20px;
+  padding:0 24px;background:rgba(252,249,255,.85);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.nav a{font-family:var(--font-m);font-size:12px;color:var(--txt-dim);text-decoration:none;letter-spacing:.5px}
+.nav a:hover{color:var(--acc)}
+.nav .crumb{margin-left:auto;font-family:var(--font-m);font-size:11px;color:var(--txt-mute)}
+.nav .crumb b{color:var(--acc);font-weight:500}
+.wrap{max-width:1100px;margin:0 auto;padding:56px 24px 100px}
+.eyebrow{font-family:var(--font-m);font-size:11px;color:var(--acc);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+h1{font-size:clamp(30px,5vw,46px);font-weight:700;letter-spacing:-1px;margin-bottom:18px}
+.lead{font-size:15px;line-height:1.7;color:var(--txt-dim);max-width:740px}
+.lead code{font-family:var(--font-m);font-size:.9em;color:var(--acc)}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.cta{
+  display:inline-flex;align-items:center;gap:8px;padding:12px 18px;
+  border:1px solid var(--acc-dim);font-family:var(--font-m);font-size:12px;
+  color:var(--txt);text-decoration:none;letter-spacing:.5px;
+  transition:background .15s,border-color .15s,box-shadow .15s;
+}
+.cta:hover,.cta:focus-visible{background:rgba(138,47,184,.1);border-color:var(--acc);box-shadow:0 0 20px var(--acc-glow)}
+.cta .arr{color:var(--acc)}
+.cta.primary{background:rgba(138,47,184,.12);border-color:var(--acc)}
+section{margin-top:72px}
+h2{font-size:20px;font-weight:600;margin-bottom:20px;display:flex;align-items:center;gap:14px}
+h2::before{content:"";width:26px;height:2px;background:var(--acc);flex:0 0 auto}
+h2 .idx{font-family:var(--font-m);font-size:11px;color:var(--txt-mute);font-weight:400}
+p{font-size:14px;line-height:1.7;color:var(--txt-dim)}
+p + p{margin-top:12px}
+p code{font-family:var(--font-m);font-size:.9em;color:var(--acc)}
+.modules{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1px;background:var(--line-soft);border:1px solid var(--line-soft)}
+.mod{background:var(--panel);padding:18px}
+.mod .file{font-family:var(--font-m);font-size:13px;color:var(--acc);display:block;margin-bottom:8px}
+.mod .role{font-size:12.5px;line-height:1.6;color:var(--txt-dim)}
+.pipe{border:1px solid var(--line);background:var(--bg-2)}
+.pipe-step{display:grid;grid-template-columns:64px 1fr;border-bottom:1px solid var(--line-soft)}
+.pipe-step:last-child{border-bottom:none}
+.pipe-num{
+  display:flex;align-items:center;justify-content:center;
+  border-right:1px solid var(--line-soft);
+  font-family:var(--font-m);font-size:12px;color:var(--acc);
+}
+.pipe-body{padding:16px 20px}
+.pipe-body h3{font-size:14px;font-weight:600;margin-bottom:6px}
+.pipe-body p{font-size:13px}
+.pipe-body code{font-family:var(--font-m);font-size:.9em;color:var(--acc)}
+.weights{width:100%;border-collapse:collapse;border:1px solid var(--line);font-family:var(--font-m);font-size:12px}
+.weights th,.weights td{padding:10px 14px;border:1px solid var(--line-soft);text-align:left;vertical-align:top}
+.weights th{color:var(--txt-mute);font-weight:500;text-transform:uppercase;font-size:10px;letter-spacing:1px;background:var(--panel)}
+.weights td{color:var(--txt-dim)}
+.weights td:first-child{color:var(--acc)}
+.term{
+  border:1px solid var(--line);background:#1c0f2a;
+  font-family:var(--font-m);font-size:12px;line-height:1.8;
+  color:var(--term-green);padding:18px 20px;
+}
+.term .p{color:#fff}
+.term .e{color:#d98de0}
+.term .s{color:#8a6aa8}
+footer{
+  margin-top:100px;border-top:1px solid var(--line);padding:24px;
+  font-family:var(--font-m);font-size:11px;color:var(--txt-mute);
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../elektronika.html">← ZATOKA ANTEN</a>
+  <a href="dron.html">HANGAR FPV</a>
+  <a href="hydroponika.html">LAB PBL</a>
+  <span class="crumb">projekty / <b>triangulacja.html</b></span>
+</nav>
+
+<div class="wrap">
+  <div class="eyebrow">Sektor E1 // Zatoka Anten — pasmo 2.4 GHz</div>
+  <h1>Triangulacja 2D przy pomocy fal Wi-Fi</h1>
+  <p class="lead">
+    Pasywny system lokalizacji wewnątrz budynku oparty o <code>Channel State Information</code>
+    (CSI) sygnału Wi-Fi 2.4 GHz. Trzy nadajniki <code>ESP32</code> oświetlają pokój falami,
+    czwarty moduł odbiera zaburzenia kanału — a pipeline w Pythonie zamienia 55&nbsp;000+
+    wierszy surowego CSI na pozycję człowieka w pomieszczeniu 1.6&nbsp;×&nbsp;4.6&nbsp;m.
+    Projekt zrealizowany w ramach studiów na Mechatronice PW.
+  </p>
+  <div class="cta-row">
+    <a class="cta primary" href="https://github.com/MichalAntkowiak/Triangulacja-2D-przy-pomocy-fal-Wi-Fi" target="_blank" rel="noopener">Repozytorium na GitHubie <span class="arr">↗</span></a>
+    <a class="cta" href="../elektronika.html" data-jump="../elektronika.html">Zobacz nadajniki w Zatoce Anten <span class="arr">→</span></a>
+  </div>
+
+  <!-- ============ STANOWISKO ============ -->
+  <section id="stanowisko">
+    <h2>Architektura stanowiska <span class="idx">3× TX + 1× RX</span></h2>
+    <p>Układ celowo asymetryczny: nadajniki są tanie i głupie, cała inteligencja siedzi po stronie odbiornika i hosta. Każdy element ma jedną odpowiedzialność.</p>
+    <div class="modules" style="margin-top:20px">
+      <div class="mod"><span class="file">tx_esp32 ×3</span><span class="role">Nadajniki rozstawione w rogach pokoju — ciągła emisja ramek, każda podpisana adresem MAC nadawcy.</span></div>
+      <div class="mod"><span class="file">rx_esp32</span><span class="role">Odbiornik CSI na USB: raportuje stan 64 podnośnych OFDM z częstotliwością ~100 Hz.</span></div>
+      <div class="mod"><span class="file">akwizycja.py</span><span class="role">Nieblokujący odczyt portu szeregowego — bufor bajtowy zamiast readline() (patrz dziennik problemów).</span></div>
+      <div class="mod"><span class="file">cechy.py</span><span class="role">Fuzja ramek po MAC do jednego wektora 192 cech (3 nadajniki × 64 podnośne) + normalizacja L2.</span></div>
+      <div class="mod"><span class="file">model_knn.py</span><span class="role">Klasyfikacja pozycji ważonym KNN na siatce kalibracyjnej 22 punktów.</span></div>
+      <div class="mod"><span class="file">kalman_2d.py</span><span class="role">Filtr Kalmana 2D — wygładzanie trajektorii i tłumienie skoków wielodrogowych.</span></div>
+    </div>
+  </section>
+
+  <!-- ============ PIPELINE ============ -->
+  <section id="pipeline">
+    <h2>Pipeline przetwarzania <span class="idx">od ramki do pozycji</span></h2>
+    <div class="pipe">
+      <div class="pipe-step">
+        <div class="pipe-num">01</div>
+        <div class="pipe-body">
+          <h3>Kalibracja pomieszczenia</h3>
+          <p>Siatka 22 punktów referencyjnych w pokoju 1.6 × 4.6 m. W każdym punkcie zebrane po ~2500 próbek z pełnym obrotem ciała o 360° — model uczy się sygnatury miejsca, a nie orientacji człowieka.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">02</div>
+        <div class="pipe-body">
+          <h3>Budowa wektora cech</h3>
+          <p>Ramki od trzech nadajników łączone po adresie MAC w jeden wektor <code>192</code> amplitud (3 × 64 podnośne). Normalizacja <code>L2</code> całego wektora zabija drżenie automatycznej regulacji wzmocnienia (AGC) odbiornika.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">03</div>
+        <div class="pipe-body">
+          <h3>Klasyfikacja — ważony KNN</h3>
+          <p>K najbliższych sąsiadów z wagami odwrotnie proporcjonalnymi do odległości. Wybrany po tym, jak RandomForest uparcie zwracał uśrednioną pozycję środka pokoju — „zamrożona kropka" zamiast śledzenia.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">04</div>
+        <div class="pipe-body">
+          <h3>Wygładzanie — filtr Kalmana 2D</h3>
+          <p>Predykcja + korekcja na płaszczyźnie XY: pojedyncze błędne klasyfikacje (odbicia wielodrogowe) przestają teleportować estymatę pozycji przez pół pokoju.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DZIENNIK PROBLEMÓW ============ -->
+  <section id="problemy">
+    <h2>Dziennik problemów <span class="idx">inżynieria = debugowanie</span></h2>
+    <table class="weights" aria-label="Problemy i rozwiązania">
+      <thead><tr><th>Objaw</th><th>Diagnoza</th><th>Rozwiązanie</th></tr></thead>
+      <tbody>
+        <tr><td>Gubione ramki przy 120 pkt/s</td><td>readline() blokował pętlę akwizycji</td><td>nieblokujący bufor: ser.read(ser.in_waiting)</td></tr>
+        <tr><td>„Zamrożona kropka" na środku</td><td>RandomForest uśredniał regresję do centrum</td><td>ważony KNN na siatce kalibracyjnej</td></tr>
+        <tr><td>Drganie amplitud w miejscu</td><td>automatyka wzmocnienia (AGC) odbiornika</td><td>normalizacja L2 wektora 192 cech</td></tr>
+        <tr><td>Teleportacje estymaty</td><td>odbicia wielodrogowe 2.4 GHz</td><td>filtr Kalmana 2D na wyjściu</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:18px">
+      Wniosek końcowy projektu: sama amplituda CSI wystarcza do pewnej <b>klasyfikacji strefowej</b>
+      (biurko / łóżko / drzwi), ale dokładność centymetrowa wymaga informacji czasowo-kątowej —
+      czyli sprzętu z <code>ToF/UWB</code> lub estymacji kąta nadejścia (<code>AoA</code>).
+    </p>
+  </section>
+
+  <!-- ============ TERMINAL ============ -->
+  <section id="terminal">
+    <h2>Sesja na żywo <span class="idx">log konsoli</span></h2>
+    <div class="term" aria-label="Przykładowy log sesji">
+      <div class="s">[RX] port /dev/ttyUSB0 @ 921600 — strumień CSI aktywny (≈100 Hz)</div>
+      <div><span class="p">[DATA]</span> zebrane wiersze: 55 214 | nadajniki: 3/3 (fuzja po MAC)</div>
+      <div><span class="p">[CECHY]</span> wektor 192 → norma L2 = 1.000</div>
+      <div><span class="e">[KNN]</span> strefa: BIURKO (k=7, zaufanie 0.87)</div>
+      <div><span class="e">[KALMAN]</span> pozycja: x=1.21 m, y=3.42 m (σ=0.18)</div>
+      <div class="s">[VIZ] mapa 1.6×4.6 m — trajektoria wygładzona, 0 teleportacji</div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <span>MICHAŁ ANTKOWIAK // ESP32 · CSI 2.4 GHz · PYTHON · KNN + KALMAN</span>
+  <span><a href="../elektronika.html" style="color:var(--acc);text-decoration:none">← powrót do Zatoki Anten</a></span>
+</footer>
+
+</body>
+</html>
