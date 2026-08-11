@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Michał Antkowiak — Mechatronika PW // Portfolio</title>
+<meta name="description" content="Mechanika, elektronika i kod: portfolio Michała Antkowiaka, studenta Mechatroniki PW. CAD, ESP32, FPV, silnik szachowy, lokalizacja Wi-Fi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --bg:#14181d; --bg-2:#191e24; --panel:#1e262d; --panel-2:#242c34;
+  --line:#333d47; --line-soft:#262e36;
+  --paper:#f1ece1; --paper-2:#e8e1d2;
+  --copper:#cf8a54; --copper-dim:#8a5c38; --copper-glow:rgba(207,138,84,.28);
+  --cyan:#57d8ca; --cyan-dim:#2f7d76; --cyan-glow:rgba(87,216,202,.24);
+  --violet:#a68cf0; --violet-dim:#6a54a8; --violet-glow:rgba(166,140,240,.24);
+  --txt:#ece7db; --txt-dim:#a9a79c; --txt-mute:#6f7680;
+  --font-d:'Space Grotesk',system-ui,sans-serif; --font-m:'Fira Code',ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:var(--font-d);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--copper);color:#1a120a}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.eyebrow{font-family:var(--font-m);font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--txt-mute)}
+h1,h2,h3{font-family:var(--font-d);letter-spacing:-.5px}
+p{line-height:1.7;color:var(--txt-dim);font-size:14.5px}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important}}
+
+/* faint drafting-grid backdrop */
+.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+  background-image:
+    linear-gradient(var(--line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+  background-size:34px 34px; mask-image:radial-gradient(ellipse 90% 60% at 50% 0%, #000 40%, transparent 92%)}
+
+/* ============ NAV — sheet tabs ============ */
+.nav{position:sticky;top:0;z-index:80;background:rgba(20,24,29,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-in{max-width:1180px;margin:0 auto;padding:0 24px;height:56px;display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:none}
+.nav-in::-webkit-scrollbar{display:none}
+.nav-mark{font-family:var(--font-m);font-size:12px;color:var(--txt);white-space:nowrap;padding-right:16px;margin-right:8px;border-right:1px solid var(--line);flex:0 0 auto}
+.nav-mark b{color:var(--copper)}
+.nav-tab{font-family:var(--font-m);font-size:11px;letter-spacing:.5px;color:var(--txt-mute);white-space:nowrap;padding:8px 10px;border-radius:3px;flex:0 0 auto;transition:color .15s,background .15s}
+.nav-tab:hover{color:var(--txt);background:var(--panel)}
+.nav-tab .n{color:var(--copper);margin-right:6px}
+.nav-gh{margin-left:auto;flex:0 0 auto;font-family:var(--font-m);font-size:11px;color:var(--txt-dim);border:1px solid var(--line);padding:7px 12px;border-radius:3px;white-space:nowrap;transition:border-color .15s,color .15s}
+.nav-gh:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* ============ reveal-on-scroll ============ */
+.rv{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.rv.in{opacity:1;transform:none}
+
+/* ============ HERO ============ */
+.hero{position:relative;z-index:1;padding:76px 0 64px;border-bottom:1px solid var(--line)}
+.hero-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:48px;align-items:end}
+.hero h1{font-size:clamp(40px,6.4vw,74px);font-weight:700;line-height:.98;margin:14px 0 18px}
+.hero h1 .last{color:var(--copper)}
+.hero-tag{font-family:var(--font-m);font-size:13px;color:var(--cyan);margin-bottom:16px}
+.hero p.lead{font-size:15.5px;max-width:52ch;color:var(--txt-dim)}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.cta{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border:1px solid var(--copper-dim);font-family:var(--font-m);font-size:12px;letter-spacing:.3px;transition:background .15s,border-color .15s,box-shadow .15s}
+.cta:hover{background:var(--copper-glow);border-color:var(--copper);box-shadow:0 0 22px var(--copper-glow)}
+.cta.alt{border-color:var(--line)}
+.cta.alt:hover{border-color:var(--cyan);background:var(--cyan-glow);box-shadow:0 0 22px var(--cyan-glow)}
+.cta .arr{opacity:.7}
+
+/* title block — real ISO-ish drawing title block */
+.tblock{border:1px solid var(--line);background:var(--panel);font-family:var(--font-m);font-size:11.5px}
+.tblock-row{display:grid;grid-template-columns:38% 62%;border-top:1px solid var(--line-soft)}
+.tblock-row:first-child{border-top:none}
+.tblock-row .k{padding:8px 10px;color:var(--txt-mute);border-right:1px solid var(--line-soft);letter-spacing:.4px}
+.tblock-row .v{padding:8px 10px;color:var(--txt)}
+.tblock-row .v b{color:var(--copper)}
+.tblock-cap{background:var(--bg-2);padding:9px 10px;font-size:10.5px;letter-spacing:1.5px;color:var(--txt-mute);border-bottom:1px solid var(--line-soft)}
+
+.stat-row{display:flex;gap:0;margin-top:34px;border:1px solid var(--line);border-radius:2px;overflow:hidden}
+.stat{flex:1;padding:14px 16px;border-right:1px solid var(--line)}
+.stat:last-child{border-right:none}
+.stat b{display:block;font-size:22px;color:var(--cyan);font-weight:700}
+.stat span{font-family:var(--font-m);font-size:10px;letter-spacing:1px;color:var(--txt-mute)}
+
+/* ============ SECTION generic ============ */
+section{position:relative;z-index:1;padding:64px 0}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:34px}
+.sec-head h2{font-size:clamp(24px,3.4vw,32px);font-weight:600}
+.sec-head .sheet{font-family:var(--font-m);font-size:11px;color:var(--txt-mute);border:1px solid var(--line);padding:4px 9px;border-radius:2px}
+.sec-alt{background:var(--bg-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+
+/* ============ O MNIE ============ */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.about p + p{margin-top:12px}
+.timeline{margin-top:8px;position:relative;padding-left:26px}
+.timeline::before{content:"";position:absolute;left:5px;top:4px;bottom:4px;width:1px;background:var(--line)}
+.t-item{position:relative;padding-bottom:22px}
+.t-item:last-child{padding-bottom:0}
+.t-item::before{content:"";position:absolute;left:-26px;top:3px;width:9px;height:9px;border-radius:50%;background:var(--bg-2);border:2px solid var(--copper)}
+.t-item .ty{font-family:var(--font-m);font-size:10.5px;color:var(--txt-mute);letter-spacing:.5px}
+.t-item h3{font-size:15px;font-weight:600;margin:2px 0 3px;color:var(--txt)}
+.t-item p{font-size:13px}
+
+/* ============ WARSZTAT / skills ============ */
+.skill-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.skill-col{background:var(--panel);padding:22px}
+.skill-col .sc-head{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.sc-dot{width:9px;height:9px;border-radius:50%}
+.skill-col h3{font-size:13px;letter-spacing:1px;text-transform:uppercase;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{font-family:var(--font-m);font-size:11.5px;padding:6px 10px;border:1px solid var(--line-soft);border-radius:3px;color:var(--txt-dim);background:var(--bg-2)}
+.disc-mech .sc-dot{background:var(--copper)} .disc-mech h3{color:var(--copper)}
+.disc-elec .sc-dot{background:var(--cyan)} .disc-elec h3{color:var(--cyan)}
+.disc-code .sc-dot{background:var(--violet)} .disc-code h3{color:var(--violet)}
+
+/* ============ MODEL 3D ============ */
+.viewer-shell{display:grid;grid-template-columns:1fr 300px;gap:0;border:1px solid var(--line);background:var(--panel)}
+.viewport{position:relative;aspect-ratio:16/10;background:
+    radial-gradient(ellipse at 50% 20%, #26303a 0%, var(--bg-2) 72%);
+  overflow:hidden}
+.viewport canvas{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
+.viewport canvas:active{cursor:grabbing}
+.vp-corner{position:absolute;width:18px;height:18px;border-color:var(--cyan);opacity:.7;pointer-events:none}
+.vp-corner.tl{top:12px;left:12px;border-top:1px solid;border-left:1px solid}
+.vp-corner.tr{top:12px;right:12px;border-top:1px solid;border-right:1px solid}
+.vp-corner.bl{bottom:12px;left:12px;border-bottom:1px solid;border-left:1px solid}
+.vp-corner.br{bottom:12px;right:12px;border-bottom:1px solid;border-right:1px solid}
+.vp-hud{position:absolute;left:16px;bottom:14px;font-family:var(--font-m);font-size:10.5px;color:var(--cyan);letter-spacing:.5px;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.vp-hud div{opacity:.85}
+.vp-hint{position:absolute;right:16px;bottom:14px;font-family:var(--font-m);font-size:10.5px;color:var(--txt-mute);pointer-events:none;transition:opacity .4s}
+.vp-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;font-family:var(--font-m);font-size:11px;color:var(--txt-mute);transition:opacity .4s}
+.vp-spin{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--cyan);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.vp-err{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:30px;font-family:var(--font-m);font-size:12px;color:var(--txt-mute)}
+.viewer-side{padding:22px;border-left:1px solid var(--line);display:flex;flex-direction:column}
+.viewer-side .cap{font-family:var(--font-m);font-size:10.5px;letter-spacing:1.5px;color:var(--txt-mute);margin-bottom:4px}
+.viewer-side h3{font-size:19px;margin-bottom:10px;color:var(--txt)}
+.viewer-side p{font-size:13px;margin-bottom:16px}
+.spec-line{display:flex;justify-content:space-between;font-family:var(--font-m);font-size:11px;padding:7px 0;border-top:1px solid var(--line-soft)}
+.spec-line span:first-child{color:var(--txt-mute)}
+.spec-line span:last-child{color:var(--txt)}
+.viewer-side .cta{margin-top:auto;justify-content:center}
+
+/* ============ PROJEKTY ============ */
+.proj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.proj-card{background:var(--panel);padding:22px;display:flex;flex-direction:column;transition:background .18s}
+.proj-card:hover{background:var(--panel-2)}
+.proj-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.proj-tag{font-family:var(--font-m);font-size:10px;letter-spacing:1px;padding:3px 8px;border-radius:2px;border:1px solid currentColor}
+.proj-card.disc-mech .proj-tag{color:var(--copper)}
+.proj-card.disc-elec .proj-tag{color:var(--cyan)}
+.proj-card.disc-code .proj-tag{color:var(--violet)}
+.proj-gh{color:var(--txt-mute);font-size:15px;transition:color .15s}
+.proj-gh:hover{color:var(--cyan)}
+.proj-card h3{font-size:17px;margin-bottom:8px}
+.proj-card p{font-size:12.8px;flex:1}
+.proj-stack{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.proj-stack span{font-family:var(--font-m);font-size:10px;color:var(--txt-mute);background:var(--bg-2);padding:3px 7px;border-radius:2px}
+.proj-more{font-family:var(--font-m);font-size:11.5px;margin-top:8px;display:inline-flex;align-items:center;gap:6px;color:var(--txt)}
+.proj-card.disc-mech .proj-more{color:var(--copper)}
+.proj-card.disc-elec .proj-more{color:var(--cyan)}
+.proj-card.disc-code .proj-more{color:var(--violet)}
+.proj-card.wide{grid-column:span 3}
+
+/* chess widget */
+.chs-wrap{margin-top:6px}
+.chs-status{font-family:var(--font-m);font-size:11.5px;color:var(--cyan);margin-bottom:8px;min-height:16px}
+.chs-status.chs-think{color:var(--txt-mute)}
+.chs-status.chs-over{color:var(--copper)}
+.chs-grid{display:grid;grid-template-columns:repeat(8,1fr);width:min(320px,100%);aspect-ratio:1;border:1px solid var(--line)}
+.chs-sq{border:none;display:flex;align-items:center;justify-content:center;font-size:clamp(16px,4vw,24px);cursor:pointer;line-height:1;padding:0}
+.chs-l{background:var(--paper-2)}
+.chs-d{background:var(--panel-2)}
+.chs-piece-w{color:#fff8ec;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.chs-piece-b{color:#181818}
+.chs-sel{box-shadow:inset 0 0 0 2px var(--copper)}
+.chs-tgt{box-shadow:inset 0 0 0 2px var(--cyan)}
+.chs-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.chs-note{font-size:10.5px;color:var(--txt-mute);font-family:var(--font-m);max-width:34ch}
+.chs-reset{font-family:var(--font-m);font-size:11px;color:var(--txt-dim);background:none;border:1px solid var(--line);padding:6px 11px;border-radius:2px;cursor:pointer;transition:border-color .15s,color .15s}
+.chs-reset:hover{border-color:var(--violet);color:var(--violet)}
+
+/* ============ KONTAKT / footer ============ */
+.contact-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center}
+.contact h2{font-size:clamp(26px,4vw,38px);margin-bottom:12px}
+.contact p{max-width:48ch}
+.stamp{border:2px solid var(--copper);color:var(--copper);font-family:var(--font-m);font-size:12px;letter-spacing:2px;padding:14px 20px;transform:rotate(-3deg);display:inline-block;border-radius:3px}
+footer{border-top:1px solid var(--line);padding:22px 0;font-family:var(--font-m);font-size:11px;color:var(--txt-mute)}
+.foot-in{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.foot-in a:hover{color:var(--cyan)}
+
+/* ============ responsive ============ */
+@media (max-width:920px){
+  .hero-grid{grid-template-columns:1fr}
+  .about-grid{grid-template-columns:1fr;gap:34px}
+  .skill-cols{grid-template-columns:1fr}
+  .viewer-shell{grid-template-columns:1fr}
+  .viewer-side{border-left:none;border-top:1px solid var(--line)}
+  .proj-grid{grid-template-columns:1fr 1fr}
+  .proj-card.wide{grid-column:span 2}
+  .contact-grid{grid-template-columns:1fr}
+}
+@media (max-width:600px){
+  .proj-grid{grid-template-columns:1fr}
+  .proj-card.wide{grid-column:span 1}
+  .stat-row{flex-wrap:wrap}
+  .stat{flex:1 1 50%;border-bottom:1px solid var(--line)}
+}
+</style>
+</head>
+<body>
+<div class="grid-bg" aria-hidden="true"></div>
+
+<nav class="nav">
+  <div class="nav-in">
+    <span class="nav-mark">M.<b>ANTKOWIAK</b></span>
+    <a class="nav-tab" href="#start"><span class="n">01</span>START</a>
+    <a class="nav-tab" href="#o-mnie"><span class="n">02</span>O MNIE</a>
+    <a class="nav-tab" href="#warsztat"><span class="n">03</span>WARSZTAT</a>
+    <a class="nav-tab" href="#model-3d"><span class="n">04</span>MODEL 3D</a>
+    <a class="nav-tab" href="#projekty"><span class="n">05</span>PROJEKTY</a>
+    <a class="nav-tab" href="#kontakt"><span class="n">06</span>KONTAKT</a>
+    <a class="nav-gh" href="https://github.com/MichalAntkowiak?tab=repositories" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="start">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">Portfolio techniczne // arkusz 01</div>
+        <h1>MICHAŁ<br>ANTKOWIAK<span class="last">.</span></h1>
+        <div class="hero-tag">Mechatronika, I rok — Politechnika Warszawska</div>
+        <p class="lead">Buduję na styku trzech dziedzin: <b style="color:var(--copper)">mechaniki</b> (CAD, tolerancje,
+        złożenia), <b style="color:var(--cyan)">elektroniki</b> (ESP32, lutowanie, FPV) i <b style="color:var(--violet)">kodu</b>
+        (C++, Python, uczenie maszynowe). Niżej: sześć projektów, model 3D do obrócenia w rękach i komplet repozytoriów.</p>
+        <div class="cta-row">
+          <a class="cta" href="#projekty">Zobacz projekty <span class="arr">↓</span></a>
+          <a class="cta alt" href="https://github.com/MichalAntkowiak?tab=repositories" target="_blank" rel="noopener">Wszystkie repozytoria <span class="arr">↗</span></a>
+        </div>
+        <div class="stat-row">
+          <div class="stat"><b>6</b><span>PROJEKTÓW</span></div>
+          <div class="stat"><b>3</b><span>DYSCYPLINY</span></div>
+          <div class="stat"><b>mt-112</b><span>INDEKS PW</span></div>
+        </div>
+      </div>
+      <div class="tblock" aria-hidden="false">
+        <div class="tblock-cap">TABLICA TYTUŁOWA // ISO 7200</div>
+        <div class="tblock-row"><span class="k">NAZWISKO</span><span class="v"><b>Antkowiak</b>, Michał</span></div>
+        <div class="tblock-row"><span class="k">UCZELNIA</span><span class="v">Politechnika Warszawska</span></div>
+        <div class="tblock-row"><span class="k">KIERUNEK</span><span class="v">Mechatronika, sem. I</span></div>
+        <div class="tblock-row"><span class="k">KOŁO NAUKOWE</span><span class="v">KN ONYKS</span></div>
+        <div class="tblock-row"><span class="k">ARKUSZ</span><span class="v">Wizytówka — 1/1</span></div>
+        <div class="tblock-row"><span class="k">STATUS</span><span class="v" style="color:var(--cyan)">Aktywny — 2026</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ O MNIE ============ -->
+<section id="o-mnie">
+  <div class="wrap">
+    <div class="sec-head rv"><h2>O mnie</h2><span class="sheet">ARK. 02</span></div>
+    <div class="about-grid">
+      <div class="about rv">
+        <p>Pierwszy rok Mechatroniki na Politechnice Warszawskiej (indeks <code style="font-family:var(--font-m);color:var(--copper)">mt-112</code>),
+        członek Koła Naukowego <b>ONYKS</b>. Maturę z profilu matematyczno-fizycznego zdałem w 2025 roku
+        w XII LO im. Juliusza Słowackiego.</p>
+        <p>Od 2024 uczę matematyki jako korepetytor — wcześniej pracowałem jako kurier. Poza zajęciami: montuję
+        i lutuję drony FPV, projektuję złożenia w Inventorze i piszę silniki gier planszowych dla własnej przyjemności.</p>
+      </div>
+      <div class="rv">
+        <div class="timeline">
+          <div class="t-item"><div class="ty">2021—2025</div><h3>XII LO im. Słowackiego</h3><p>Profil matematyczno-fizyczny.</p></div>
+          <div class="t-item"><div class="ty">przed 2024</div><h3>Kurier</h3><p>Praca dorywcza w trakcie liceum.</p></div>
+          <div class="t-item"><div class="ty">od 2024</div><h3>Korepetycje z matematyki</h3><p>Indywidualne prowadzenie uczniów.</p></div>
+          <div class="t-item"><div class="ty">2025</div><h3>Matura</h3><p>Profil mat-fiz, XII LO Słowackiego.</p></div>
+          <div class="t-item"><div class="ty">2025 — dziś</div><h3>Mechatronika PW</h3><p>I rok, indeks mt-112, KN ONYKS.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WARSZTAT ============ -->
+<section id="warsztat" class="sec-alt">
+  <div class="wrap">
+    <div class="sec-head rv"><h2>Warsztat</h2><span class="sheet">ARK. 03</span></div>
+    <div class="skill-cols rv">
+      <div class="skill-col disc-mech">
+        <div class="sc-head"><span class="sc-dot"></span><h3>Mechanika</h3></div>
+        <div class="chips">
+          <span class="chip">Autodesk Inventor</span><span class="chip">Złożenia i tolerancje</span>
+          <span class="chip">H7/g6 · H8/h7</span><span class="chip">Dokumentacja 2D ISO</span>
+          <span class="chip">Aerodynamika śmigieł</span>
+        </div>
+      </div>
+      <div class="skill-col disc-elec">
+        <div class="sc-head"><span class="sc-dot"></span><h3>Elektronika</h3></div>
+        <div class="chips">
+          <span class="chip">ESP32 / MicroPython</span><span class="chip">uasyncio</span>
+          <span class="chip">Lutowanie THT</span><span class="chip">CSI Wi-Fi 2.4 GHz</span>
+          <span class="chip">Betaflight / Bluejay</span><span class="chip">DSHOT / ESC</span>
+          <span class="chip">Czujniki DHT22</span>
+        </div>
+      </div>
+      <div class="skill-col disc-code">
+        <div class="sc-head"><span class="sc-dot"></span><h3>Kod</h3></div>
+        <div class="chips">
+          <span class="chip">C++ / Qt Creator</span><span class="chip">Python</span>
+          <span class="chip">KNN · filtr Kalmana</span><span class="chip">JavaScript</span>
+          <span class="chip">Git / GitHub</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MODEL 3D ============ -->
+<section id="model-3d">
+  <div class="wrap">
+    <div class="sec-head rv"><h2>Model 3D — obróć w rękach</h2><span class="sheet">ARK. 04</span></div>
+    <div class="viewer-shell rv">
+      <div class="viewport" id="vp">
+        <div class="vp-corner tl"></div><div class="vp-corner tr"></div>
+        <div class="vp-corner bl"></div><div class="vp-corner br"></div>
+        <div class="vp-loading" id="vp-loading"><div class="vp-spin"></div>Ładowanie modelu…</div>
+        <div class="vp-err" id="vp-err">Nie udało się wczytać modelu 3D w tej przeglądarce.<br>Pełna dokumentacja złożenia dostępna niżej.</div>
+        <div class="vp-hud" id="vp-hud" style="opacity:0"><div>AZYMUT: <span id="hud-az">0°</span></div><div>ELEWACJA: <span id="hud-el">0°</span></div></div>
+        <div class="vp-hint" id="vp-hint" style="opacity:0">przeciągnij, aby obrócić · przewiń, aby przybliżyć</div>
+      </div>
+      <div class="viewer-side">
+        <div class="cap">AUTODESK INVENTOR → glTF</div>
+        <h3>Zespół 1</h3>
+        <p>Złożenie wykonawcze wyeksportowane bezpośrednio z pliku CAD. Ten sam model, w pełnej dokumentacji
+        z rysunkami 2D i pasowaniami, stoi za projektem <b>Hala montażowa</b>.</p>
+        <div class="spec-line"><span>KOMPONENTY</span><span>4</span></div>
+        <div class="spec-line"><span>PASOWANIE (węzeł obrotowy)</span><span>H8/h7</span></div>
+        <div class="spec-line"><span>PASOWANIE (wałek)</span><span>H7/g6</span></div>
+        <div class="spec-line"><span>DOKUMENTACJA</span><span>2D, ISO</span></div>
+        <a class="cta alt" href="projekty/inventor.html">Pełna dokumentacja <span class="arr">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROJEKTY ============ -->
+<section id="projekty" class="sec-alt">
+  <div class="wrap">
+    <div class="sec-head rv"><h2>Projekty</h2><span class="sheet">ARK. 05</span></div>
+    <div class="proj-grid rv">
+
+      <article class="proj-card disc-mech">
+        <div class="proj-top"><span class="proj-tag">MECHANIKA</span></div>
+        <h3>Hala montażowa</h3>
+        <p>Złożenie 4 komponentów wykonawczych w Autodesku Inventor: pasowania <code>H8/h7</code> w węźle obrotowym,
+        <code>H7/g6</code> na wałku, komplet rysunków 2D wg ISO. Model do obrócenia w sekcji Model 3D wyżej.</p>
+        <div class="proj-stack"><span>Inventor</span><span>ISO 2D</span><span>Tolerancje</span></div>
+        <a class="proj-more" href="projekty/inventor.html">Pełny opis <span class="arr">→</span></a>
+      </article>
+
+      <article class="proj-card disc-elec">
+        <div class="proj-top"><span class="proj-tag">ELEKTRONIKA</span></div>
+        <h3>Lab PBL — hydroponika</h3>
+        <p>Autonomiczna doniczka: ESP32 w nieblokującej pętli <code>uasyncio</code> nawadnia, mierzy temperaturę
+        i wilgotność, i powoli obraca roślinę wokół osi, by rosła prosto bez wyginania do światła.</p>
+        <div class="proj-stack"><span>ESP32</span><span>MicroPython</span><span>DHT22</span></div>
+        <a class="proj-more" href="projekty/hydroponika.html">Pełny opis <span class="arr">→</span></a>
+      </article>
+
+      <article class="proj-card disc-elec">
+        <div class="proj-top"><span class="proj-tag">ELEKTRONIKA</span>
+          <a class="proj-gh" href="https://github.com/MichalAntkowiak/Triangulacja-2D-przy-pomocy-fal-Wi-Fi" target="_blank" rel="noopener" aria-label="Repozytorium GitHub">⌥</a></div>
+        <h3>Triangulacja Wi-Fi</h3>
+        <p>Pasywna lokalizacja 2D przez CSI Wi-Fi 2.4 GHz: 3× ESP32 nadaje, ważony KNN klasyfikuje strefę na siatce
+        22 punktów kalibracji, filtr Kalmana wygładza trajektorię.</p>
+        <div class="proj-stack"><span>ESP32</span><span>Python</span><span>KNN + Kalman</span></div>
+        <a class="proj-more" href="projekty/triangulacja.html">Pełny opis <span class="arr">→</span></a>
+      </article>
+
+      <article class="proj-card disc-elec">
+        <div class="proj-top"><span class="proj-tag">ELEKTRONIKA</span>
+          <a class="proj-gh" href="https://github.com/MichalAntkowiak/dron_1" target="_blank" rel="noopener" aria-label="Repozytorium GitHub">⌥</a></div>
+        <h3>Hangar FPV — dron_1</h3>
+        <p>Custom micro-whoop 85 mm. Faza 1: spalony kontroler lotu przy lutowaniu — lekcja pokory. Faza 2: lata
+        na Betaflight 4.3.2 + ESC Bluejay, ExpressLRS, Airmode.</p>
+        <div class="proj-stack"><span>Betaflight</span><span>Bluejay</span><span>Lutowanie</span></div>
+        <a class="proj-more" href="projekty/dron.html">Pełny opis <span class="arr">→</span></a>
+      </article>
+
+      <article class="proj-card disc-code">
+        <div class="proj-top"><span class="proj-tag">KOD</span>
+          <a class="proj-gh" href="https://github.com/MichalAntkowiak/WarsawWeather" target="_blank" rel="noopener" aria-label="Repozytorium GitHub">⌥</a></div>
+        <h3>Stacja pogodowa</h3>
+        <p>Desktopowa aplikacja Python/Tkinter pobierająca żywą pogodę dla Warszawy z Open-Meteo, z terminalowym
+        podglądem logów API i awaryjnym cache, gdy sieć zawiedzie.</p>
+        <div class="proj-stack"><span>Python</span><span>Tkinter</span><span>Open-Meteo API</span></div>
+        <a class="proj-more" href="https://github.com/MichalAntkowiak/WarsawWeather" target="_blank" rel="noopener">Repozytorium <span class="arr">↗</span></a>
+      </article>
+
+      <article class="proj-card disc-code wide">
+        <div class="proj-top"><span class="proj-tag">KOD</span>
+          <a class="proj-gh" href="https://github.com/MichalAntkowiak/ChessEngine_1" target="_blank" rel="noopener" aria-label="Repozytorium GitHub">⌥</a></div>
+        <h3>Strefa kodu — silnik szachowy</h3>
+        <p>Silnik napisany obiektowo w C++ (Qt Creator), rozbity na klasy odpowiadające figurom i logice gry.
+        Niżej — jego żywa, przeglądarkowa reimplementacja w JavaScript: pełna legalność ruchów, kontrola szacha,
+        minimax głębokości 2 i system anty-repetycji. Zagraj białymi.</p>
+        <div class="proj-stack"><span>C++</span><span>Qt Creator</span><span>JS · Minimax D2</span></div>
+        <div id="chess-mount"></div>
+        <a class="proj-more" href="projekty/szachy.html">Pełny opis silnika C++ <span class="arr">→</span></a>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ KONTAKT ============ -->
+<section id="kontakt">
+  <div class="wrap">
+    <div class="sec-head rv"><h2>Kontakt</h2><span class="sheet">ARK. 06</span></div>
+    <div class="contact-grid rv">
+      <div class="contact">
+        <p>Wszystkie projekty, kod źródłowy i historia commitów — w jednym miejscu.</p>
+        <div class="cta-row">
+          <a class="cta" href="https://github.com/MichalAntkowiak?tab=repositories" target="_blank" rel="noopener">github.com/MichalAntkowiak <span class="arr">↗</span></a>
+        </div>
+      </div>
+      <div class="stamp">SPRAWDZONE<br>W RUCHU — 2026</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <span>MICHAŁ ANTKOWIAK // MECHATRONIKA PW · mt-112</span>
+    <a href="#start">↑ do góry</a>
+  </div>
+</footer>
+
+<script src="assets/three.min.js"></script>
+<script src="assets/GLTFLoader.js"></script>
+<script src="assets/chess.js"></script>
+<script>
+(function(){
+  'use strict';
+
+  /* ---------- reveal on scroll ---------- */
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var rvEls = document.querySelectorAll('.rv');
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    rvEls.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    rvEls.forEach(function(el){ io.observe(el); });
+  }
+
+  /* ---------- chess widget ---------- */
+  try {
+    if (window.MAChess) window.MAChess.initWidget(document.getElementById('chess-mount'));
+  } catch (e) { console.warn('Chess widget:', e); }
+
+  /* ---------- 3D model viewer ---------- */
+  (function initViewer(){
+    var vp = document.getElementById('vp');
+    var loadingEl = document.getElementById('vp-loading');
+    var errEl = document.getElementById('vp-err');
+    var hudEl = document.getElementById('vp-hud');
+    var hintEl = document.getElementById('vp-hint');
+    var azEl = document.getElementById('hud-az');
+    var elEl = document.getElementById('hud-el');
+    if (!vp || typeof THREE === 'undefined' || !THREE.GLTFLoader) {
+      if (errEl) errEl.style.display = 'flex';
+      if (loadingEl) loadingEl.style.display = 'none';
+      return;
+    }
+
+    var renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    } catch (e) {
+      errEl.style.display = 'flex'; loadingEl.style.display = 'none'; return;
+    }
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    vp.insertBefore(renderer.domElement, vp.firstChild);
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(38, 1, 0.05, 100);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+    var hemi = new THREE.HemisphereLight(0x8fb8d8, 0x2a2018, 0.6); scene.add(hemi);
+    var key = new THREE.DirectionalLight(0xfff2df, 1.05); key.position.set(3, 4, 4); scene.add(key);
+    var rim = new THREE.DirectionalLight(0x57d8ca, 0.5); rim.position.set(-4, 1.5, -3); scene.add(rim);
+
+    function sizeToContainer(){
+      var w = vp.clientWidth, h = vp.clientHeight;
+      if (!w || !h) return;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    sizeToContainer();
+    if ('ResizeObserver' in window) new ResizeObserver(sizeToContainer).observe(vp);
+    else window.addEventListener('resize', sizeToContainer);
+
+    /* orbit state */
+    var orbit = { theta: 0.6, phi: 1.15, radius: 3.2 };
+    var minR = 1.4, maxR = 9;
+    var dragging = false, lastX = 0, lastY = 0, idleT = 0, interacted = false;
+
+    function applyCam(){
+      var r = orbit.radius, phi = Math.max(0.18, Math.min(Math.PI - 0.18, orbit.phi));
+      camera.position.set(
+        r * Math.sin(phi) * Math.sin(orbit.theta),
+        r * Math.cos(phi),
+        r * Math.sin(phi) * Math.cos(orbit.theta)
+      );
+      camera.lookAt(0, 0, 0);
+      if (azEl) azEl.textContent = Math.round((orbit.theta * 180 / Math.PI) % 360) + '°';
+      if (elEl) elEl.textContent = Math.round(90 - phi * 180 / Math.PI) + '°';
+    }
+    applyCam();
+
+    function onDown(x, y){ dragging = true; lastX = x; lastY = y; interacted = true; idleT = 0;
+      if (hintEl) hintEl.style.opacity = '0'; }
+    function onMove(x, y){
+      if (!dragging) return;
+      var dx = x - lastX, dy = y - lastY; lastX = x; lastY = y;
+      orbit.theta -= dx * 0.008;
+      orbit.phi -= dy * 0.008;
+      applyCam();
+    }
+    function onUp(){ dragging = false; }
+
+    var cv = renderer.domElement;
+    cv.addEventListener('pointerdown', function(e){ cv.setPointerCapture(e.pointerId); onDown(e.clientX, e.clientY); });
+    cv.addEventListener('pointermove', function(e){ onMove(e.clientX, e.clientY); });
+    window.addEventListener('pointerup', onUp);
+    cv.addEventListener('wheel', function(e){
+      e.preventDefault(); interacted = true; idleT = 0;
+      orbit.radius = Math.max(minR, Math.min(maxR, orbit.radius + e.deltaY * 0.0035));
+      applyCam();
+    }, { passive: false });
+
+    var loader = new THREE.GLTFLoader();
+    loader.load('assets/Zespol1.glb', function(gltf){
+      var model = gltf.scene;
+      var box = new THREE.Box3().setFromObject(model);
+      var size = new THREE.Vector3(); box.getSize(size);
+      var center = new THREE.Vector3(); box.getCenter(center);
+      model.position.sub(center);
+      var maxDim = Math.max(size.x, size.y, size.z) || 1;
+      var scale = 1.6 / maxDim;
+      model.scale.setScalar(scale);
+      scene.add(model);
+      orbit.radius = 3.0;
+      applyCam();
+      loadingEl.style.opacity = '0';
+      setTimeout(function(){ loadingEl.style.display = 'none'; }, 420);
+      hudEl.style.opacity = '1'; hintEl.style.opacity = '1';
+    }, undefined, function(){
+      errEl.style.display = 'flex'; loadingEl.style.display = 'none';
+    });
+
+    function tick(t){
+      requestAnimationFrame(tick);
+      if (!dragging && !reduceMotion){
+        idleT += 1;
+        if (interacted ? idleT > 140 : idleT > 40) orbit.theta += 0.0028;
+      }
+      applyCam();
+      renderer.render(scene, camera);
+    }
+    requestAnimationFrame(tick);
+  })();
+})();
+</script>
+</body>
+</html>
