@@ -1,0 +1,21 @@
+Czcionki użyte na stronie
+
+osifont.woff2, osifont-italic.woff2
+  osifont: pismo techniczne zgodne z ISO 3098.
+  Autor: Zefram Cochrane (hikikomori82), https://github.com/hikikomori82/osifont
+  Licencja: GNU LGPL w wersji 3 z wyjątkiem dla czcionek (GPL font exception):
+  "As a special exception, if you create a document which uses this font, and embed
+  this font or unaltered portions of this font into the document, this font does not
+  by itself cause the resulting document to be covered by the GNU GPL."
+  Pliki to niezmienione czcionki osifont-lgpl3fe.ttf i osifont-italic.ttf z repozytorium
+  autora, zapisane w kontenerze WOFF2. Źródła (.sfd) i pełny tekst licencji są w repozytorium autora.
+
+literata-400.woff2, literata-400i.woff2, literata-600.woff2
+  Literata, Copyright 2017 The Literata Project Authors (https://github.com/googlefonts/literata)
+  Licencja: SIL Open Font License 1.1, pełny tekst w pliku OFL-Literata.txt.
+  Pliki zawierają podzbiór znaków (łaciński z polskimi literami).
+
+figury.woff2
+  Dwanaście znaków figur szachowych (U+2654 do U+265F) z Noto Sans Symbols 2,
+  Copyright 2022 The Noto Project Authors (https://github.com/notofonts/symbols)
+  Licencja: SIL Open Font License 1.1, pełny tekst w pliku OFL-NotoSansSymbols2.txt.

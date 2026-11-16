@@ -221,55 +221,62 @@
     isKingInCheck, gameStatus, chooseEngineMove, positionHash, colorOf, typeOf
   };
 
-  /* ---------- widget UI (tylko gdy jest DOM) ---------- */
-  const GLYPH = {
-    wP: '♙', wN: '♘', wB: '♗', wR: '♖', wQ: '♕', wK: '♔',
-    bP: '♟', bN: '♞', bB: '♝', bR: '♜', bQ: '♛', bK: '♚'
-  };
+  /* ---------- widget (tylko gdy jest DOM) ---------- */
+  // Figury rysuje czcionka "Figury": białe to kontur na jasnym wypełnieniu, czarne to pełny znak.
+  const SOLID = { P: '♟︎', N: '♞', B: '♝', R: '♜', Q: '♛', K: '♚' };
+  const LINE = { P: '♙', N: '♘', B: '♗', R: '♖', Q: '♕', K: '♔' };
+  const NAME = { P: 'pionek', N: 'skoczek', B: 'goniec', R: 'wieża', Q: 'hetman', K: 'król' };
+  const LETTER = { P: '', N: 'S', B: 'G', R: 'W', Q: 'H', K: 'K' };      // notacja polska
+  const FILES = 'abcdefgh';
+  const sqName = (r, c) => FILES[c] + (8 - r);
 
   function initWidget(mount) {
     if (!mount) return;
-    let board = createInitialBoard();
-    let turn = WHITE;
-    let selected = null;
-    let legal = [];
-    let history = [];
-    let over = false;
+    let board, turn, selected, legal, history, over, last, record;
 
     mount.innerHTML =
-      '<div class="chs-wrap">' +
-      '<div class="chs-status" data-role="status">Twój ruch — białe</div>' +
-      '<div class="chs-grid" data-role="grid"></div>' +
-      '<div class="chs-foot">' +
-      '<span class="chs-note">Wersja demo: bez roszady i bicia w przelocie, promocja zawsze na hetmana.</span>' +
-      '<button class="chs-reset" type="button" data-role="reset">Nowa gra ⟲</button>' +
-      '</div></div>';
+      '<div class="chs">' +
+      '<div class="chs-frame">' +
+      '<div class="chs-ranks" aria-hidden="true">' + [8, 7, 6, 5, 4, 3, 2, 1].map(n => '<span>' + n + '</span>').join('') + '</div>' +
+      '<div class="chs-board" data-role="grid"></div>' +
+      '<div class="chs-files" aria-hidden="true">' + FILES.split('').map(f => '<span>' + f + '</span>').join('') + '</div>' +
+      '</div>' +
+      '<p class="chs-status" data-role="status" role="status"></p>' +
+      '<ol class="chs-moves" data-role="moves" aria-label="Zapis partii"></ol>' +
+      '<div class="chs-foot"><button class="chs-reset" type="button" data-role="reset">Nowa partia</button></div>' +
+      '</div>';
 
     const gridEl = mount.querySelector('[data-role="grid"]');
     const statusEl = mount.querySelector('[data-role="status"]');
-    const cells = [];
+    const movesEl = mount.querySelector('[data-role="moves"]');
+    const cells = [], pieces = [];
     for (let r = 0; r < 8; r++) {
       for (let c = 0; c < 8; c++) {
         const cell = document.createElement('button');
         cell.type = 'button';
         cell.className = 'chs-sq ' + ((r + c) % 2 === 0 ? 'chs-l' : 'chs-d');
-        cell.setAttribute('aria-label', 'pole ' + r + c);
+        const pc = document.createElement('span');
+        pc.className = 'pc';
+        cell.appendChild(pc);
         cell.addEventListener('click', () => onCellClick(r, c));
         gridEl.appendChild(cell);
-        cells.push(cell);
+        cells.push(cell); pieces.push(pc);
       }
     }
 
     function render() {
       for (let r = 0; r < 8; r++)
         for (let c = 0; c < 8; c++) {
-          const cell = cells[r * 8 + c];
-          const p = board[r][c];
-          cell.textContent = p ? GLYPH[p] : '';
-          cell.classList.toggle('chs-piece-w', !!p && colorOf(p) === WHITE);
-          cell.classList.toggle('chs-piece-b', !!p && colorOf(p) === BLACK);
+          const i = r * 8 + c, cell = cells[i], pc = pieces[i], p = board[r][c];
+          if (p) {
+            pc.dataset.c = colorOf(p); pc.dataset.s = SOLID[typeOf(p)]; pc.dataset.o = LINE[typeOf(p)];
+          } else { delete pc.dataset.c; delete pc.dataset.s; delete pc.dataset.o; }
+          cell.setAttribute('aria-label', sqName(r, c) + ': ' + (p ? (colorOf(p) === WHITE ? 'biały ' : 'czarny ') + NAME[typeOf(p)] : 'puste pole'));
+          const target = legal.some(m => m.tr === r && m.tc === c);
           cell.classList.toggle('chs-sel', !!selected && selected[0] === r && selected[1] === c);
-          cell.classList.toggle('chs-tgt', legal.some(m => m.tr === r && m.tc === c));
+          cell.classList.toggle('chs-tgt', target);
+          cell.classList.toggle('chs-cap', target && !!p);
+          cell.classList.toggle('chs-last', !!last && ((last.fr === r && last.fc === c) || (last.tr === r && last.tc === c)));
         }
     }
 
@@ -278,34 +285,69 @@
       statusEl.className = 'chs-status' + (cls ? ' ' + cls : '');
     }
 
+    // zapis ruchu w pełnej notacji: figura, pole wyjścia, pole docelowe
+    function notate(before, m, after, mover) {
+      const p = before[m.fr][m.fc];
+      let s = LETTER[typeOf(p)] + sqName(m.fr, m.fc) + (before[m.tr][m.tc] ? ':' : '–') + sqName(m.tr, m.tc);
+      if (typeOf(p) === 'P' && (m.tr === 0 || m.tr === 7)) s += 'H';
+      const st = gameStatus(after, opp(mover));
+      if (st === 'checkmate') s += '#'; else if (st === 'check') s += '+';
+      return s;
+    }
+    function writeRecord() {
+      movesEl.innerHTML = '';
+      for (let i = 0; i < record.length; i += 2) {
+        const li = document.createElement('li');
+        const no = document.createElement('b');
+        no.textContent = (i / 2 + 1) + '.';
+        li.appendChild(no);
+        li.appendChild(document.createTextNode(' ' + record[i] + (record[i + 1] ? ' ' + record[i + 1] : '')));
+        movesEl.appendChild(li);
+      }
+      movesEl.scrollTop = movesEl.scrollHeight;
+    }
+
+    function play(m, mover) {
+      const before = board;
+      board = applyMove(board, m);
+      history.push(positionHash(board));
+      record.push(notate(before, m, board, mover));
+      last = m;
+      writeRecord();
+    }
+
     function afterMoveStatusCheck(colorToMove) {
       const st = gameStatus(board, colorToMove);
       if (st === 'checkmate') {
         over = true;
-        setStatus((colorToMove === WHITE ? 'Białe' : 'Czarne') + ' zamatowane — koniec gry.', 'chs-over');
+        setStatus((colorToMove === WHITE ? 'Białe' : 'Czarne') + ' dostały mata. Koniec partii.', 'chs-over');
         return true;
       }
       if (st === 'stalemate') {
         over = true;
-        setStatus('Pat — remis.', 'chs-over');
+        setStatus('Pat, remis.', 'chs-over');
         return true;
       }
       return false;
     }
 
     function engineTurn() {
-      setStatus('Silnik myśli…', 'chs-think');
+      setStatus('Silnik liczy odpowiedź...', 'chs-think');
       setTimeout(() => {
         const m = chooseEngineMove(board, BLACK, history);
-        if (!m) return; // gameStatus już to obsłużył
-        board = applyMove(board, m);
-        history.push(positionHash(board));
+        if (!m) return;
+        play(m, BLACK);
         turn = WHITE;
         render();
         if (!afterMoveStatusCheck(WHITE)) {
-          setStatus(gameStatus(board, WHITE) === 'check' ? 'Szach! Twój ruch — białe' : 'Twój ruch — białe');
+          setStatus(gameStatus(board, WHITE) === 'check' ? 'Szach. Twój ruch, grasz białymi.' : 'Twój ruch, grasz białymi.');
         }
       }, 380);
+    }
+
+    function pick(r, c) {
+      selected = [r, c];
+      legal = legalMoves(board, WHITE).filter(m => m.fr === r && m.fc === c);
     }
 
     function onCellClick(r, c) {
@@ -314,37 +356,28 @@
       if (selected) {
         const mv = legal.find(m => m.tr === r && m.tc === c);
         if (mv) {
-          board = applyMove(board, mv);
-          history.push(positionHash(board));
+          play(mv, WHITE);
           selected = null; legal = [];
           turn = BLACK;
           render();
           if (!afterMoveStatusCheck(BLACK)) engineTurn();
           return;
         }
-        if (p && colorOf(p) === WHITE) {
-          selected = [r, c];
-          legal = legalMoves(board, WHITE).filter(m => m.fr === r && m.fc === c);
-          render();
-          return;
-        }
+        if (p && colorOf(p) === WHITE && !(selected[0] === r && selected[1] === c)) { pick(r, c); render(); return; }
         selected = null; legal = []; render();
         return;
       }
-      if (p && colorOf(p) === WHITE) {
-        selected = [r, c];
-        legal = legalMoves(board, WHITE).filter(m => m.fr === r && m.fc === c);
-        render();
-      }
+      if (p && colorOf(p) === WHITE) { pick(r, c); render(); }
     }
 
-    mount.querySelector('[data-role="reset"]').addEventListener('click', () => {
-      board = createInitialBoard(); turn = WHITE; selected = null; legal = []; history = []; over = false;
-      setStatus('Twój ruch — białe');
+    function reset() {
+      board = createInitialBoard(); turn = WHITE; selected = null; legal = []; history = []; over = false; last = null; record = [];
+      setStatus('Twój ruch, grasz białymi.');
+      writeRecord();
       render();
-    });
-
-    render();
+    }
+    mount.querySelector('[data-role="reset"]').addEventListener('click', reset);
+    reset();
   }
 
   MAChess.initWidget = initWidget;
